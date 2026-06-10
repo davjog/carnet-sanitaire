@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+  <meta name="theme-color" content="#1a3a1a"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="Carnet Sanitaire"/>
+  <meta name="mobile-web-app-capable" content="yes"/>
+  <title>Carnet Sanitaire Bovin</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+    body{font-family:'Georgia','Times New Roman',serif;background:#f0f4f0;min-height:100vh}
+    #root{min-height:100vh}
+    #install-banner{display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;
+      background:linear-gradient(135deg,#1a3a1a,#2d5a27);color:#fff;
+      padding:14px 16px;align-items:center;gap:12px;box-shadow:0 -4px 20px #0004}
+    #install-banner.show{display:flex}
+    #install-banner .icon{font-size:28px}
+    #install-banner .text{flex:1}
+    #install-banner .text strong{display:block;font-size:14px;font-family:sans-serif}
+    #install-banner .text span{font-size:11px;color:#a8d5a2;font-family:sans-serif}
+    #install-btn{background:#fff;color:#1a3a1a;border:none;border-radius:8px;
+      padding:9px 16px;font-weight:800;font-size:13px;cursor:pointer;font-family:sans-serif;white-space:nowrap}
+    #dismiss-btn{background:transparent;border:none;color:#fff;font-size:20px;cursor:pointer;padding:4px}
+  </style>
+  <script>
+    const manifestData = {
+      name:"Carnet Sanitaire Bovin Lait",short_name:"Carnet Sanitaire",
+      description:"Registre des traitements vétérinaires bovins",
+      start_url:"./",display:"standalone",
+      background_color:"#f0f4f0",theme_color:"#1a3a1a",orientation:"portrait",
+      icons:[
+        {src:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' fill='%231a3a1a' rx='32'/><text y='130' x='20' font-size='130'>🐄</text></svg>",sizes:"192x192",type:"image/svg+xml"},
+        {src:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' fill='%231a3a1a' rx='80'/><text y='380' x='40' font-size='380'>🐄</text></svg>",sizes:"512x512",type:"image/svg+xml"}
+      ]
+    };
+    const blob=new Blob([JSON.stringify(manifestData)],{type:'application/manifest+json'});
+    const manifestURL=URL.createObjectURL(blob);
+    const link=document.createElement('link');
+    link.rel='manifest';link.href=manifestURL;
+    document.head.appendChild(link);
+  </script>
+</head>
+<body>
+<div id="root"></div>
+
+<div id="install-banner">
+  <div class="icon">🐄</div>
+  <div class="text">
+    <strong>Installer l'application</strong>
+    <span>Accès rapide depuis l'écran d'accueil</span>
+  </div>
+  <button id="install-btn">Installer</button>
+  <button id="dismiss-btn">✕</button>
+</div>
+
+<script>
+if('serviceWorker' in navigator){
+  const swCode=`
+    const CACHE='carnet-sanitaire-v1';
+    self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(['./',]))));
+    self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).catch(()=>caches.match('./'))))); 
+  `;
+  const swBlob=new Blob([swCode],{type:'application/javascript'});
+  navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(()=>{});
+}
+let deferredPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault();deferredPrompt=e;
+  document.getElementById('install-banner').classList.add('show');
+});
+document.getElementById('install-btn').addEventListener('click',()=>{
+  if(deferredPrompt){deferredPrompt.prompt();deferredPrompt.userChoice.then(()=>{deferredPrompt=null;document.getElementById('install-banner').classList.remove('show');});}
+});
+document.getElementById('dismiss-btn').addEventListener('click',()=>{
+  document.getElementById('install-banner').classList.remove('show');
+});
+window.addEventListener('appinstalled',()=>{document.getElementById('install-banner').classList.remove('show');});
+</script>
+
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<script type="text/babel" data-presets="react">
+
+const VACHES_DEFAUT = [
+  { nom: "ADELE", numero: "FR 7302461746", travail: "1746", naissance: "04/02/2025" },
+  { nom: "API", numero: "FR 7302503427", travail: "3427", naissance: "16/12/2025" },
+  { nom: "ARIBO", numero: "FR 7302503428", travail: "3428", naissance: "28/12/2025" },
+  { nom: "ARIEL", numero: "FR 7302461747", travail: "1747", naissance: "18/02/2025" },
+  { nom: "ATHENA", numero: "FR 7302503430", travail: "3430", naissance: "09/01/2026" },
+  { nom: "BERGERAC", numero: "FR 7302503438", travail: "3438", naissance: "22/05/2026" },
+  { nom: "JALISCA", numero: "FR 7302124689", travail: "4689", naissance: "02/11/2014" },
+  { nom: "JIVA", numero: "FR 7302100820", travail: "0820", naissance: "17/04/2014" },
+  { nom: "LOLITA", numero: "FR 7302136325", travail: "6325", naissance: "18/12/2015" },
+  { nom: "LUCIOLE", numero: "FR 7302124698", travail: "4698", naissance: "21/04/2015" },
+  { nom: "MOUSSELINE", numero: "FR 7402656868", travail: "6868", naissance: "08/09/2016" },
+  { nom: "NEMO", numero: "FR 7402717493", travail: "7493", naissance: "15/06/2017" },
+  { nom: "NESQUICK", numero: "FR 7302153418", travail: "3418", naissance: "18/02/2017" },
+  { nom: "NOISETTE", numero: "FR 7302188780", travail: "8780", naissance: "09/11/2017" },
+  { nom: "OLAF", numero: "FR 7302255584", travail: "5584", naissance: "31/12/2018" },
+  { nom: "OLGA", numero: "FR 7302234776", travail: "4776", naissance: "15/01/2018" },
+  { nom: "OUVRIERE", numero: "FR 7302255582", travail: "5582", naissance: "13/12/2018" },
+  { nom: "PUCE", numero: "FR 7302293865", travail: "3865", naissance: "31/12/2019" },
+  { nom: "RACLETTE", numero: "FR 7302293883", travail: "3883", naissance: "20/11/2020" },
+  { nom: "RUSTINE", numero: "FR 7302293868", travail: "3868", naissance: "27/01/2020" },
+  { nom: "SHIPIE", numero: "FR 7302372783", travail: "2783", naissance: "09/12/2021" },
+  { nom: "SIDONIE", numero: "FR 7302323705", travail: "3705", naissance: "30/11/2021" },
+  { nom: "TAGADA", numero: "FR 7302372806", travail: "2806", naissance: "17/12/2022" },
+  { nom: "TARTIFLETE", numero: "FR 7302406192", travail: "6192", naissance: "20/12/2022" },
+  { nom: "TARTINE", numero: "FR 7302372792", travail: "2792", naissance: "18/03/2022" },
+  { nom: "THALIA", numero: "FR 7302372802", travail: "2802", naissance: "21/11/2022" },
+  { nom: "TOUPIE", numero: "FR 7302371093", travail: "1093", naissance: "03/06/2022" },
+  { nom: "UGOLINE", numero: "FR 7302406208", travail: "6208", naissance: "23/11/2023" },
+  { nom: "UGUETTE", numero: "FR 7302406210", travail: "6210", naissance: "01/12/2023" },
+  { nom: "VAIANA", numero: "FR 7302461738", travail: "1738", naissance: "06/12/2024" },
+  { nom: "VALDA", numero: "FR 7302461735", travail: "1735", naissance: "29/11/2024" },
+  { nom: "VALJEAN", numero: "FR 7403129860", travail: "9860", naissance: "01/10/2024" },
+  { nom: "VERVEINE", numero: "FR 7302426857", travail: "6857", naissance: "26/01/2024" },
+];
+
+const MEDICAMENTS = [
+  { nom: "Mastijet (tétracycline/néomycine/bacitracine/prednisolone)", categorie: "Intramammaire lactation", lait: 4, viande: 30 },
+  { nom: "Cobactan LC (cefquinome)", categorie: "Intramammaire lactation", lait: 5, viande: 4 },
+  { nom: "Rilexine (céfalexine)", categorie: "Intramammaire lactation", lait: 3, viande: 7 },
+  { nom: "Cobastan LC (cefquinome/prednisolone)", categorie: "Intramammaire lactation", lait: 6, viande: 4 },
+  { nom: "Mastiplan LC (cefapirine/prednisolone)", categorie: "Intramammaire lactation", lait: 6, viande: 4 },
+  { nom: "Pirsue (pirlimycine)", categorie: "Intramammaire lactation", lait: 9, viande: 28 },
+  { nom: "Synulox LC (amoxicilline/acide clavulanique)", categorie: "Intramammaire lactation", lait: 4, viande: 28 },
+  { nom: "Orbenin LC (cloxacilline)", categorie: "Intramammaire lactation", lait: 5, viande: 28 },
+  { nom: "Spectramast LC (ceftiofur)", categorie: "Intramammaire lactation", lait: 2, viande: 3 },
+  { nom: "Nafpenzal LC (nafcilline/péniciline/dihydrostreptomycine)", categorie: "Intramammaire lactation", lait: 4, viande: 28 },
+  { nom: "Lincocin Forte (lincomycine/néomycine)", categorie: "Intramammaire lactation", lait: 4, viande: 30 },
+  { nom: "Bovaclox LC (amoxicilline/cloxacilline)", categorie: "Intramammaire lactation", lait: 4, viande: 28 },
+  { nom: "Ubrocel (céfuroxime)", categorie: "Intramammaire lactation", lait: 3, viande: 14 },
+  { nom: "Cepravin DC (céfalonium)", categorie: "Intramammaire tarissement", lait: 0, viande: 28 },
+  { nom: "Orbeseal (bissubnitrate de bismuth)", categorie: "Intramammaire tarissement", lait: 0, viande: 0 },
+  { nom: "Rilexine DC (céfalexine benzathine)", categorie: "Intramammaire tarissement", lait: 0, viande: 28 },
+  { nom: "Nafpenzal DC (nafcilline/péniciline G/dihydrostreptomycine)", categorie: "Intramammaire tarissement", lait: 0, viande: 28 },
+  { nom: "Cobactan DC (cefquinome)", categorie: "Intramammaire tarissement", lait: 0, viande: 28 },
+  { nom: "Bovaclox DC (amoxicilline/cloxacilline)", categorie: "Intramammaire tarissement", lait: 0, viande: 28 },
+  { nom: "Synulox DC (amoxicilline/acide clavulanique)", categorie: "Intramammaire tarissement", lait: 0, viande: 28 },
+  { nom: "Cobactan 2,5% injectable (cefquinome)", categorie: "Antibiotique injectable", lait: 1, viande: 5 },
+  { nom: "Excenel (ceftiofur)", categorie: "Antibiotique injectable", lait: 0, viande: 5 },
+  { nom: "Draxxin (tulathromycine)", categorie: "Antibiotique injectable", lait: 0, viande: 49 },
+  { nom: "Zactran (gamithromycine)", categorie: "Antibiotique injectable", lait: 0, viande: 61 },
+  { nom: "Micotil (tilmicosine)", categorie: "Antibiotique injectable", lait: 0, viande: 42 },
+  { nom: "Nuflor (florfénicol)", categorie: "Antibiotique injectable", lait: 0, viande: 37 },
+  { nom: "Advocine 180 (danofloxacine)", categorie: "Antibiotique injectable", lait: 4, viande: 8 },
+  { nom: "Baytril (enrofloxacine)", categorie: "Antibiotique injectable", lait: 108, viande: 14 },
+  { nom: "Marbocyl / Forcyl (marbofloxacine)", categorie: "Antibiotique injectable", lait: 3, viande: 3 },
+  { nom: "Synulox injectable (amoxicilline/acide clavulanique)", categorie: "Antibiotique injectable", lait: 5, viande: 54 },
+  { nom: "Amoxicilline 150 mg/ml (Amoxinsol)", categorie: "Antibiotique injectable", lait: 4, viande: 28 },
+  { nom: "Duplocilline (pénicilline G/procaïne)", categorie: "Antibiotique injectable", lait: 4, viande: 10 },
+  { nom: "Intramicine (pénicilline G/dihydrostreptomycine)", categorie: "Antibiotique injectable", lait: 7, viande: 30 },
+  { nom: "Terramycine LA (oxytétracycline)", categorie: "Antibiotique injectable", lait: 7, viande: 22 },
+  { nom: "Borgal (sulfamides/triméthoprime)", categorie: "Antibiotique injectable", lait: 8, viande: 28 },
+  { nom: "Reveacol (spiramycine)", categorie: "Antibiotique injectable", lait: 18, viande: 28 },
+  { nom: "Neopen (péniciline G/néomycine)", categorie: "Antibiotique injectable", lait: 7, viande: 30 },
+  { nom: "Penstrep (péniciline G/streptomycine)", categorie: "Antibiotique injectable", lait: 7, viande: 30 },
+  { nom: "Zuprevo (tildipirosine)", categorie: "Antibiotique injectable", lait: 0, viande: 47 },
+  { nom: "Tolfine IM (acide tolfénamique)", categorie: "AINS injectable", lait: 0, viande: 12 },
+  { nom: "Tolfine IV (acide tolfénamique)", categorie: "AINS injectable", lait: 1, viande: 4 },
+  { nom: "Metacam (méloxicam)", categorie: "AINS injectable", lait: 5, viande: 15 },
+  { nom: "Finadyne (flunixine méglumine)", categorie: "AINS injectable", lait: 2, viande: 5 },
+  { nom: "Ketofen (kétoprofène)", categorie: "AINS injectable", lait: 0, viande: 4 },
+  { nom: "Rimadyl (carprofène)", categorie: "AINS injectable", lait: 0, viande: 21 },
+  { nom: "Dexadreson (dexaméthasone)", categorie: "Corticoïde injectable", lait: 3, viande: 8 },
+  { nom: "Prednisolone injectable", categorie: "Corticoïde injectable", lait: 3, viande: 7 },
+  { nom: "Vetalgin (métamizole)", categorie: "AINS injectable", lait: 1, viande: 1 },
+  { nom: "Ivomec (ivermectine)", categorie: "Antiparasitaire", lait: 0, viande: 49 },
+  { nom: "Eprinex (éprinomectine)", categorie: "Antiparasitaire", lait: 0, viande: 15 },
+  { nom: "Dectomax (doramectine)", categorie: "Antiparasitaire", lait: 0, viande: 70 },
+  { nom: "Cydectin (moxidectine)", categorie: "Antiparasitaire", lait: 0, viande: 20 },
+  { nom: "Panacur (fenbendazole)", categorie: "Antiparasitaire", lait: 6, viande: 11 },
+  { nom: "Rintal (fébantel)", categorie: "Antiparasitaire", lait: 7, viande: 8 },
+  { nom: "Synanthic (oxfendazole)", categorie: "Antiparasitaire", lait: 7, viande: 15 },
+  { nom: "Valbazen (albendazole)", categorie: "Antiparasitaire", lait: 4, viande: 14 },
+  { nom: "Douvistome (oxyclozanide)", categorie: "Antiparasitaire", lait: 5, viande: 13 },
+  { nom: "Ripercol (lévamisole)", categorie: "Antiparasitaire", lait: 3, viande: 14 },
+  { nom: "Closantel (Flukiver)", categorie: "Antiparasitaire", lait: 0, viande: 28 },
+  { nom: "Calcium Gluconate", categorie: "Minéraux/Vitamines", lait: 0, viande: 0 },
+  { nom: "Magnésium Sulfate", categorie: "Minéraux/Vitamines", lait: 0, viande: 0 },
+  { nom: "Ocytocine (Oxytocine)", categorie: "Hormonal", lait: 0, viande: 1 },
+  { nom: "Estrumate (prostaglandine PGF2α)", categorie: "Hormonal", lait: 0, viande: 1 },
+  { nom: "Vitamine AD3E", categorie: "Minéraux/Vitamines", lait: 0, viande: 0 },
+  { nom: "Lidocaïne (anesthésie locale)", categorie: "Anesthésie", lait: 15, viande: 28 },
+];
+
+const DRIVE_FILE_NAME = "carnet-sanitaire-bovin.json";
+
+// ─── Traitement vide (un seul) ───
+const emptyTraitement = () => ({
+  id: Date.now() + Math.random(),
+  medicament: "",
+  posologie: "",
+  quantite: "",
+  voieAdmin: "",
+  voieAdminAutre: "",
+  joursAttenteL: "",
+  momentAttenteL: "matin",
+  joursAttenteV: "",
+  momentAttenteV: "matin",
+  numOrdonnance: "",
+  intervenant: "",
+  photoOrdonnance: "",
+  dateDebut: "",
+  momentDebut: "matin",
+  dateFin: "",
+  momentFin: "matin",
+});
+
+// ─── Formulaire global (hors traitements) ───
+const emptyForm = {
+  nomVache: "", numeroVache: "", travailVache: "",
+  annee: new Date().getFullYear().toString(),
+  raison: "",
+  traitements: [emptyTraitement()],
+};
+
+function addDays(dateStr, days) {
+  if (!dateStr || !days) return "";
+  const d = new Date(dateStr);
+  d.setDate(d.getDate() + parseInt(days, 10));
+  return d.toISOString().split("T")[0];
+}
+
+const JOURS_SEMAINE = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
+function formatDateAvecJour(d) {
+  if (!d || d === "nan") return "—";
+  const [y, m, j] = d.split("-");
+  const date = new Date(d);
+  const jour = JOURS_SEMAINE[date.getDay()];
+  return `${jour} ${j}/${m}/${y}`;
+}
+function formatDate(d) {
+  if (!d || d === "nan") return "—";
+  const [y, m, j] = d.split("-");
+  return `${j}/${m}/${y}`;
+}
+
+// ─── Calcul délai max pour un record multi-traitements ───
+function calcDelaisMax(traitements) {
+  let maxL = null, maxV = null, maxLjours = 0, maxVjours = 0;
+  (traitements || []).forEach(t => {
+    const dateRef = t.dateDebut;
+    if (!dateRef) return;
+    if (t.joursAttenteL) {
+      const fin = new Date(addDays(dateRef, t.joursAttenteL));
+      if (!maxL || fin > maxL) { maxL = fin; maxLjours = parseInt(t.joursAttenteL); }
+    }
+    if (t.joursAttenteV) {
+      const fin = new Date(addDays(dateRef, t.joursAttenteV));
+      if (!maxV || fin > maxV) { maxV = fin; maxVjours = parseInt(t.joursAttenteV); }
+    }
+  });
+  return {
+    dateAttenteL: maxL ? maxL.toISOString().split("T")[0] : "",
+    dateAttenteV: maxV ? maxV.toISOString().split("T")[0] : "",
+    joursAttenteL: maxLjours,
+    joursAttenteV: maxVjours,
+  };
+}
+
+// ─── Compat anciens records (1 traitement → array) ───
+function normalizeRecord(r) {
+  if (r.traitements) return r;
+  const t = emptyTraitement();
+  t.medicament = r.medicament || "";
+  t.posologie = r.posologie || "";
+  t.quantite = r.quantite || "";
+  t.voieAdmin = r.voieAdmin || "";
+  t.voieAdminAutre = r.voieAdminAutre || "";
+  t.joursAttenteL = r.joursAttenteL || "";
+  t.momentAttenteL = r.momentAttenteL || "matin";
+  t.joursAttenteV = r.joursAttenteV || "";
+  t.momentAttenteV = r.momentAttenteV || "matin";
+  t.numOrdonnance = r.numOrdonnance || "";
+  t.intervenant = r.intervenant || "";
+  t.photoOrdonnance = r.photoOrdonnance || "";
+  t.dateDebut = r.dateDebut || "";
+  t.momentDebut = r.momentDebut || "matin";
+  t.dateFin = r.dateFin || "";
+  t.momentFin = r.momentFin || "matin";
+  return {
+    ...r,
+    annee: r.annee || (r.dateDebut ? r.dateDebut.split("-")[0] : new Date().getFullYear().toString()),
+    traitements: [t],
+    raison: r.raison || "",
+  };
+}
+
+function StatusBadge({ record }) {
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const { dateAttenteL, dateAttenteV } = calcDelaisMax(record.traitements);
+  const dL = dateAttenteL ? new Date(dateAttenteL) : null;
+  const dV = dateAttenteV ? new Date(dateAttenteV) : null;
+  const ok = (!dL || today > dL) && (!dV || today > dV);
+  return ok
+    ? <span style={{ background: "#d4edda", color: "#1a5c2a", borderRadius: 20, padding: "3px 12px", fontSize: 11, fontWeight: 700, letterSpacing: 1, whiteSpace: "nowrap" }}>✓ LIBÉRÉ</span>
+    : <span style={{ background: "#fff3cd", color: "#7a4f00", borderRadius: 20, padding: "3px 12px", fontSize: 11, fontWeight: 700, letterSpacing: 1, whiteSpace: "nowrap" }}>⚠ EN ATTENTE</span>;
+}
+
+// ─── Sélecteur vache ───
+function VacheSelector({ value, onChange, vaches }) {
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const liste = vaches || VACHES_DEFAUT;
+  const vache = liste.find(v => v.nom === value);
+  const filtered = liste.filter(v =>
+    v.nom.toLowerCase().includes(query.toLowerCase()) ||
+    v.travail.includes(query) || v.numero.includes(query)
+  );
+  const select = (v) => { onChange(v); setOpen(false); setQuery(""); };
+  return (
+    <div style={{ position: "relative" }}>
+      <div onClick={() => setOpen(o => !o)} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", borderRadius: 8, border: "2px solid #d4e8d4", fontSize: 14, fontFamily: "sans-serif", color: "#1a3a1a", background: "#f7fbf7", cursor: "pointer", justifyContent: "space-between" }}>
+        {vache ? (
+          <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+            <span style={{ fontSize: 18 }}>🐄</span>
+            <div>
+              <div style={{ fontWeight: 800, fontSize: 15 }}>{vache.nom}</div>
+              <div style={{ fontSize: 11, color: "#5a7a5a" }}>{vache.numero} · N° travail : {vache.travail}</div>
+            </div>
+          </div>
+        ) : <span style={{ color: "#8aaa8a" }}>Sélectionner une vache…</span>}
+        <span style={{ color: "#5a7a5a", fontSize: 12 }}>{open ? "▲" : "▼"}</span>
+      </div>
+      {open && (
+        <div style={{ position: "absolute", top: "calc(100% + 4px)", left: 0, right: 0, zIndex: 999, background: "#fff", borderRadius: 10, border: "2px solid #d4e8d4", boxShadow: "0 8px 32px #0002", maxHeight: 300, overflow: "hidden", display: "flex", flexDirection: "column" }}>
+          <div style={{ padding: "8px 10px", borderBottom: "1px solid #e8f0e8" }}>
+            <input autoFocus value={query} onChange={e => setQuery(e.target.value)} placeholder="🔍 Rechercher nom, N° travail…"
+              style={{ width: "100%", padding: "7px 10px", borderRadius: 6, border: "1px solid #d4e8d4", fontSize: 13, fontFamily: "sans-serif", outline: "none", boxSizing: "border-box" }} />
+          </div>
+          <div style={{ overflowY: "auto", maxHeight: 240 }}>
+            {filtered.length === 0
+              ? <div style={{ padding: 16, textAlign: "center", color: "#8aaa8a", fontSize: 13, fontFamily: "sans-serif" }}>Aucune vache trouvée</div>
+              : filtered.map(v => (
+                <div key={v.numero} onClick={() => select(v)}
+                  style={{ padding: "9px 14px", cursor: "pointer", display: "flex", gap: 10, alignItems: "center", borderBottom: "1px solid #f0f7f0", background: v.nom === value ? "#e8f5e9" : "transparent" }}
+                  onMouseEnter={e => e.currentTarget.style.background = "#f0f9f0"}
+                  onMouseLeave={e => e.currentTarget.style.background = v.nom === value ? "#e8f5e9" : "transparent"}>
+                  <span style={{ fontSize: 20 }}>🐄</span>
+                  <div>
+                    <div style={{ fontWeight: 700, fontSize: 14, fontFamily: "sans-serif", color: "#1a3a1a" }}>{v.nom}</div>
+                    <div style={{ fontSize: 11, color: "#7a9a7a", fontFamily: "sans-serif" }}>{v.numero} · N° travail : {v.travail} · Née le {v.naissance}</div>
+                  </div>
+                </div>
+              ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Sélecteur médicament ───
+function MedicamentSelector({ value, onSelect }) {
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const categories = [...new Set(MEDICAMENTS.map(m => m.categorie))];
+  const filtered = MEDICAMENTS.filter(m =>
+    m.nom.toLowerCase().includes(query.toLowerCase()) ||
+    m.categorie.toLowerCase().includes(query.toLowerCase())
+  );
+  const grouped = categories.map(cat => ({ cat, items: filtered.filter(m => m.categorie === cat) })).filter(g => g.items.length > 0);
+  const med = MEDICAMENTS.find(m => m.nom === value);
+  const select = (m) => { onSelect(m); setOpen(false); setQuery(""); };
+  return (
+    <div style={{ position: "relative" }}>
+      <div onClick={() => setOpen(o => !o)}
+        style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "9px 12px", borderRadius: 8, border: "2px solid #d4e8d4", fontSize: 14, fontFamily: "sans-serif", color: value ? "#1a3a1a" : "#8aaa8a", background: "#f7fbf7", cursor: "pointer" }}>
+        <span style={{ fontWeight: value ? 700 : 400 }}>{value || "Sélectionner ou saisir un médicament…"}</span>
+        <span style={{ fontSize: 11, color: "#5a7a5a" }}>{open ? "▲" : "▼"}</span>
+      </div>
+      {med && (
+        <div style={{ marginTop: 5, display: "flex", gap: 10, fontFamily: "sans-serif", fontSize: 12 }}>
+          <span style={{ background: "#e3f2fd", color: "#1565c0", borderRadius: 6, padding: "2px 10px", fontWeight: 700 }}>🥛 Lait : {med.lait}j</span>
+          <span style={{ background: "#ffebee", color: "#b71c1c", borderRadius: 6, padding: "2px 10px", fontWeight: 700 }}>🥩 Viande : {med.viande}j</span>
+          <span style={{ background: "#f3e5f5", color: "#6a1b9a", borderRadius: 6, padding: "2px 10px" }}>{med.categorie}</span>
+        </div>
+      )}
+      {open && (
+        <div style={{ position: "absolute", top: "calc(100% + 4px)", left: 0, right: 0, zIndex: 999, background: "#fff", borderRadius: 10, border: "2px solid #d4e8d4", boxShadow: "0 8px 32px #0003", maxHeight: 340, overflow: "hidden", display: "flex", flexDirection: "column" }}>
+          <div style={{ padding: "8px 10px", borderBottom: "1px solid #e8f0e8" }}>
+            <input autoFocus value={query} onChange={e => setQuery(e.target.value)}
+              placeholder="🔍 Rechercher médicament ou catégorie…"
+              style={{ width: "100%", padding: "7px 10px", borderRadius: 6, border: "1px solid #d4e8d4", fontSize: 13, fontFamily: "sans-serif", outline: "none", boxSizing: "border-box" }} />
+          </div>
+          <div style={{ overflowY: "auto", maxHeight: 280 }}>
+            {query && !MEDICAMENTS.find(m => m.nom.toLowerCase() === query.toLowerCase()) && (
+              <div onClick={() => { onSelect({ nom: query, lait: "", viande: "" }); setOpen(false); setQuery(""); }}
+                style={{ padding: "9px 14px", cursor: "pointer", borderBottom: "2px solid #e8f5e9", background: "#f9fff9", display: "flex", alignItems: "center", gap: 8 }}
+                onMouseEnter={e => e.currentTarget.style.background = "#e8f5e9"}
+                onMouseLeave={e => e.currentTarget.style.background = "#f9fff9"}>
+                <span style={{ fontSize: 16 }}>✏️</span>
+                <div>
+                  <div style={{ fontWeight: 700, fontSize: 13, fontFamily: "sans-serif" }}>Utiliser "{query}"</div>
+                  <div style={{ fontSize: 11, color: "#7a9a7a", fontFamily: "sans-serif" }}>Saisie manuelle — délais à renseigner manuellement</div>
+                </div>
+              </div>
+            )}
+            {grouped.map(({ cat, items }) => (
+              <div key={cat}>
+                <div style={{ padding: "6px 14px", fontSize: 10, fontWeight: 800, letterSpacing: 2, textTransform: "uppercase", color: "#8aaa8a", background: "#f7fbf7", borderBottom: "1px solid #eee", fontFamily: "sans-serif" }}>{cat}</div>
+                {items.map(m => (
+                  <div key={m.nom} onClick={() => select(m)}
+                    style={{ padding: "9px 14px", cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #f0f7f0", background: m.nom === value ? "#e8f5e9" : "transparent" }}
+                    onMouseEnter={e => e.currentTarget.style.background = "#f0f9f0"}
+                    onMouseLeave={e => e.currentTarget.style.background = m.nom === value ? "#e8f5e9" : "transparent"}>
+                    <div style={{ fontWeight: 600, fontSize: 13, fontFamily: "sans-serif", color: "#1a3a1a" }}>{m.nom}</div>
+                    <div style={{ display: "flex", gap: 6, flexShrink: 0 }}>
+                      <span style={{ background: "#e3f2fd", color: "#1565c0", borderRadius: 5, padding: "1px 8px", fontSize: 11, fontWeight: 700, fontFamily: "sans-serif" }}>🥛 {m.lait}j</span>
+                      <span style={{ background: "#ffebee", color: "#b71c1c", borderRadius: 5, padding: "1px 8px", fontSize: 11, fontWeight: 700, fontFamily: "sans-serif" }}>🥩 {m.viande}j</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Zone photo drag&drop ───
+function PhotoDropZone({ onImage }) {
+  const [dragging, setDragging] = useState(false);
+  const [error, setError] = useState("");
+  const processFile = (file) => {
+    if (!file || !file.type.startsWith("image/")) { setError("Fichier non reconnu."); return; }
+    const reader = new FileReader();
+    reader.onload = ev => onImage(ev.target.result);
+    reader.readAsDataURL(file);
+  };
+  return (
+    <div onDrop={e => { e.preventDefault(); setDragging(false); processFile(e.dataTransfer.files[0]); }}
+      onDragOver={e => { e.preventDefault(); setDragging(true); }}
+      onDragLeave={() => setDragging(false)}
+      onPaste={e => { const items = e.clipboardData?.items; if (!items) return; for (const item of items) { if (item.type.startsWith("image/")) { processFile(item.getAsFile()); return; } } setError("Aucune image dans le presse-papier."); }}
+      tabIndex={0}
+      style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 10, padding: "28px 20px", borderRadius: 10, border: `2px dashed ${dragging ? "#2d5a27" : "#b8d8b8"}`, background: dragging ? "#e8f5e9" : "#f7fbf7", outline: "none", cursor: "default" }}>
+      <span style={{ fontSize: 40 }}>{dragging ? "📂" : "📄"}</span>
+      <div style={{ fontFamily: "sans-serif", fontSize: 14, color: "#3a5a3a", fontWeight: 700 }}>Glissez-déposez la photo ici</div>
+      <div style={{ fontFamily: "sans-serif", fontSize: 12, color: "#7a9a7a", textAlign: "center", lineHeight: 1.6 }}>ou cliquez ici puis <strong>Ctrl+V</strong> pour coller</div>
+      <div style={{ fontSize: 11, color: "#2d5a27", fontWeight: 600, fontFamily: "sans-serif", background: "#e8f5e9", borderRadius: 6, padding: "4px 12px" }}>🤖 L'IA lira l'ordonnance et remplira les champs</div>
+      {error && <div style={{ color: "#c62828", fontSize: 12, fontFamily: "sans-serif", fontWeight: 600 }}>{error}</div>}
+    </div>
+  );
+}
+
+// ─── Bloc d'un traitement dans le formulaire ───
+function TraitementBlock({ t, index, total, onChange, onRemove, onReadOrdonnance, readingId, readResult, onApplyRead, onDismissRead }) {
+  const inputStyle = { width: "100%", padding: "9px 12px", borderRadius: 8, border: "2px solid #d4e8d4", fontSize: 14, fontFamily: "sans-serif", color: "#1a3a1a", background: "#f7fbf7", outline: "none", boxSizing: "border-box" };
+  const labelStyle = { display: "block", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: "#3a5a3a", marginBottom: 5, fontFamily: "sans-serif" };
+
+  const handleChange = e => onChange(t.id, e.target.name, e.target.value);
+  const handleMedSelect = m => {
+    onChange(t.id, "medicament", m.nom);
+    if (m.lait !== "") onChange(t.id, "joursAttenteL", String(m.lait));
+    if (m.viande !== "") onChange(t.id, "joursAttenteV", String(m.viande));
+  };
+
+  return (
+    <div style={{ border: "2px solid #c8e6c9", borderRadius: 12, padding: "16px 18px", marginBottom: 14, background: "#f9fff9", position: "relative" }}>
+      {/* Entête bloc traitement */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+        <div style={{ background: "#2d5a27", color: "#fff", borderRadius: 20, padding: "2px 14px", fontFamily: "sans-serif", fontSize: 12, fontWeight: 800 }}>
+          Traitement {index + 1}{total > 1 ? ` / ${total}` : ""}
+        </div>
+        {total > 1 && (
+          <button onClick={() => onRemove(t.id)}
+            style={{ background: "#ffebee", border: "none", color: "#c62828", borderRadius: 8, padding: "4px 10px", fontWeight: 700, cursor: "pointer", fontFamily: "sans-serif", fontSize: 12 }}>
+            🗑 Supprimer ce traitement
+          </button>
+        )}
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+        {/* Début */}
+        <div>
+          <label style={labelStyle}>Date début *</label>
+          <input type="date" name="dateDebut" value={t.dateDebut} onChange={handleChange} style={inputStyle}
+            onFocus={e => e.target.style.borderColor = "#2d5a27"} onBlur={e => e.target.style.borderColor = "#d4e8d4"} />
+          <div style={{ display: "flex", gap: 8, marginTop: 6 }}>
+            {["matin", "soir"].map(m => (
+              <label key={m} style={{ display: "flex", alignItems: "center", gap: 5, cursor: "pointer", fontFamily: "sans-serif", fontSize: 13, fontWeight: t.momentDebut === m ? 700 : 400, color: t.momentDebut === m ? "#1a3a1a" : "#7a9a7a" }}>
+                <input type="radio" name="momentDebut" value={m} checked={t.momentDebut === m} onChange={handleChange} style={{ accentColor: "#2d5a27" }} />
+                {m.charAt(0).toUpperCase() + m.slice(1)}
+              </label>
+            ))}
+          </div>
+        </div>
+        {/* Fin */}
+        <div>
+          <label style={labelStyle}>Date fin</label>
+          <input type="date" name="dateFin" value={t.dateFin} onChange={handleChange} style={inputStyle}
+            onFocus={e => e.target.style.borderColor = "#2d5a27"} onBlur={e => e.target.style.borderColor = "#d4e8d4"} />
+          <div style={{ display: "flex", gap: 8, marginTop: 6 }}>
+            {["matin", "soir"].map(m => (
+              <label key={m} style={{ display: "flex", alignItems: "center", gap: 5, cursor: "pointer", fontFamily: "sans-serif", fontSize: 13, fontWeight: t.momentFin === m ? 700 : 400, color: t.momentFin === m ? "#1a3a1a" : "#7a9a7a" }}>
+                <input type="radio" name="momentFin" value={m} checked={t.momentFin === m} onChange={handleChange} style={{ accentColor: "#2d5a27" }} />
+                {m.charAt(0).toUpperCase() + m.slice(1)}
+              </label>
+            ))}
+          </div>
+        </div>
+
+        {/* Médicament */}
+        <div style={{ gridColumn: "1 / -1" }}>
+          <label style={labelStyle}>Nom du médicament</label>
+          <MedicamentSelector value={t.medicament} onSelect={handleMedSelect} />
+        </div>
+
+        {/* Posologie + Quantité */}
+        <div>
+          <label style={labelStyle}>💊 Posologie</label>
+          <input type="text" name="posologie" value={t.posologie} onChange={handleChange} placeholder="Ex: 1 inj/jour pendant 5 jours" style={inputStyle}
+            onFocus={e => e.target.style.borderColor = "#2d5a27"} onBlur={e => e.target.style.borderColor = "#d4e8d4"} />
+        </div>
+        <div>
+          <label style={labelStyle}>⚖️ Quantité / Dose</label>
+          <input type="text" name="quantite" value={t.quantite} onChange={handleChange} placeholder="Ex: 10 ml" style={inputStyle}
+            onFocus={e => e.target.style.borderColor = "#2d5a27"} onBlur={e => e.target.style.borderColor = "#d4e8d4"} />
+        </div>
+
+        {/* Voie admin */}
+        <div style={{ gridColumn: "1 / -1" }}>
+          <label style={labelStyle}>💉 Voie d'administration</label>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+            {[
+              { val: "Injectable IM", emoji: "💉" }, { val: "Injectable IV", emoji: "🩸" },
+              { val: "Injectable SC", emoji: "🔬" }, { val: "Intramammaire", emoji: "🐄" },
+              { val: "Per os (oral)", emoji: "👄" }, { val: "Topique", emoji: "🖐️" },
+              { val: "Pour-on", emoji: "💧" }, { val: "Autre", emoji: "➕" },
+            ].map(({ val, emoji }) => (
+              <button key={val} type="button"
+                onClick={() => onChange(t.id, "voieAdmin", t.voieAdmin === val ? "" : val)}
+                style={{ padding: "7px 14px", borderRadius: 20, fontSize: 13, fontFamily: "sans-serif", fontWeight: 600, cursor: "pointer", border: t.voieAdmin === val ? "2px solid #2d5a27" : "2px solid #d4e8d4", background: t.voieAdmin === val ? "#2d5a27" : "#f7fbf7", color: t.voieAdmin === val ? "#fff" : "#3a5a3a" }}>
+                {emoji} {val}
+              </button>
+            ))}
+          </div>
+          {t.voieAdmin === "Autre" && (
+            <input type="text" name="voieAdminAutre" placeholder="Préciser la voie…" value={t.voieAdminAutre || ""} onChange={handleChange}
+              style={{ marginTop: 8, ...inputStyle }} onFocus={e => e.target.style.borderColor = "#2d5a27"} onBlur={e => e.target.style.borderColor = "#d4e8d4"} />
+          )}
+        </div>
+
+        {/* Délai lait */}
+        <div>
+          <label style={{ ...labelStyle, color: "#1565c0" }}>🥛 Délai attente LAIT (jours)</label>
+          <input type="number" name="joursAttenteL" value={t.joursAttenteL} onChange={handleChange} placeholder="Ex: 4" min="0"
+            style={{ ...inputStyle, border: "2px solid #bbdefb", color: "#1565c0", background: "#f3f8ff" }}
+            onFocus={e => e.target.style.borderColor = "#1565c0"} onBlur={e => e.target.style.borderColor = "#bbdefb"} />
+          <div style={{ display: "flex", gap: 8, marginTop: 6 }}>
+            {["matin", "soir"].map(m => (
+              <label key={m} style={{ display: "flex", alignItems: "center", gap: 5, cursor: "pointer", fontFamily: "sans-serif", fontSize: 13, fontWeight: t.momentAttenteL === m ? 700 : 400, color: t.momentAttenteL === m ? "#1565c0" : "#7a9a7a" }}>
+                <input type="radio" name="momentAttenteL" value={m} checked={t.momentAttenteL === m} onChange={handleChange} style={{ accentColor: "#1565c0" }} />
+                {m === "matin" ? "🌅 Matin" : "🌆 Soir"}
+              </label>
+            ))}
+          </div>
+          {t.joursAttenteL && t.dateDebut && (
+            <div style={{ marginTop: 5, fontSize: 12, color: "#1565c0", fontFamily: "sans-serif", fontWeight: 600, background: "#e3f2fd", borderRadius: 6, padding: "4px 10px" }}>
+              📅 Fin attente : {formatDateAvecJour(addDays(t.dateDebut, t.joursAttenteL))} — {t.momentAttenteL}
+            </div>
+          )}
+        </div>
+
+        {/* Délai viande */}
+        <div>
+          <label style={{ ...labelStyle, color: "#b71c1c" }}>🥩 Délai attente VIANDE (jours)</label>
+          <input type="number" name="joursAttenteV" value={t.joursAttenteV} onChange={handleChange} placeholder="Ex: 28" min="0"
+            style={{ ...inputStyle, border: "2px solid #ffcdd2", color: "#b71c1c", background: "#fff5f5" }}
+            onFocus={e => e.target.style.borderColor = "#b71c1c"} onBlur={e => e.target.style.borderColor = "#ffcdd2"} />
+          <div style={{ display: "flex", gap: 8, marginTop: 6 }}>
+            {["matin", "soir"].map(m => (
+              <label key={m} style={{ display: "flex", alignItems: "center", gap: 5, cursor: "pointer", fontFamily: "sans-serif", fontSize: 13, fontWeight: t.momentAttenteV === m ? 700 : 400, color: t.momentAttenteV === m ? "#b71c1c" : "#7a9a7a" }}>
+                <input type="radio" name="momentAttenteV" value={m} checked={t.momentAttenteV === m} onChange={handleChange} style={{ accentColor: "#b71c1c" }} />
+                {m === "matin" ? "🌅 Matin" : "🌆 Soir"}
+              </label>
+            ))}
+          </div>
+          {t.joursAttenteV && t.dateDebut && (
+            <div style={{ marginTop: 5, fontSize: 12, color: "#b71c1c", fontFamily: "sans-serif", fontWeight: 600, background: "#ffebee", borderRadius: 6, padding: "4px 10px" }}>
+              📅 Fin attente : {formatDateAvecJour(addDays(t.dateDebut, t.joursAttenteV))} — {t.momentAttenteV}
+            </div>
+          )}
+        </div>
+
+        {/* Ordonnance + Intervenant */}
+        <div>
+          <label style={labelStyle}>N° ordonnance</label>
+          <input type="text" name="numOrdonnance" value={t.numOrdonnance} onChange={handleChange} placeholder="Ex: ORD-2024-001" style={inputStyle}
+            onFocus={e => e.target.style.borderColor = "#2d5a27"} onBlur={e => e.target.style.borderColor = "#d4e8d4"} />
+        </div>
+        <div>
+          <label style={labelStyle}>Intervenant</label>
+          <input type="text" name="intervenant" value={t.intervenant} onChange={handleChange} placeholder="Ex: Dr. Dupont" style={inputStyle}
+            onFocus={e => e.target.style.borderColor = "#2d5a27"} onBlur={e => e.target.style.borderColor = "#d4e8d4"} />
+        </div>
+
+        {/* Photo ordonnance */}
+        <div style={{ gridColumn: "1 / -1" }}>
+          <label style={labelStyle}>📷 Photo de l'ordonnance</label>
+          {t.photoOrdonnance ? (
+            <div>
+              <div style={{ position: "relative" }}>
+                <img src={t.photoOrdonnance} alt="Ordonnance"
+                  style={{ width: "100%", maxHeight: 200, objectFit: "contain", borderRadius: 8, border: "2px solid #d4e8d4", background: "#f7fbf7" }} />
+                <button onClick={() => onChange(t.id, "photoOrdonnance", "")}
+                  style={{ position: "absolute", top: 6, right: 6, background: "#c62828", border: "none", color: "#fff", borderRadius: 20, width: 26, height: 26, cursor: "pointer", fontSize: 14, fontWeight: 900 }}>✕</button>
+              </div>
+              <button onClick={() => onReadOrdonnance(t)}
+                disabled={readingId === t.id}
+                style={{ marginTop: 10, width: "100%", padding: "11px 16px", borderRadius: 9, border: "2px solid #2d5a27", background: readingId === t.id ? "#f0f4f0" : "linear-gradient(135deg,#1a3a1a,#2d5a27)", color: readingId === t.id ? "#5a7a5a" : "#fff", fontWeight: 800, fontSize: 14, cursor: readingId === t.id ? "wait" : "pointer", fontFamily: "sans-serif", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+                {readingId === t.id ? <>⏳ Lecture en cours…</> : <>🤖 Lire l'ordonnance automatiquement</>}
+              </button>
+              {readResult && readResult.tid === t.id && readResult.success && (
+                <div style={{ marginTop: 10, background: "#e8f5e9", border: "2px solid #a5d6a7", borderRadius: 10, padding: "14px" }}>
+                  <div style={{ fontWeight: 800, fontSize: 13, color: "#1a3a1a", fontFamily: "sans-serif", marginBottom: 10 }}>✅ Informations extraites</div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, marginBottom: 10 }}>
+                    {[
+                      { label: "Médicament", val: readResult.fields.medicament },
+                      { label: "Posologie", val: readResult.fields.posologie },
+                      { label: "Quantité", val: readResult.fields.quantite },
+                      { label: "Voie admin.", val: readResult.fields.voieAdmin },
+                      { label: "Intervenant", val: readResult.fields.intervenant },
+                      { label: "Date début", val: readResult.fields.dateDebut },
+                      { label: "N° ordonnance", val: readResult.fields.numOrdonnance },
+                      { label: "Attente lait", val: readResult.fields.joursAttenteL ? readResult.fields.joursAttenteL + " j" : "" },
+                      { label: "Attente viande", val: readResult.fields.joursAttenteV ? readResult.fields.joursAttenteV + " j" : "" },
+                    ].filter(f => f.val).map(({ label, val }) => (
+                      <div key={label} style={{ background: "#fff", borderRadius: 6, padding: "5px 9px", fontFamily: "sans-serif" }}>
+                        <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: 1.2, textTransform: "uppercase", color: "#5a7a5a" }}>{label}</div>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: "#1a3a1a", marginTop: 1 }}>{val}</div>
+                      </div>
+                    ))}
+                  </div>
+                  <div style={{ display: "flex", gap: 8 }}>
+                    <button onClick={() => onApplyRead(t.id)} style={{ flex: 1, padding: "9px", borderRadius: 8, border: "none", background: "#2d5a27", color: "#fff", fontWeight: 800, cursor: "pointer", fontFamily: "sans-serif", fontSize: 13 }}>✓ Appliquer</button>
+                    <button onClick={onDismissRead} style={{ padding: "9px 14px", borderRadius: 8, border: "1px solid #a5d6a7", background: "#fff", color: "#2d5a27", fontWeight: 700, cursor: "pointer", fontFamily: "sans-serif" }}>Ignorer</button>
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            <PhotoDropZone onImage={dataUrl => onChange(t.id, "photoOrdonnance", dataUrl)} />
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Toast({ msg, type, onClose }) {
+  useEffect(() => { const t = setTimeout(onClose, 4000); return () => clearTimeout(t); }, []);
+  const bg = type === "success" ? "#2d5a27" : type === "loading" ? "#1565c0" : "#c62828";
+  return (
+    <div style={{ position: "fixed", bottom: 24, right: 24, zIndex: 999, background: bg, color: "#fff", borderRadius: 12, padding: "14px 20px", fontFamily: "sans-serif", fontSize: 14, fontWeight: 600, boxShadow: "0 4px 24px #0003", display: "flex", alignItems: "center", gap: 10, maxWidth: 340 }}>
+      <span>{type === "loading" ? "⏳" : type === "success" ? "✓" : "✕"}</span><span>{msg}</span>
+    </div>
+  );
+}
+
+// ─── Menu latéral ───
+function MenuPanel({ open, onClose, vaches, records, onImportVaches, onImportSauvegarde, driveLoading, onDriveSave, onDriveRestore }) {
+  const csvInputRef = useRef(null);
+  const jsonInputRef = useRef(null);
+
+  const handleCSV = (e) => {
+    const file = e.target.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const text = ev.target.result;
+      const lines = text.split(/\r?\n/).filter(Boolean);
+      const sep = lines[0].includes(";") ? ";" : ",";
+      const headers = lines[0].split(sep).map(h => h.replace(/[="]/g, "").trim().toLowerCase());
+      const nomIdx = headers.findIndex(h => h.includes("nom"));
+      const numIdx = headers.findIndex(h => h === "n°" || h.startsWith("n°") || h === "numero" || h.includes("national"));
+      const travailIdx = headers.findIndex(h => h.includes("travail"));
+      const naissIdx = headers.findIndex(h => h.includes("naissance") || h.includes("né"));
+      if (nomIdx === -1) { alert("Colonne 'Nom' introuvable."); return; }
+      const parsed = lines.slice(1).map(line => {
+        const cols = line.split(sep).map(c => c.replace(/[="]/g, "").trim());
+        return { nom: (cols[nomIdx] || "").toUpperCase(), numero: numIdx >= 0 ? cols[numIdx] : "", travail: travailIdx >= 0 ? cols[travailIdx] : "", naissance: naissIdx >= 0 ? cols[naissIdx] : "" };
+      }).filter(v => v.nom && v.nom !== "NAN" && v.nom.length > 1);
+      onImportVaches(parsed); onClose();
+    };
+    reader.readAsText(file, "latin-1");
+    e.target.value = "";
+  };
+
+  const handleJSON = (e) => {
+    const file = e.target.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        const data = JSON.parse(ev.target.result);
+        if (data.records) { onImportSauvegarde(data.records); onClose(); }
+        else alert("Format de sauvegarde invalide.");
+      } catch { alert("Fichier JSON invalide."); }
+    };
+    reader.readAsText(file);
+    e.target.value = "";
+  };
+
+  const downloadJSON = () => {
+    const blob = new Blob([JSON.stringify({ version: 2, savedAt: new Date().toISOString(), records }, null, 2)], { type: "application/json" });
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
+    a.download = `carnet-sanitaire-${new Date().toISOString().slice(0,10)}.json`; a.click();
+  };
+  const downloadVachesCSV = () => {
+    const header = "Nom;Numéro;N° travail;Date naissance";
+    const rows = vaches.map(v => `${v.nom};${v.numero};${v.travail};${v.naissance}`);
+    const blob = new Blob([header + "\n" + rows.join("\n")], { type: "text/csv;charset=utf-8;" });
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "troupeau.csv"; a.click();
+  };
+
+  if (!open) return null;
+  return (
+    <div style={{ position: "fixed", inset: 0, zIndex: 200, display: "flex" }}>
+      <div onClick={onClose} style={{ position: "absolute", inset: 0, background: "#0006" }} />
+      <div style={{ position: "relative", width: 320, background: "#fff", height: "100%", boxShadow: "4px 0 32px #0003", display: "flex", flexDirection: "column", overflowY: "auto" }}>
+        <div style={{ background: "linear-gradient(135deg,#1a3a1a,#2d5a27)", padding: "20px 20px 16px", flexShrink: 0 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div style={{ color: "#fff", fontSize: 18, fontWeight: 900 }}>⚙️ Menu</div>
+            <button onClick={onClose} style={{ background: "#ffffff22", border: "none", color: "#fff", borderRadius: 8, padding: "5px 10px", cursor: "pointer", fontSize: 17 }}>✕</button>
+          </div>
+          <div style={{ marginTop: 12, display: "flex", gap: 8 }}>
+            <div style={{ flex: 1, background: "#ffffff18", borderRadius: 8, padding: "8px 10px", textAlign: "center", fontFamily: "sans-serif" }}>
+              <div style={{ fontSize: 18, fontWeight: 900, color: "#fff" }}>{vaches.length}</div>
+              <div style={{ fontSize: 9, letterSpacing: 2, textTransform: "uppercase", color: "#a8d5a2" }}>Vaches</div>
+            </div>
+            <div style={{ flex: 1, background: "#ffffff18", borderRadius: 8, padding: "8px 10px", textAlign: "center", fontFamily: "sans-serif" }}>
+              <div style={{ fontSize: 18, fontWeight: 900, color: "#fff" }}>{records.length}</div>
+              <div style={{ fontSize: 9, letterSpacing: 2, textTransform: "uppercase", color: "#a8d5a2" }}>Traitements</div>
+            </div>
+          </div>
+        </div>
+        <div style={{ padding: 16, flex: 1 }}>
+          {/* Troupeau */}
+          <div style={{ marginBottom: 20 }}>
+            <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: 2, textTransform: "uppercase", color: "#5a7a5a", fontFamily: "sans-serif", marginBottom: 10, paddingBottom: 6, borderBottom: "1px solid #e8f0e8" }}>🐄 Troupeau</div>
+            <div style={{ background: "#f7fbf7", borderRadius: 10, padding: "10px 12px", marginBottom: 10, maxHeight: 160, overflowY: "auto" }}>
+              {vaches.map(v => (
+                <div key={v.numero || v.nom} style={{ display: "flex", justifyContent: "space-between", padding: "4px 0", borderBottom: "1px solid #eef4ee", fontFamily: "sans-serif" }}>
+                  <span style={{ fontWeight: 700, fontSize: 13, color: "#1a3a1a" }}>🐄 {v.nom}</span>
+                  <span style={{ fontSize: 11, color: "#7a9a7a" }}>{v.travail}</span>
+                </div>
+              ))}
+            </div>
+            <input ref={csvInputRef} type="file" accept=".csv,.txt" style={{ display: "none" }} onChange={handleCSV} />
+            <button onClick={() => csvInputRef.current?.click()} style={{ width: "100%", marginBottom: 8, padding: "10px 14px", borderRadius: 9, border: "2px solid #2d5a27", background: "#fff", color: "#2d5a27", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "sans-serif" }}>📥 Importer troupeau (CSV Boviclic)</button>
+            <button onClick={downloadVachesCSV} style={{ width: "100%", padding: "10px 14px", borderRadius: 9, border: "1px solid #d4e8d4", background: "#f7fbf7", color: "#3a5a3a", fontWeight: 600, fontSize: 13, cursor: "pointer", fontFamily: "sans-serif" }}>📤 Exporter troupeau (CSV)</button>
+          </div>
+          {/* Sauvegarde */}
+          <div style={{ marginBottom: 20 }}>
+            <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: 2, textTransform: "uppercase", color: "#5a7a5a", fontFamily: "sans-serif", marginBottom: 10, paddingBottom: 6, borderBottom: "1px solid #e8f0e8" }}>💾 Sauvegarde locale</div>
+            <input ref={jsonInputRef} type="file" accept=".json" style={{ display: "none" }} onChange={handleJSON} />
+            <button onClick={() => jsonInputRef.current?.click()} style={{ width: "100%", marginBottom: 8, padding: "10px 14px", borderRadius: 9, border: "2px solid #1565c0", background: "#fff", color: "#1565c0", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "sans-serif" }}>📥 Importer sauvegarde (JSON)</button>
+            <button onClick={downloadJSON} style={{ width: "100%", padding: "10px 14px", borderRadius: 9, border: "1px solid #bbdefb", background: "#f3f8ff", color: "#1565c0", fontWeight: 600, fontSize: 13, cursor: "pointer", fontFamily: "sans-serif" }}>📤 Exporter sauvegarde (JSON)</button>
+          </div>
+          {/* Google Drive */}
+          <div style={{ marginBottom: 20 }}>
+            <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: 2, textTransform: "uppercase", color: "#5a7a5a", fontFamily: "sans-serif", marginBottom: 10, paddingBottom: 6, borderBottom: "1px solid #e8f0e8" }}>
+              <img src="https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png" width={12} height={12} /> Google Drive
+            </div>
+            <button onClick={() => { onDriveSave(); onClose(); }} disabled={driveLoading}
+              style={{ width: "100%", marginBottom: 8, padding: "10px 14px", borderRadius: 9, border: "2px solid #2d5a27", background: "#fff", color: "#2d5a27", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "sans-serif" }}>
+              <img src="https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png" width={14} height={14} /> {driveLoading ? "En cours…" : "Sauvegarder sur Google Drive"}
+            </button>
+            <button onClick={() => { onDriveRestore(); onClose(); }} disabled={driveLoading}
+              style={{ width: "100%", padding: "10px 14px", borderRadius: 9, border: "1px solid #c8e6c9", background: "#f7fbf7", color: "#2d5a27", fontWeight: 600, fontSize: 13, cursor: "pointer", fontFamily: "sans-serif" }}>
+              <img src="https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png" width={14} height={14} /> Restaurer depuis Google Drive
+            </button>
+            <div style={{ marginTop: 8, fontSize: 11, color: "#8aaa8a", fontFamily: "sans-serif" }}>Fichier : {DRIVE_FILE_NAME}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ══════════════════════════════════════════════
+// App principale
+// ══════════════════════════════════════════════
+function App() {
+  const [records, setRecords] = useState([]);
+  const [vaches, setVaches] = useState(VACHES_DEFAUT);
+  const [showMenu, setShowMenu] = useState(false);
+  const [form, setForm] = useState(emptyForm);
+  const [showForm, setShowForm] = useState(false);
+  const [editId, setEditId] = useState(null);
+  const [search, setSearch] = useState("");
+  const [filterAnnee, setFilterAnnee] = useState("");
+  const [detailId, setDetailId] = useState(null);
+  const [confirmDelete, setConfirmDelete] = useState(null);
+  const [toast, setToast] = useState(null);
+  const [driveLoading, setDriveLoading] = useState(false);
+  const [lightbox, setLightbox] = useState(null);
+  const [showAlertes, setShowAlertes] = useState(false);
+  const [notifPermission, setNotifPermission] = useState(typeof Notification !== "undefined" ? Notification.permission : "denied");
+  const [readingId, setReadingId] = useState(null);
+  const [readResult, setReadResult] = useState(null);
+  const notifiedRef = useRef(new Set());
+  const isFirstRender = useRef(true);
+
+  const showToast = (msg, type = "success") => setToast({ msg, type });
+
+  // Années disponibles pour filtre
+  const anneesDispos = useMemo(() => {
+    const s = new Set(records.map(r => r.annee || (r.traitements?.[0]?.dateDebut || "").split("-")[0]).filter(Boolean));
+    return [...s].sort((a,b) => b-a);
+  }, [records]);
+
+  const filtered = useMemo(() => {
+    let rs = records.map(normalizeRecord);
+    if (filterAnnee) rs = rs.filter(r => r.annee === filterAnnee || (r.traitements?.[0]?.dateDebut || "").startsWith(filterAnnee));
+    if (search) rs = rs.filter(r =>
+      r.nomVache?.toLowerCase().includes(search.toLowerCase()) ||
+      r.raison?.toLowerCase().includes(search.toLowerCase()) ||
+      r.traitements?.some(t =>
+        t.medicament?.toLowerCase().includes(search.toLowerCase()) ||
+        t.intervenant?.toLowerCase().includes(search.toLowerCase())
+      )
+    );
+    return rs;
+  }, [records, search, filterAnnee]);
+
+  // ─ Formulaire traitements
+  const updateTraitement = (tid, field, value) => {
+    setForm(f => ({ ...f, traitements: f.traitements.map(t => t.id === tid ? { ...t, [field]: value } : t) }));
+  };
+  const addTraitement = () => {
+    setForm(f => ({ ...f, traitements: [...f.traitements, emptyTraitement()] }));
+  };
+  const removeTraitement = (tid) => {
+    setForm(f => ({ ...f, traitements: f.traitements.filter(t => t.id !== tid) }));
+  };
+
+  // ─ Lecture ordonnance IA
+  const handleReadOrdonnance = async (t) => {
+    if (!t.photoOrdonnance) return;
+    setReadingId(t.id);
+    setReadResult(null);
+    try {
+      const base64 = t.photoOrdonnance.split(",")[1];
+      const mediaType = t.photoOrdonnance.split(";")[0].split(":")[1];
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514", max_tokens: 1000,
+          system: `Tu es un assistant vétérinaire expert en ordonnances bovines françaises.
+Analyse cette ordonnance et extrait les informations en JSON uniquement, sans texte avant ou après :
+{"medicament":"","raison":"","posologie":"","quantite":"","voieAdmin":"Injectable IM|Injectable IV|Injectable SC|Intramammaire|Per os (oral)|Topique|Pour-on|Autre","dateDebut":"YYYY-MM-DD","dateFin":"YYYY-MM-DD","joursAttenteL":"","joursAttenteV":"","numOrdonnance":"","intervenant":"","notes":""}
+Réponds UNIQUEMENT avec le JSON.`,
+          messages: [{ role: "user", content: [
+            { type: "image", source: { type: "base64", media_type: mediaType, data: base64 } },
+            { type: "text", text: "Extrais les informations de cette ordonnance." }
+          ]}]
+        })
+      });
+      const data = await res.json();
+      const text = data.content?.filter(b => b.type === "text").map(b => b.text).join("") || "";
+      const parsed = JSON.parse(text.replace(/```json|```/g, "").trim());
+      const medMatch = MEDICAMENTS.find(m => parsed.medicament && m.nom.toLowerCase().includes(parsed.medicament.toLowerCase().split(" ")[0]));
+      setReadResult({
+        success: true, tid: t.id, notes: parsed.notes,
+        fields: {
+          medicament: parsed.medicament || "", raison: parsed.raison || "",
+          posologie: parsed.posologie || "", quantite: parsed.quantite || "",
+          voieAdmin: parsed.voieAdmin || "",
+          dateDebut: parsed.dateDebut || "", dateFin: parsed.dateFin || "",
+          joursAttenteL: parsed.joursAttenteL || (medMatch ? String(medMatch.lait) : ""),
+          joursAttenteV: parsed.joursAttenteV || (medMatch ? String(medMatch.viande) : ""),
+          numOrdonnance: parsed.numOrdonnance || "", intervenant: parsed.intervenant || "",
+        }
+      });
+    } catch (e) {
+      setReadResult({ success: false, tid: t.id, error: e.message });
+    } finally {
+      setReadingId(null);
+    }
+  };
+
+  const applyReadResult = (tid) => {
+    if (!readResult?.fields) return;
+    const f = readResult.fields;
+    setForm(fm => ({
+      ...fm,
+      raison: fm.raison || f.raison || "",
+      traitements: fm.traitements.map(t => t.id === tid ? { ...t, ...f } : t)
+    }));
+    setReadResult(null);
+    showToast("✓ Champs remplis depuis l'ordonnance");
+  };
+
+  const handleSubmit = () => {
+    if (!form.nomVache || !form.traitements.some(t => t.dateDebut)) return;
+    const annee = form.annee || (form.traitements.find(t => t.dateDebut)?.dateDebut || "").split("-")[0] || new Date().getFullYear().toString();
+    const rec = { ...form, id: editId ?? Date.now(), annee };
+    if (editId !== null) setRecords(rs => rs.map(r => r.id === editId ? rec : r));
+    else setRecords(rs => [...rs, rec]);
+    setEditId(null); setForm(emptyForm); setShowForm(false);
+    showToast(editId ? "✓ Traitement modifié" : "✓ Traitement enregistré");
+  };
+
+  const handleEdit = record => { setForm({ ...normalizeRecord(record) }); setEditId(record.id); setShowForm(true); setDetailId(null); };
+  const handleDelete = id => { setRecords(rs => rs.filter(r => r.id !== id)); setConfirmDelete(null); setDetailId(null); };
+
+  // ─ Drive
+  const saveToDrive = async (currentRecords) => {
+    setDriveLoading(true); showToast("Sauvegarde en cours…", "loading");
+    try {
+      const payload = JSON.stringify({ version: 2, savedAt: new Date().toISOString(), records: currentRecords ?? records }, null, 2);
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514", max_tokens: 1000,
+          system: `Tu sauvegardes un fichier JSON nommé "${DRIVE_FILE_NAME}" sur Google Drive via MCP. Réponds UNIQUEMENT en JSON : {"success":true,"fileId":"..."}`,
+          messages: [{ role: "user", content: `Crée le fichier "${DRIVE_FILE_NAME}" sur Google Drive avec ce contenu :\n${payload}` }],
+          mcp_servers: [{ type: "url", url: "https://drivemcp.googleapis.com/mcp/v1", name: "gdrive" }]
+        })
+      });
+      await res.json();
+      showToast(`✓ Sauvegardé sur Google Drive`, "success");
+    } catch (e) { showToast("Erreur Drive : " + e.message, "error"); }
+    finally { setDriveLoading(false); }
+  };
+
+  const restoreFromDrive = async () => {
+    setDriveLoading(true); showToast("Restauration en cours…", "loading");
+    try {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514", max_tokens: 8000,
+          system: `Lis le fichier "${DRIVE_FILE_NAME}" sur Google Drive et retourne son contenu JSON brut uniquement.`,
+          messages: [{ role: "user", content: `Lis "${DRIVE_FILE_NAME}" sur Google Drive et retourne le JSON brut.` }],
+          mcp_servers: [{ type: "url", url: "https://drivemcp.googleapis.com/mcp/v1", name: "gdrive" }]
+        })
+      });
+      const data = await res.json();
+      const text = data.content?.filter(b => b.type === "text").map(b => b.text).join("") || "";
+      const parsed = JSON.parse(text.replace(/```json|```/g, "").trim());
+      if (parsed.records) { setRecords(parsed.records.map(normalizeRecord)); showToast(`✓ ${parsed.records.length} traitement(s) restauré(s)`, "success"); }
+      else showToast("Format non reconnu", "error");
+    } catch (e) { showToast("Erreur restauration : " + e.message, "error"); }
+    finally { setDriveLoading(false); }
+  };
+
+  useEffect(() => {
+    if (isFirstRender.current) { isFirstRender.current = false; return; }
+    if (records.length === 0) return;
+    const t = setTimeout(() => saveToDrive(records), 2000);
+    return () => clearTimeout(t);
+  }, [records]);
+
+  // ─ Alertes délais
+  const alertes = useMemo(() => {
+    const today = new Date(); today.setHours(0,0,0,0);
+    const result = [];
+    records.map(normalizeRecord).forEach(r => {
+      const { dateAttenteL, dateAttenteV } = calcDelaisMax(r.traitements);
+      const momL = r.traitements?.reduce((acc, t) => { if (t.joursAttenteL) return t.momentAttenteL; return acc; }, "matin");
+      const momV = r.traitements?.reduce((acc, t) => { if (t.joursAttenteV) return t.momentAttenteV; return acc; }, "matin");
+      [
+        { d: dateAttenteL, type: "LAIT", icon: "🥛", color: "#1565c0", moment: momL },
+        { d: dateAttenteV, type: "VIANDE", icon: "🥩", color: "#b71c1c", moment: momV },
+      ].forEach(({ d, type, icon, color, moment }) => {
+        if (!d) return;
+        const date = new Date(d); date.setHours(0,0,0,0);
+        const diff = Math.round((date - today) / 86400000);
+        if (diff <= 3 && diff >= 0)
+          result.push({ id: r.id, vache: r.nomVache, type, icon, color, moment, quand: diff === 0 ? "aujourd'hui" : diff === 1 ? "demain" : `dans ${diff} j`, urgence: diff === 0 ? "high" : diff === 1 ? "med" : "low", date: d, diff });
+      });
+    });
+    return result.sort((a,b) => a.diff - b.diff || a.vache?.localeCompare(b.vache));
+  }, [records]);
+
+  useEffect(() => {
+    if (notifPermission !== "granted") return;
+    alertes.forEach(a => {
+      const key = `${a.id}-${a.type}-${a.date}`;
+      if (notifiedRef.current.has(key)) return;
+      if (a.urgence === "high" || a.urgence === "med") {
+        new Notification(a.urgence === "high" ? `🚨 Délai ${a.type} expire AUJOURD'HUI` : `⚠️ Délai ${a.type} expire DEMAIN`, {
+          body: `🐄 ${a.vache} — Fin d'attente ${a.type} : ${formatDateAvecJour(a.date)} ${a.moment}`,
+          icon: "https://cdn.jsdelivr.net/npm/twemoji@14/assets/72x72/1f404.png", tag: key,
+        });
+        notifiedRef.current.add(key);
+      }
+    });
+  }, [alertes, notifPermission]);
+
+  const detail = records.map(normalizeRecord).find(r => r.id === detailId);
+
+  return (
+    <div style={{ minHeight: "100vh", background: "#f0f4f0", fontFamily: "'Georgia','Times New Roman',serif" }}>
+      {toast && <Toast msg={toast.msg} type={toast.type} onClose={() => setToast(null)} />}
+
+      <MenuPanel open={showMenu} onClose={() => setShowMenu(false)} vaches={vaches} records={records}
+        driveLoading={driveLoading} onDriveSave={() => saveToDrive(records)} onDriveRestore={restoreFromDrive}
+        onImportVaches={nv => { setVaches(nv.sort((a,b) => a.nom.localeCompare(b.nom))); showToast(`✓ ${nv.length} vaches importées`); }}
+        onImportSauvegarde={nr => { setRecords(nr.map(normalizeRecord)); showToast(`✓ ${nr.length} traitements restaurés`); }} />
+
+      {/* PANEL ALERTES */}
+      {showAlertes && (
+        <div style={{ position: "fixed", top: 0, right: 0, bottom: 0, zIndex: 150, display: "flex", flexDirection: "column" }}>
+          <div onClick={() => setShowAlertes(false)} style={{ position: "fixed", inset: 0, background: "#0004", zIndex: -1 }} />
+          <div style={{ marginLeft: "auto", width: 340, height: "100%", background: "#fff", boxShadow: "-4px 0 32px #0003", display: "flex", flexDirection: "column", overflowY: "auto" }}>
+            <div style={{ background: "linear-gradient(135deg,#1a3a1a,#2d5a27)", padding: "18px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", flexShrink: 0 }}>
+              <h3 style={{ margin: 0, color: "#fff", fontSize: 17, fontWeight: 900 }}>🔔 Alertes délais</h3>
+              <button onClick={() => setShowAlertes(false)} style={{ background: "#ffffff22", border: "none", color: "#fff", borderRadius: 8, padding: "5px 10px", cursor: "pointer", fontSize: 17 }}>✕</button>
+            </div>
+            <div style={{ padding: "16px", flex: 1 }}>
+              {notifPermission !== "granted" && (
+                <div style={{ background: "#e8f5e9", border: "1px solid #a5d6a7", borderRadius: 10, padding: "12px 14px", marginBottom: 14, fontFamily: "sans-serif" }}>
+                  <div style={{ fontWeight: 700, fontSize: 13, color: "#1a3a1a", marginBottom: 6 }}>🔔 Activer les notifications</div>
+                  <button onClick={async () => setNotifPermission(await Notification.requestPermission())}
+                    style={{ background: "#2d5a27", color: "#fff", border: "none", borderRadius: 7, padding: "7px 16px", fontWeight: 700, fontSize: 12, cursor: "pointer", fontFamily: "sans-serif" }}>Autoriser</button>
+                </div>
+              )}
+              {alertes.length === 0 ? (
+                <div style={{ textAlign: "center", padding: "40px 16px", color: "#5a7a5a" }}>
+                  <div style={{ fontSize: 40, marginBottom: 10 }}>✅</div>
+                  <div style={{ fontWeight: 700, color: "#2d5a27", fontFamily: "sans-serif" }}>Aucune alerte</div>
+                </div>
+              ) : alertes.map((a, i) => {
+                const bgMap = { high: "#fff5f5", med: "#fffdf0", low: "#f7fbf7" };
+                const badgeMap = { high: { bg: "#ffebee", color: "#c62828", text: "AUJOURD'HUI" }, med: { bg: "#fff3cd", color: "#7a4f00", text: "DEMAIN" }, low: { bg: "#e8f5e9", color: "#2d5a27", text: a.quand.toUpperCase() } };
+                const badge = badgeMap[a.urgence];
+                return (
+                  <div key={i} onClick={() => { setDetailId(a.id); setShowAlertes(false); }}
+                    style={{ background: bgMap[a.urgence], borderRadius: 10, padding: "12px 14px", marginBottom: 10, cursor: "pointer", border: `1px solid ${a.urgence === "high" ? "#ffcdd2" : a.urgence === "med" ? "#ffe082" : "#c8e6c9"}` }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8 }}>
+                      <div>
+                        <div style={{ fontWeight: 800, fontSize: 14, color: "#1a3a1a", fontFamily: "sans-serif" }}>🐄 {a.vache}</div>
+                        <div style={{ fontSize: 13, color: a.color, fontWeight: 700, fontFamily: "sans-serif", marginTop: 3 }}>{a.icon} Délai {a.type} expire</div>
+                        <div style={{ fontSize: 12, color: "#5a7a5a", fontFamily: "sans-serif", marginTop: 4 }}>📅 {formatDateAvecJour(a.date)} — {a.moment}</div>
+                      </div>
+                      <span style={{ background: badge.bg, color: badge.color, borderRadius: 20, padding: "2px 10px", fontSize: 10, fontWeight: 800, fontFamily: "sans-serif", flexShrink: 0 }}>{badge.text}</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* HEADER */}
+      <div style={{ background: "linear-gradient(135deg,#1a3a1a 0%,#2d5a27 60%,#4a7c3f 100%)", color: "#fff", boxShadow: "0 4px 24px #0003" }}>
+        <div style={{ maxWidth: 1180, margin: "0 auto", padding: "22px 20px 14px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
+            <button onClick={() => setShowMenu(true)} style={{ background: "#ffffff22", border: "1px solid #ffffff44", color: "#fff", borderRadius: 8, padding: "8px 12px", cursor: "pointer", fontSize: 18 }}>☰</button>
+            <div style={{ fontSize: 42, lineHeight: 1 }}>🐄</div>
+            <div>
+              <div style={{ fontSize: 10, letterSpacing: 4, textTransform: "uppercase", color: "#a8d5a2", fontFamily: "sans-serif" }}>Élevage bovin lait</div>
+              <h1 style={{ margin: 0, fontSize: 24, fontWeight: 900, letterSpacing: -1 }}>Carnet Sanitaire</h1>
+              <div style={{ fontSize: 11, color: "#c8e6c5", fontFamily: "sans-serif" }}>Registre des traitements vétérinaires — {vaches.length} vaches</div>
+            </div>
+            <div style={{ marginLeft: "auto", display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
+              {[{ n: records.length, label: "Traitements" }, { n: new Set(records.map(r => r.nomVache)).size, label: "Vaches" }, { n: vaches.length, label: "Troupeau" }].map(({ n, label }) => (
+                <div key={label} style={{ background: "#ffffff18", borderRadius: 10, padding: "6px 14px", textAlign: "center", fontFamily: "sans-serif" }}>
+                  <div style={{ fontSize: 19, fontWeight: 900 }}>{n}</div>
+                  <div style={{ fontSize: 9, letterSpacing: 2, textTransform: "uppercase", color: "#c8e6c5" }}>{label}</div>
+                </div>
+              ))}
+              <button onClick={() => setShowAlertes(o => !o)}
+                style={{ position: "relative", background: alertes.length > 0 ? "#fff3cd" : "#ffffff22", border: alertes.length > 0 ? "1px solid #f0c040" : "1px solid #ffffff44", color: alertes.length > 0 ? "#7a4f00" : "#fff", borderRadius: 8, padding: "7px 14px", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "sans-serif", display: "flex", alignItems: "center", gap: 6 }}>
+                🔔{alertes.length > 0 && <span style={{ background: "#c62828", color: "#fff", borderRadius: 20, fontSize: 10, fontWeight: 900, padding: "1px 6px" }}>{alertes.length}</span>}
+              </button>
+            </div>
+          </div>
+
+          {/* Barre de recherche + filtre année */}
+          <div style={{ marginTop: 12, display: "flex", gap: 10, flexWrap: "wrap" }}>
+            <input value={search} onChange={e => setSearch(e.target.value)} placeholder="🔍  Rechercher (vache, médicament, intervenant…)"
+              style={{ flex: 1, minWidth: 200, padding: "9px 14px", borderRadius: 8, border: "none", fontSize: 13, fontFamily: "sans-serif", background: "#ffffff22", color: "#fff", outline: "none" }} />
+            {/* ─── Filtre ANNÉE ─── */}
+            <select value={filterAnnee} onChange={e => setFilterAnnee(e.target.value)}
+              style={{ padding: "9px 14px", borderRadius: 8, border: "none", fontSize: 13, fontFamily: "sans-serif", background: "#ffffff22", color: "#fff", outline: "none", cursor: "pointer" }}>
+              <option value="">Toutes années</option>
+              {anneesDispos.map(a => <option key={a} value={a} style={{ color: "#1a3a1a" }}>{a}</option>)}
+            </select>
+            <button onClick={() => { setShowForm(true); setForm(emptyForm); setEditId(null); }}
+              style={{ background: "#fff", color: "#1a3a1a", border: "none", borderRadius: 8, padding: "9px 20px", fontWeight: 800, fontSize: 13, cursor: "pointer", fontFamily: "sans-serif" }}>
+              + Nouveau traitement
+            </button>
+          </div>
+          <div style={{ marginTop: 8, fontSize: 11, color: "#a8d5a2", fontFamily: "sans-serif" }}>
+            <img src="https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png" width={12} height={12} /> {driveLoading ? "⏳ Drive en cours…" : `Sauvegarde automatique Drive · ${DRIVE_FILE_NAME}`}
+          </div>
+        </div>
+        <div style={{ height: 4, background: "linear-gradient(90deg,#4caf50,#8bc34a,#cddc39)" }} />
+      </div>
+
+      <div style={{ maxWidth: 1180, margin: "0 auto", padding: "18px 16px" }}>
+
+        {/* ─── FORMULAIRE ─── */}
+        {showForm && (
+          <div style={{ position: "fixed", inset: 0, background: "#0007", zIndex: 100, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
+            <div style={{ background: "#fff", borderRadius: 16, width: "100%", maxWidth: 680, boxShadow: "0 8px 48px #0004", maxHeight: "92vh", overflowY: "auto" }}>
+              {/* Header form */}
+              <div style={{ background: "linear-gradient(135deg,#1a3a1a,#2d5a27)", borderRadius: "16px 16px 0 0", padding: "16px 24px", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, zIndex: 10 }}>
+                <div>
+                  <div style={{ color: "#a8d5a2", fontSize: 10, letterSpacing: 3, textTransform: "uppercase", fontFamily: "sans-serif" }}>{editId ? "Modifier" : "Nouveau"}</div>
+                  <h2 style={{ margin: 0, color: "#fff", fontSize: 18, fontWeight: 900 }}>Traitement vétérinaire</h2>
+                </div>
+                <button onClick={() => { setShowForm(false); setEditId(null); }} style={{ background: "#ffffff22", border: "none", color: "#fff", borderRadius: 8, padding: "5px 11px", cursor: "pointer", fontSize: 17 }}>✕</button>
+              </div>
+
+              <div style={{ padding: "18px 22px" }}>
+                {/* Vache */}
+                <div style={{ marginBottom: 16 }}>
+                  <label style={{ display: "block", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: "#3a5a3a", marginBottom: 6, fontFamily: "sans-serif" }}>Vache *</label>
+                  <VacheSelector value={form.nomVache} onChange={v => setForm(f => ({ ...f, nomVache: v.nom, numeroVache: v.numero, travailVache: v.travail }))} vaches={vaches} />
+                  {form.numeroVache && <div style={{ marginTop: 5, fontSize: 11, color: "#5a7a5a", fontFamily: "sans-serif", background: "#f0f9f0", borderRadius: 6, padding: "4px 10px", display: "inline-block" }}>📋 {form.numeroVache} · N° travail : {form.travailVache}</div>}
+                </div>
+
+                {/* Année + Raison */}
+                <div style={{ display: "grid", gridTemplateColumns: "140px 1fr", gap: 12, marginBottom: 16 }}>
+                  <div>
+                    <label style={{ display: "block", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: "#3a5a3a", marginBottom: 5, fontFamily: "sans-serif" }}>📅 Année</label>
+                    <input type="number" name="annee" value={form.annee} onChange={e => setForm(f => ({ ...f, annee: e.target.value }))} min="2000" max="2099"
+                      style={{ width: "100%", padding: "9px 12px", borderRadius: 8, border: "2px solid #d4e8d4", fontSize: 14, fontFamily: "sans-serif", color: "#1a3a1a", background: "#f7fbf7", outline: "none" }}
+                      onFocus={e => e.target.style.borderColor = "#2d5a27"} onBlur={e => e.target.style.borderColor = "#d4e8d4"} />
+                  </div>
+                  <div>
+                    <label style={{ display: "block", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: "#3a5a3a", marginBottom: 5, fontFamily: "sans-serif" }}>Raison du traitement</label>
+                    <input type="text" name="raison" value={form.raison} onChange={e => setForm(f => ({ ...f, raison: e.target.value }))} placeholder="Ex: Mammite, boiterie…"
+                      style={{ width: "100%", padding: "9px 12px", borderRadius: 8, border: "2px solid #d4e8d4", fontSize: 14, fontFamily: "sans-serif", color: "#1a3a1a", background: "#f7fbf7", outline: "none" }}
+                      onFocus={e => e.target.style.borderColor = "#2d5a27"} onBlur={e => e.target.style.borderColor = "#d4e8d4"} />
+                  </div>
+                </div>
+
+                {/* ─── Traitements ─── */}
+                <div style={{ marginBottom: 4 }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+                    <label style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", color: "#3a5a3a", fontFamily: "sans-serif" }}>Traitements administrés ({form.traitements.length})</label>
+                    <button onClick={addTraitement}
+                      style={{ background: "#e8f5e9", border: "2px solid #2d5a27", color: "#2d5a27", borderRadius: 20, padding: "5px 16px", fontWeight: 800, fontSize: 12, cursor: "pointer", fontFamily: "sans-serif" }}>
+                      + Ajouter un traitement
+                    </button>
+                  </div>
+
+                  {/* Résumé délais max si > 1 traitement */}
+                  {form.traitements.length > 1 && (() => {
+                    const { dateAttenteL, dateAttenteV, joursAttenteL, joursAttenteV } = calcDelaisMax(form.traitements);
+                    return (dateAttenteL || dateAttenteV) ? (
+                      <div style={{ background: "#fff8e1", border: "2px solid #f0c040", borderRadius: 10, padding: "10px 16px", marginBottom: 12, fontFamily: "sans-serif" }}>
+                        <div style={{ fontWeight: 800, fontSize: 12, color: "#7a4f00", marginBottom: 6 }}>⚠️ Délais d'attente maximaux (tous traitements confondus)</div>
+                        <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+                          {dateAttenteL && <span style={{ background: "#e3f2fd", color: "#1565c0", borderRadius: 6, padding: "3px 12px", fontWeight: 700, fontSize: 12 }}>🥛 Lait : {joursAttenteL}j → {formatDateAvecJour(dateAttenteL)}</span>}
+                          {dateAttenteV && <span style={{ background: "#ffebee", color: "#b71c1c", borderRadius: 6, padding: "3px 12px", fontWeight: 700, fontSize: 12 }}>🥩 Viande : {joursAttenteV}j → {formatDateAvecJour(dateAttenteV)}</span>}
+                        </div>
+                      </div>
+                    ) : null;
+                  })()}
+
+                  {form.traitements.map((t, i) => (
+                    <TraitementBlock key={t.id} t={t} index={i} total={form.traitements.length}
+                      onChange={updateTraitement} onRemove={removeTraitement}
+                      onReadOrdonnance={handleReadOrdonnance} readingId={readingId}
+                      readResult={readResult} onApplyRead={applyReadResult} onDismissRead={() => setReadResult(null)} />
+                  ))}
+
+                  {form.traitements.length > 1 && (
+                    <button onClick={addTraitement}
+                      style={{ width: "100%", padding: "11px", borderRadius: 10, border: "2px dashed #2d5a27", background: "#f9fff9", color: "#2d5a27", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "sans-serif" }}>
+                      + Ajouter un traitement supplémentaire
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              <div style={{ padding: "0 22px 18px", display: "flex", gap: 10, justifyContent: "flex-end", position: "sticky", bottom: 0, background: "#fff", borderTop: "1px solid #e8f0e8", paddingTop: 12 }}>
+                <button onClick={() => { setShowForm(false); setEditId(null); }} style={{ padding: "9px 18px", borderRadius: 8, border: "2px solid #d4e8d4", background: "#fff", color: "#2d5a27", fontWeight: 700, cursor: "pointer", fontFamily: "sans-serif" }}>Annuler</button>
+                <button onClick={handleSubmit} style={{ padding: "9px 24px", borderRadius: 8, border: "none", background: "linear-gradient(135deg,#1a3a1a,#2d5a27)", color: "#fff", fontWeight: 800, cursor: "pointer", fontFamily: "sans-serif", fontSize: 14 }}>{editId ? "✓ Enregistrer" : "✓ Ajouter"}</button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* LIGHTBOX */}
+        {lightbox && (
+          <div onClick={() => setLightbox(null)} style={{ position: "fixed", inset: 0, background: "#000c", zIndex: 300, display: "flex", alignItems: "center", justifyContent: "center", padding: 16, cursor: "zoom-out" }}>
+            <div onClick={e => e.stopPropagation()} style={{ position: "relative" }}>
+              <img src={lightbox} alt="Ordonnance" style={{ maxWidth: "90vw", maxHeight: "88vh", borderRadius: 10, objectFit: "contain" }} />
+              <button onClick={() => setLightbox(null)} style={{ position: "absolute", top: -14, right: -14, background: "#c62828", border: "none", color: "#fff", borderRadius: "50%", width: 32, height: 32, cursor: "pointer", fontSize: 17, fontWeight: 900 }}>✕</button>
+            </div>
+          </div>
+        )}
+
+        {/* DETAIL */}
+        {detail && (
+          <div style={{ position: "fixed", inset: 0, background: "#0007", zIndex: 100, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
+            <div style={{ background: "#fff", borderRadius: 16, width: "100%", maxWidth: 560, maxHeight: "90vh", overflowY: "auto", boxShadow: "0 8px 48px #0004" }}>
+              <div style={{ background: "linear-gradient(135deg,#1a3a1a,#4a7c3f)", borderRadius: "16px 16px 0 0", padding: "16px 24px", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                <div>
+                  <div style={{ color: "#a8d5a2", fontSize: 10, letterSpacing: 3, textTransform: "uppercase", fontFamily: "sans-serif" }}>Détail</div>
+                  <h2 style={{ margin: "3px 0 0", color: "#fff", fontSize: 20, fontWeight: 900 }}>🐄 {detail.nomVache}</h2>
+                  {detail.annee && <div style={{ color: "#c8e6c5", fontSize: 12, fontFamily: "sans-serif", marginTop: 2 }}>📅 {detail.annee}</div>}
+                  {detail.numeroVache && <div style={{ color: "#c8e6c5", fontSize: 11, fontFamily: "sans-serif" }}>{detail.numeroVache} · N° {detail.travailVache}</div>}
+                </div>
+                <button onClick={() => setDetailId(null)} style={{ background: "#ffffff22", border: "none", color: "#fff", borderRadius: 8, padding: "5px 11px", cursor: "pointer", fontSize: 17 }}>✕</button>
+              </div>
+              <div style={{ padding: "16px 24px" }}>
+                <StatusBadge record={detail} />
+                {detail.raison && <div style={{ marginTop: 10, background: "#f7fbf7", borderRadius: 8, padding: "8px 12px", fontFamily: "sans-serif", fontWeight: 600, color: "#1a3a1a" }}>🩺 {detail.raison}</div>}
+
+                {/* Résumé délais max */}
+                {(() => {
+                  const { dateAttenteL, dateAttenteV, joursAttenteL, joursAttenteV } = calcDelaisMax(detail.traitements);
+                  return (dateAttenteL || dateAttenteV) ? (
+                    <div style={{ marginTop: 12, background: "#fff8e1", border: "1px solid #f0c040", borderRadius: 10, padding: "10px 14px", fontFamily: "sans-serif" }}>
+                      <div style={{ fontWeight: 800, fontSize: 12, color: "#7a4f00", marginBottom: 6 }}>⚠️ Délais maximaux ({detail.traitements.length} traitement{detail.traitements.length > 1 ? "s" : ""})</div>
+                      <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                        {dateAttenteL && <span style={{ background: "#e3f2fd", color: "#1565c0", borderRadius: 6, padding: "3px 12px", fontWeight: 700, fontSize: 12 }}>🥛 {joursAttenteL}j → {formatDateAvecJour(dateAttenteL)}</span>}
+                        {dateAttenteV && <span style={{ background: "#ffebee", color: "#b71c1c", borderRadius: 6, padding: "3px 12px", fontWeight: 700, fontSize: 12 }}>🥩 {joursAttenteV}j → {formatDateAvecJour(dateAttenteV)}</span>}
+                      </div>
+                    </div>
+                  ) : null;
+                })()}
+
+                {/* Liste des traitements */}
+                {detail.traitements.map((t, i) => (
+                  <div key={t.id || i} style={{ marginTop: 14, border: "1px solid #e0f0e0", borderRadius: 10, padding: "12px 14px", background: "#f9fff9" }}>
+                    <div style={{ fontFamily: "sans-serif", fontSize: 12, fontWeight: 800, color: "#2d5a27", marginBottom: 8 }}>Traitement {i + 1}{detail.traitements.length > 1 ? ` / ${detail.traitements.length}` : ""}</div>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                      {[
+                        { label: "Médicament", val: t.medicament, accent: "#2d5a27" },
+                        { label: "Posologie", val: t.posologie },
+                        { label: "Quantité", val: t.quantite },
+                        { label: "Voie d'admin.", val: t.voieAdmin === "Autre" ? t.voieAdminAutre : t.voieAdmin },
+                        { label: "Début", val: t.dateDebut ? `${formatDateAvecJour(t.dateDebut)} — ${t.momentDebut || "matin"}` : "—" },
+                        { label: "Fin", val: t.dateFin ? `${formatDateAvecJour(t.dateFin)} — ${t.momentFin || "matin"}` : "—" },
+                        { label: "Attente lait", val: t.joursAttenteL ? `${t.joursAttenteL}j → ${formatDateAvecJour(addDays(t.dateDebut, t.joursAttenteL))} ${t.momentAttenteL === "matin" ? "🌅" : "🌆"}` : "—", accent: "#1565c0" },
+                        { label: "Attente viande", val: t.joursAttenteV ? `${t.joursAttenteV}j → ${formatDateAvecJour(addDays(t.dateDebut, t.joursAttenteV))} ${t.momentAttenteV === "matin" ? "🌅" : "🌆"}` : "—", accent: "#b71c1c" },
+                        { label: "N° ordonnance", val: t.numOrdonnance },
+                        { label: "Intervenant", val: t.intervenant },
+                      ].map(({ label, val, accent }) => val && val !== "—" ? (
+                        <div key={label} style={{ background: "#fff", borderRadius: 7, padding: "7px 10px", borderLeft: `3px solid ${accent || "#2d5a27"}` }}>
+                          <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: 1.2, textTransform: "uppercase", color: "#5a7a5a", fontFamily: "sans-serif" }}>{label}</div>
+                          <div style={{ fontWeight: 700, color: accent || "#1a3a1a", fontFamily: "sans-serif", fontSize: 12, marginTop: 2 }}>{val}</div>
+                        </div>
+                      ) : null)}
+                    </div>
+                    {t.photoOrdonnance && (
+                      <div style={{ marginTop: 10 }}>
+                        <img src={t.photoOrdonnance} alt="Ordonnance" onClick={() => setLightbox(t.photoOrdonnance)}
+                          style={{ width: "100%", maxHeight: 150, objectFit: "contain", borderRadius: 8, border: "2px solid #d4e8d4", cursor: "zoom-in" }} />
+                      </div>
+                    )}
+                  </div>
+                ))}
+
+                <div style={{ marginTop: 16, display: "flex", gap: 10, justifyContent: "flex-end" }}>
+                  <button onClick={() => setConfirmDelete(detail.id)} style={{ padding: "8px 14px", borderRadius: 8, border: "2px solid #ffcdd2", background: "#fff", color: "#c62828", fontWeight: 700, cursor: "pointer", fontFamily: "sans-serif" }}>🗑 Supprimer</button>
+                  <button onClick={() => handleEdit(detail)} style={{ padding: "8px 16px", borderRadius: 8, border: "none", background: "linear-gradient(135deg,#1a3a1a,#2d5a27)", color: "#fff", fontWeight: 800, cursor: "pointer", fontFamily: "sans-serif" }}>✎ Modifier</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* CONFIRM DELETE */}
+        {confirmDelete && (
+          <div style={{ position: "fixed", inset: 0, background: "#0008", zIndex: 200, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
+            <div style={{ background: "#fff", borderRadius: 14, padding: "24px 28px", maxWidth: 320, textAlign: "center", boxShadow: "0 8px 40px #0004" }}>
+              <div style={{ fontSize: 36, marginBottom: 10 }}>⚠️</div>
+              <h3 style={{ margin: "0 0 8px", color: "#1a3a1a", fontWeight: 900 }}>Confirmer la suppression</h3>
+              <div style={{ display: "flex", gap: 10, justifyContent: "center", marginTop: 16 }}>
+                <button onClick={() => setConfirmDelete(null)} style={{ padding: "8px 16px", borderRadius: 8, border: "2px solid #ddd", background: "#fff", color: "#333", fontWeight: 700, cursor: "pointer", fontFamily: "sans-serif" }}>Annuler</button>
+                <button onClick={() => handleDelete(confirmDelete)} style={{ padding: "8px 16px", borderRadius: 8, border: "none", background: "#c62828", color: "#fff", fontWeight: 800, cursor: "pointer", fontFamily: "sans-serif" }}>Supprimer</button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* TABLE */}
+        {filtered.length === 0 ? (
+          <div style={{ textAlign: "center", padding: "52px 24px", color: "#5a7a5a" }}>
+            <div style={{ fontSize: 52, marginBottom: 12 }}>🐄</div>
+            <div style={{ fontSize: 17, fontWeight: 700, color: "#2d5a27", marginBottom: 6 }}>
+              {records.length === 0 ? "Aucun traitement enregistré" : "Aucun résultat trouvé"}
+            </div>
+            <div style={{ fontSize: 13, fontFamily: "sans-serif", color: "#7a9a7a" }}>
+              {records.length === 0 ? 'Cliquez sur "+ Nouveau traitement" pour commencer' : "Essayez un autre terme ou année"}
+            </div>
+          </div>
+        ) : (
+          <div style={{ overflowX: "auto", borderRadius: 14, boxShadow: "0 2px 20px #0001", background: "#fff" }}>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontFamily: "sans-serif" }}>
+              <thead>
+                <tr style={{ background: "linear-gradient(135deg,#1a3a1a,#2d5a27)", color: "#fff" }}>
+                  {["Vache", "N° travail", "Année", "Raison", "Traitements", "Délai Lait max", "Délai Viande max", "Statut", ""].map(h => (
+                    <th key={h} style={{ padding: "10px 11px", textAlign: "left", fontSize: 9, letterSpacing: 1.5, textTransform: "uppercase", fontWeight: 700, whiteSpace: "nowrap" }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {filtered.map((r, i) => {
+                  const { dateAttenteL, dateAttenteV, joursAttenteL, joursAttenteV } = calcDelaisMax(r.traitements);
+                  return (
+                    <tr key={r.id} onClick={() => setDetailId(r.id)}
+                      style={{ background: i % 2 === 0 ? "#fff" : "#f7fbf7", cursor: "pointer" }}
+                      onMouseEnter={e => e.currentTarget.style.background = "#e8f5e9"}
+                      onMouseLeave={e => e.currentTarget.style.background = i % 2 === 0 ? "#fff" : "#f7fbf7"}>
+                      <td style={{ padding: "9px 11px", fontWeight: 800, color: "#1a3a1a", whiteSpace: "nowrap" }}>🐄 {r.nomVache}</td>
+                      <td style={{ padding: "9px 11px", color: "#2d5a27", fontWeight: 600 }}>{r.travailVache || "—"}</td>
+                      <td style={{ padding: "9px 11px", color: "#5a7a5a", fontWeight: 600 }}>
+                        <span style={{ background: "#e8f5e9", color: "#1a3a1a", borderRadius: 6, padding: "2px 8px", fontSize: 12, fontWeight: 700 }}>{r.annee || "—"}</span>
+                      </td>
+                      <td style={{ padding: "9px 11px", color: "#555" }}>{r.raison || "—"}</td>
+                      <td style={{ padding: "9px 11px" }}>
+                        <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                          {(r.traitements || []).map((t, j) => (
+                            <span key={j} style={{ background: "#f0f7f0", color: "#1a3a1a", borderRadius: 5, padding: "2px 8px", fontSize: 11, fontWeight: 600, display: "block" }}>
+                              {t.medicament || "—"}
+                              {t.voieAdmin && <span style={{ color: "#7a9a7a", marginLeft: 5 }}>· {t.voieAdmin}</span>}
+                            </span>
+                          ))}
+                        </div>
+                        {r.traitements.length > 1 && (
+                          <div style={{ fontSize: 10, color: "#8aaa8a", marginTop: 3 }}>{r.traitements.length} traitements</div>
+                        )}
+                      </td>
+                      <td style={{ padding: "9px 11px", color: "#1565c0", fontWeight: 700, whiteSpace: "nowrap", fontSize: 12 }}>
+                        {dateAttenteL ? <>{joursAttenteL}j<br/><span style={{ fontWeight: 400 }}>{formatDate(dateAttenteL)}</span></> : "—"}
+                      </td>
+                      <td style={{ padding: "9px 11px", color: "#b71c1c", fontWeight: 700, whiteSpace: "nowrap", fontSize: 12 }}>
+                        {dateAttenteV ? <>{joursAttenteV}j<br/><span style={{ fontWeight: 400 }}>{formatDate(dateAttenteV)}</span></> : "—"}
+                      </td>
+                      <td style={{ padding: "9px 11px" }}><StatusBadge record={r} /></td>
+                      <td style={{ padding: "9px 7px" }}>
+                        <div style={{ display: "flex", gap: 4 }}>
+                          <button onClick={e => { e.stopPropagation(); handleEdit(r); }} style={{ padding: "3px 8px", borderRadius: 6, border: "1px solid #c8e6c9", background: "#f1f8e9", color: "#2d5a27", cursor: "pointer", fontWeight: 700, fontSize: 12 }}>✎</button>
+                          <button onClick={e => { e.stopPropagation(); setConfirmDelete(r.id); }} style={{ padding: "3px 8px", borderRadius: 6, border: "1px solid #ffcdd2", background: "#fff8f8", color: "#c62828", cursor: "pointer", fontWeight: 700, fontSize: 12 }}>🗑</button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        <div style={{ marginTop: 24, textAlign: "center", color: "#8aaa8a", fontSize: 10, fontFamily: "sans-serif", letterSpacing: 1 }}>
+          CARNET SANITAIRE BOVIN LAIT — Conforme réglementation française — {vaches.length} animaux
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const { useState, useMemo, useRef, useEffect } = React;
+ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App));
+</script>
+</body>
+</html>
