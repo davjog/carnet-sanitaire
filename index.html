@@ -851,7 +851,7 @@ function App() {
   const anneesDispos = useMemo(() => {
     const anneeActuelle = new Date().getFullYear();
     const s = new Set(records.map(r => r.annee || (r.traitements?.[0]?.dateDebut || "").split("-")[0]).filter(Boolean));
-    for (let a = anneeActuelle; a >= anneeActuelle - 2; a--) s.add(String(a));
+    s.add(String(anneeActuelle));
     return [...s].sort((a,b) => b-a);
   }, [records]);
 
