@@ -1127,24 +1127,29 @@ Réponds UNIQUEMENT avec le JSON.`,
               + Nouveau traitement
             </button>
           </div>
-          {/* ─── Onglets ANNÉE ─── */}
-          <div style={{ marginTop: 10, display: "flex", gap: 6, flexWrap: "wrap" }}>
-            {["", ...anneesDispos].map(a => {
-              const actif = filterAnnee === a;
-              const label = a === "" ? "Toutes" : a;
-              return (
-                <button key={a} onClick={() => setFilterAnnee(a)}
-                  style={{ padding: "5px 16px", borderRadius: 20, border: actif ? "2px solid #fff" : "2px solid #ffffff44", background: actif ? "#fff" : "transparent", color: actif ? "#1a3a1a" : "#e0f0e0", fontWeight: actif ? 800 : 500, fontSize: 13, fontFamily: "sans-serif", cursor: "pointer", transition: "all .15s" }}>
-                  {label}
-                </button>
-              );
-            })}
-          </div>
           <div style={{ marginTop: 8, fontSize: 11, color: "#a8d5a2", fontFamily: "sans-serif" }}>
             {driveLoading ? "⏳ Sauvegarde en cours…" : githubToken ? "☁️ Sauvegarde automatique GitHub activée" : "☁️ Configurez un token GitHub dans le menu pour la sauvegarde en ligne"}
           </div>
         </div>
         <div style={{ height: 4, background: "linear-gradient(90deg,#4caf50,#8bc34a,#cddc39)" }} />
+      </div>
+
+      {/* ─── Onglets année ─── */}
+      <div style={{ background: "#fff", borderBottom: "2px solid #e8f0e8", overflowX: "auto" }}>
+        <div style={{ maxWidth: 1180, margin: "0 auto", padding: "0 16px", display: "flex", gap: 0 }}>
+          {["", ...anneesDispos].map(a => {
+            const actif = filterAnnee === a;
+            const label = a === "" ? "Tous" : a;
+            const nb = a === "" ? records.length : records.filter(r => (r.annee || (r.traitements?.[0]?.dateDebut || "").split("-")[0]) === a).length;
+            return (
+              <button key={a} onClick={() => setFilterAnnee(a)}
+                style={{ padding: "13px 22px", border: "none", borderBottom: actif ? "3px solid #2d5a27" : "3px solid transparent", background: "transparent", color: actif ? "#1a3a1a" : "#7a9a7a", fontWeight: actif ? 800 : 500, fontSize: 14, fontFamily: "sans-serif", cursor: "pointer", whiteSpace: "nowrap", display: "flex", alignItems: "center", gap: 7, transition: "color .15s" }}>
+                {label}
+                <span style={{ background: actif ? "#2d5a27" : "#e8f0e8", color: actif ? "#fff" : "#7a9a7a", borderRadius: 20, fontSize: 11, fontWeight: 700, padding: "1px 8px" }}>{nb}</span>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       <div style={{ maxWidth: 1180, margin: "0 auto", padding: "18px 16px" }}>
