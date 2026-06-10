@@ -190,7 +190,9 @@ const MEDICAMENTS = [
   { nom: "Lidocaïne (anesthésie locale)", categorie: "Anesthésie", lait: 15, viande: 28 },
 ];
 
-const DRIVE_FILE_NAME = "carnet-sanitaire-bovin.json";
+const GITHUB_OWNER = "davjog";
+const GITHUB_REPO = "carnet-sanitaire";
+const GITHUB_FILE = "data/backup.json";
 
 // ─── Traitement vide (un seul) ───
 const emptyTraitement = () => ({
@@ -669,7 +671,7 @@ function Toast({ msg, type, onClose }) {
 }
 
 // ─── Menu latéral ───
-function MenuPanel({ open, onClose, vaches, records, onImportVaches, onImportSauvegarde, driveLoading, onDriveSave, onDriveRestore }) {
+function MenuPanel({ open, onClose, vaches, records, onImportVaches, onImportSauvegarde, driveLoading, onDriveSave, onDriveRestore, githubToken, onSaveToken, showTokenInput, setShowTokenInput }) {
   const csvInputRef = useRef(null);
   const jsonInputRef = useRef(null);
 
@@ -766,20 +768,50 @@ function MenuPanel({ open, onClose, vaches, records, onImportVaches, onImportSau
             <button onClick={() => jsonInputRef.current?.click()} style={{ width: "100%", marginBottom: 8, padding: "10px 14px", borderRadius: 9, border: "2px solid #1565c0", background: "#fff", color: "#1565c0", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "sans-serif" }}>📥 Importer sauvegarde (JSON)</button>
             <button onClick={downloadJSON} style={{ width: "100%", padding: "10px 14px", borderRadius: 9, border: "1px solid #bbdefb", background: "#f3f8ff", color: "#1565c0", fontWeight: 600, fontSize: 13, cursor: "pointer", fontFamily: "sans-serif" }}>📤 Exporter sauvegarde (JSON)</button>
           </div>
-          {/* Google Drive */}
+          {/* GitHub Backup */}
           <div style={{ marginBottom: 20 }}>
             <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: 2, textTransform: "uppercase", color: "#5a7a5a", fontFamily: "sans-serif", marginBottom: 10, paddingBottom: 6, borderBottom: "1px solid #e8f0e8" }}>
-              <img src="https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png" width={12} height={12} /> Google Drive
+              ☁️ Sauvegarde GitHub
             </div>
+            {!githubToken || showTokenInput ? (
+              <div style={{ background: "#f7fbf7", borderRadius: 10, padding: 12, marginBottom: 8 }}>
+                <div style={{ fontFamily: "sans-serif", fontSize: 12, color: "#3a5a3a", marginBottom: 8, fontWeight: 600 }}>
+                  Token GitHub (accès repo)
+                </div>
+                <input
+                  id="gh-token-input"
+                  type="password"
+                  defaultValue={githubToken}
+                  placeholder="ghp_xxxxxxxxxxxx"
+                  style={{ width: "100%", padding: "8px 10px", borderRadius: 7, border: "1px solid #c8e6c9", fontSize: 13, fontFamily: "sans-serif", boxSizing: "border-box", marginBottom: 8 }}
+                />
+                <button onClick={() => {
+                  const val = document.getElementById("gh-token-input").value.trim();
+                  if (val) { onSaveToken(val); setShowTokenInput(false); }
+                }} style={{ width: "100%", padding: "8px", borderRadius: 7, border: "none", background: "#2d5a27", color: "#fff", fontWeight: 700, cursor: "pointer", fontFamily: "sans-serif", fontSize: 13 }}>
+                  Enregistrer le token
+                </button>
+                <div style={{ marginTop: 8, fontSize: 11, color: "#8aaa8a", fontFamily: "sans-serif", lineHeight: 1.5 }}>
+                  Créez un token sur <strong>github.com → Settings → Developer settings → Personal access tokens → Fine-grained</strong> avec accès en écriture au repo <strong>carnet-sanitaire</strong>.
+                </div>
+              </div>
+            ) : (
+              <div style={{ marginBottom: 8, display: "flex", alignItems: "center", justifyContent: "space-between", fontFamily: "sans-serif", fontSize: 12, color: "#2d5a27", background: "#e8f5e9", borderRadius: 7, padding: "6px 10px" }}>
+                <span>✓ Token configuré</span>
+                <button onClick={() => setShowTokenInput(true)} style={{ background: "none", border: "none", color: "#5a7a5a", cursor: "pointer", fontSize: 11, fontFamily: "sans-serif" }}>Modifier</button>
+              </div>
+            )}
             <button onClick={() => { onDriveSave(); onClose(); }} disabled={driveLoading}
-              style={{ width: "100%", marginBottom: 8, padding: "10px 14px", borderRadius: 9, border: "2px solid #2d5a27", background: "#fff", color: "#2d5a27", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "sans-serif" }}>
-              <img src="https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png" width={14} height={14} /> {driveLoading ? "En cours…" : "Sauvegarder sur Google Drive"}
+              style={{ width: "100%", marginBottom: 8, padding: "10px 14px", borderRadius: 9, border: "2px solid #2d5a27", background: "#fff", color: "#2d5a27", fontWeight: 700, fontSize: 13, cursor: driveLoading ? "wait" : "pointer", fontFamily: "sans-serif" }}>
+              {driveLoading ? "⏳ En cours…" : "☁️ Sauvegarder sur GitHub"}
             </button>
             <button onClick={() => { onDriveRestore(); onClose(); }} disabled={driveLoading}
-              style={{ width: "100%", padding: "10px 14px", borderRadius: 9, border: "1px solid #c8e6c9", background: "#f7fbf7", color: "#2d5a27", fontWeight: 600, fontSize: 13, cursor: "pointer", fontFamily: "sans-serif" }}>
-              <img src="https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png" width={14} height={14} /> Restaurer depuis Google Drive
+              style={{ width: "100%", padding: "10px 14px", borderRadius: 9, border: "1px solid #c8e6c9", background: "#f7fbf7", color: "#2d5a27", fontWeight: 600, fontSize: 13, cursor: driveLoading ? "wait" : "pointer", fontFamily: "sans-serif" }}>
+              ⬇️ Restaurer depuis GitHub
             </button>
-            <div style={{ marginTop: 8, fontSize: 11, color: "#8aaa8a", fontFamily: "sans-serif" }}>Fichier : {DRIVE_FILE_NAME}</div>
+            <div style={{ marginTop: 8, fontSize: 11, color: "#8aaa8a", fontFamily: "sans-serif" }}>
+              Fichier : {GITHUB_OWNER}/{GITHUB_REPO}/{GITHUB_FILE}
+            </div>
           </div>
         </div>
       </div>
@@ -803,6 +835,8 @@ function App() {
   const [confirmDelete, setConfirmDelete] = useState(null);
   const [toast, setToast] = useState(null);
   const [driveLoading, setDriveLoading] = useState(false);
+  const [githubToken, setGithubToken] = useState(() => localStorage.getItem("gh_token") || "");
+  const [showTokenInput, setShowTokenInput] = useState(false);
   const [lightbox, setLightbox] = useState(null);
   const [showAlertes, setShowAlertes] = useState(false);
   const [notifPermission, setNotifPermission] = useState(typeof Notification !== "undefined" ? Notification.permission : "denied");
@@ -915,41 +949,42 @@ Réponds UNIQUEMENT avec le JSON.`,
   const handleEdit = record => { setForm({ ...normalizeRecord(record) }); setEditId(record.id); setShowForm(true); setDetailId(null); };
   const handleDelete = id => { setRecords(rs => rs.filter(r => r.id !== id)); setConfirmDelete(null); setDetailId(null); };
 
-  // ─ Drive
-  const saveToDrive = async (currentRecords) => {
+  // ─ Sauvegarde GitHub
+  const ghHeaders = (token) => ({
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${token}`,
+    "Accept": "application/vnd.github+json",
+  });
+
+  const saveToGitHub = async (currentRecords) => {
+    if (!githubToken) { setShowTokenInput(true); return; }
     setDriveLoading(true); showToast("Sauvegarde en cours…", "loading");
     try {
       const payload = JSON.stringify({ version: 2, savedAt: new Date().toISOString(), records: currentRecords ?? records }, null, 2);
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514", max_tokens: 1000,
-          system: `Tu sauvegardes un fichier JSON nommé "${DRIVE_FILE_NAME}" sur Google Drive via MCP. Réponds UNIQUEMENT en JSON : {"success":true,"fileId":"..."}`,
-          messages: [{ role: "user", content: `Crée le fichier "${DRIVE_FILE_NAME}" sur Google Drive avec ce contenu :\n${payload}` }],
-          mcp_servers: [{ type: "url", url: "https://drivemcp.googleapis.com/mcp/v1", name: "gdrive" }]
-        })
-      });
-      await res.json();
-      showToast(`✓ Sauvegardé sur Google Drive`, "success");
-    } catch (e) { showToast("Erreur Drive : " + e.message, "error"); }
+      const content = btoa(unescape(encodeURIComponent(payload)));
+      const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`;
+      // Récupérer le sha existant si le fichier existe déjà
+      let sha;
+      const existing = await fetch(url, { headers: ghHeaders(githubToken) });
+      if (existing.ok) { const d = await existing.json(); sha = d.sha; }
+      const body = { message: "Sauvegarde carnet sanitaire", content, ...(sha ? { sha } : {}) };
+      const res = await fetch(url, { method: "PUT", headers: ghHeaders(githubToken), body: JSON.stringify(body) });
+      if (!res.ok) throw new Error((await res.json()).message || res.statusText);
+      showToast("✓ Sauvegardé sur GitHub", "success");
+    } catch (e) { showToast("Erreur sauvegarde : " + e.message, "error"); }
     finally { setDriveLoading(false); }
   };
 
-  const restoreFromDrive = async () => {
+  const restoreFromGitHub = async () => {
+    if (!githubToken) { setShowTokenInput(true); return; }
     setDriveLoading(true); showToast("Restauration en cours…", "loading");
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514", max_tokens: 8000,
-          system: `Lis le fichier "${DRIVE_FILE_NAME}" sur Google Drive et retourne son contenu JSON brut uniquement.`,
-          messages: [{ role: "user", content: `Lis "${DRIVE_FILE_NAME}" sur Google Drive et retourne le JSON brut.` }],
-          mcp_servers: [{ type: "url", url: "https://drivemcp.googleapis.com/mcp/v1", name: "gdrive" }]
-        })
-      });
-      const data = await res.json();
-      const text = data.content?.filter(b => b.type === "text").map(b => b.text).join("") || "";
-      const parsed = JSON.parse(text.replace(/```json|```/g, "").trim());
+      const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`;
+      const res = await fetch(url, { headers: ghHeaders(githubToken) });
+      if (!res.ok) throw new Error("Fichier introuvable sur GitHub");
+      const d = await res.json();
+      const text = decodeURIComponent(escape(atob(d.content.replace(/\n/g, ""))));
+      const parsed = JSON.parse(text);
       if (parsed.records) { setRecords(parsed.records.map(normalizeRecord)); showToast(`✓ ${parsed.records.length} traitement(s) restauré(s)`, "success"); }
       else showToast("Format non reconnu", "error");
     } catch (e) { showToast("Erreur restauration : " + e.message, "error"); }
@@ -959,7 +994,7 @@ Réponds UNIQUEMENT avec le JSON.`,
   useEffect(() => {
     if (isFirstRender.current) { isFirstRender.current = false; return; }
     if (records.length === 0) return;
-    const t = setTimeout(() => saveToDrive(records), 2000);
+    const t = setTimeout(() => saveToGitHub(records), 2000);
     return () => clearTimeout(t);
   }, [records]);
 
@@ -1007,7 +1042,9 @@ Réponds UNIQUEMENT avec le JSON.`,
       {toast && <Toast msg={toast.msg} type={toast.type} onClose={() => setToast(null)} />}
 
       <MenuPanel open={showMenu} onClose={() => setShowMenu(false)} vaches={vaches} records={records}
-        driveLoading={driveLoading} onDriveSave={() => saveToDrive(records)} onDriveRestore={restoreFromDrive}
+        driveLoading={driveLoading} onDriveSave={() => saveToGitHub(records)} onDriveRestore={restoreFromGitHub}
+        githubToken={githubToken} onSaveToken={t => { setGithubToken(t); localStorage.setItem("gh_token", t); }}
+        showTokenInput={showTokenInput} setShowTokenInput={setShowTokenInput}
         onImportVaches={nv => { setVaches(nv.sort((a,b) => a.nom.localeCompare(b.nom))); showToast(`✓ ${nv.length} vaches importées`); }}
         onImportSauvegarde={nr => { setRecords(nr.map(normalizeRecord)); showToast(`✓ ${nr.length} traitements restaurés`); }} />
 
@@ -1097,7 +1134,7 @@ Réponds UNIQUEMENT avec le JSON.`,
             </button>
           </div>
           <div style={{ marginTop: 8, fontSize: 11, color: "#a8d5a2", fontFamily: "sans-serif" }}>
-            <img src="https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png" width={12} height={12} /> {driveLoading ? "⏳ Drive en cours…" : `Sauvegarde automatique Drive · ${DRIVE_FILE_NAME}`}
+            {driveLoading ? "⏳ Sauvegarde en cours…" : githubToken ? "☁️ Sauvegarde automatique GitHub activée" : "☁️ Configurez un token GitHub dans le menu pour la sauvegarde en ligne"}
           </div>
         </div>
         <div style={{ height: 4, background: "linear-gradient(90deg,#4caf50,#8bc34a,#cddc39)" }} />
