@@ -805,7 +805,10 @@ function MenuPanel({ open, onClose, vaches, records, onImportVaches, onImportSau
               style={{ width: "100%", marginBottom: 8, padding: "10px 14px", borderRadius: 9, border: "2px solid #2d5a27", background: "#fff", color: "#2d5a27", fontWeight: 700, fontSize: 13, cursor: driveLoading ? "wait" : "pointer", fontFamily: "sans-serif" }}>
               {driveLoading ? "⏳ En cours…" : "☁️ Sauvegarder sur GitHub"}
             </button>
-            <button onClick={() => { onDriveRestore(); onClose(); }} disabled={driveLoading}
+            <button onClick={() => {
+                if (records.length > 0 && !window.confirm(`Restaurer depuis GitHub va remplacer les ${records.length} traitement(s) actuels. Continuer ?`)) return;
+                onDriveRestore(); onClose();
+              }} disabled={driveLoading}
               style={{ width: "100%", padding: "10px 14px", borderRadius: 9, border: "1px solid #c8e6c9", background: "#f7fbf7", color: "#2d5a27", fontWeight: 600, fontSize: 13, cursor: driveLoading ? "wait" : "pointer", fontFamily: "sans-serif" }}>
               ⬇️ Restaurer depuis GitHub
             </button>
