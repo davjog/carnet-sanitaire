@@ -938,6 +938,10 @@ function render(){
     nParcelles+=il.parcelles.length;
     nAmendts+=il.amendements.length;
     il.coupes.forEach(c=>{if(c&&c.type)nCoupes++});
+    (il.geometries||[]).forEach(g=>{
+      nAmendts+=(g.amendements||[]).length;
+      (g.coupes||[]).forEach(c=>{if(c&&c.type)nCoupes++;});
+    });
   });
   document.getElementById('stat-ilots').textContent=ilots.length;
   document.getElementById('stat-parcelles').textContent=nParcelles;
