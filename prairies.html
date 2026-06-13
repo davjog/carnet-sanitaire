@@ -1,0 +1,2230 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+  <meta name="theme-color" content="#2d5a1b"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="Prairies"/>
+  <title>Suivi Prairies Permanentes</title>
+  <link rel="manifest" href="prairies-manifest.json"/>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/proj4@2.9.0/dist/proj4.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css"/>
+  <script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+    :root{
+      --vert:#2d5a1b;--vert2:#4a8c2a;--vert3:#6ab04c;
+      --or:#c8a84b;--fond:#f2f5ee;--blanc:#fff;
+      --gris:#f7f9f5;--bord:#dde5d4;--txt:#1a2e10;--txt2:#4a6035;
+    }
+    body{font-family:'Georgia','Times New Roman',serif;background:var(--fond);min-height:100vh;color:var(--txt)}
+    /* BANDEAU */
+    .bandeau{background:linear-gradient(135deg,var(--vert),var(--vert2));color:#fff;
+      padding:16px;text-align:center;position:sticky;top:0;z-index:100;
+      box-shadow:0 2px 12px #0003}
+    .bandeau h1{font-size:20px;letter-spacing:.5px}
+    .bandeau p{font-size:11px;opacity:.8;margin-top:2px}
+    /* ONGLETS ANNEE */
+    .onglets-annee{display:flex;gap:4px;padding:10px 12px 0;background:var(--vert);overflow-x:auto;scrollbar-width:none}
+    .onglets-annee::-webkit-scrollbar{display:none}
+    .onglet-annee{padding:7px 18px;border-radius:8px 8px 0 0;font-size:13px;cursor:pointer;
+      background:#ffffff22;color:#ffffffcc;border:none;font-family:inherit;white-space:nowrap;transition:.2s}
+    .onglet-annee.actif{background:#fff;color:var(--vert);font-weight:700}
+    /* CONTENU */
+    main{max-width:700px;margin:0 auto;padding:12px}
+    /* ACTIONS */
+    .actions{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+    .btn{border:none;border-radius:10px;padding:10px 18px;font-size:13px;cursor:pointer;
+      font-family:inherit;font-weight:600;transition:.15s;display:flex;align-items:center;gap:6px}
+    .btn-pri{background:var(--vert);color:#fff}
+    .btn-pri:active{background:var(--vert2)}
+    .btn-sec{background:#fff;color:var(--vert);border:1.5px solid var(--bord)}
+    .btn-sm{padding:6px 12px;font-size:12px}
+    .btn-danger{background:#ffeaea;color:#c0392b;border:1.5px solid #f5c6c6}
+    /* CARTE ILOT */
+    .ilot-card{background:#fff;border-radius:14px;margin-bottom:12px;
+      box-shadow:0 2px 8px #00000010;border:1.5px solid var(--bord);overflow:hidden}
+    .ilot-header{background:linear-gradient(90deg,var(--vert),var(--vert2));
+      color:#fff;padding:12px 14px;display:flex;align-items:center;gap:10px;cursor:pointer}
+    .ilot-num{background:#ffffff33;border-radius:8px;padding:4px 10px;
+      font-size:18px;font-weight:800;min-width:52px;text-align:center;letter-spacing:.5px}
+    .ilot-nom{flex:1}
+    .ilot-nom strong{font-size:15px;display:block}
+    .ilot-nom small{font-size:11px;opacity:.8}
+    .ilot-chevron{font-size:18px;transition:.2s}
+    .ilot-chevron.ouvert{transform:rotate(180deg)}
+    .ilot-body{padding:0}
+    /* PARCELLES */
+    .parcelles-zone{padding:10px 14px;background:var(--gris);border-bottom:1px solid var(--bord)}
+    .parcelle-tag{display:inline-block;background:var(--vert3);color:#fff;
+      border-radius:20px;padding:3px 10px;font-size:12px;margin:2px 3px;cursor:pointer}
+    .parcelle-add{display:inline-flex;align-items:center;gap:4px;background:#fff;
+      color:var(--vert);border:1.5px dashed var(--vert3);border-radius:20px;
+      padding:3px 10px;font-size:12px;margin:2px 3px;cursor:pointer}
+    /* MENU PARCELLES */
+    .parcelle-item{background:#fff;border:1.5px solid var(--bord);border-radius:10px;
+      margin-bottom:6px;overflow:hidden}
+    .parcelle-item-header{display:flex;align-items:center;gap:8px;padding:9px 12px;
+      cursor:pointer;background:var(--gris)}
+    .parcelle-item-header:active{background:#eaf2e4}
+    .parcelle-ico{font-size:16px}
+    .parcelle-info{flex:1}
+    .parcelle-info strong{font-size:13px;display:block;color:var(--txt)}
+    .parcelle-info small{font-size:11px;color:var(--txt2)}
+    .parcelle-item-body{padding:8px 12px;border-top:1px solid var(--bord);background:#fff}
+    .parcelle-resume{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:7px}
+    .parcelle-badge{font-size:11px;background:var(--gris);border-radius:8px;
+      padding:3px 8px;color:var(--txt2);border:1px solid var(--bord)}
+    /* SECTION AMENDEMENTS */
+    .section{padding:10px 14px;border-bottom:1px solid var(--bord)}
+    .section-titre{font-size:12px;font-weight:700;color:var(--txt2);
+      text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;
+      display:flex;align-items:center;gap:6px}
+    /* AMENDT LISTE */
+    .amendt-item{display:flex;align-items:center;gap:8px;background:var(--gris);
+      border-radius:8px;padding:7px 10px;margin-bottom:5px;font-size:13px}
+    .amendt-badge{padding:2px 8px;border-radius:12px;font-size:11px;font-weight:700;white-space:nowrap}
+    .lisier{background:#e8f4fd;color:#1565c0}
+    .fumier{background:#fff3e0;color:#e65100}
+    .engrais{background:#e8f5e9;color:#2e7d32}
+    .amendt-detail{flex:1;color:var(--txt2);font-size:12px}
+    /* COUPES */
+    .coupes-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px 14px}
+    .coupe-cell{background:var(--gris);border-radius:10px;padding:10px;border:1.5px solid var(--bord)}
+    .coupe-label{font-size:11px;font-weight:700;color:var(--txt2);
+      text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+    .coupe-val{font-size:13px;font-weight:600;color:var(--txt);display:flex;align-items:center;gap:5px}
+    .coupe-date{font-size:11px;color:#888;margin-top:2px}
+    .coupe-vide{color:#bbb;font-style:italic;font-size:12px}
+    .coupe-ico{font-size:16px}
+    /* MODALS */
+    .overlay{display:none;position:fixed;inset:0;background:#0006;z-index:200;
+      align-items:flex-end;justify-content:center}
+    .overlay.show{display:flex}
+    .modal{background:#fff;border-radius:20px 20px 0 0;padding:20px;
+      width:100%;max-width:500px;max-height:90vh;overflow-y:auto;
+      box-shadow:0 -4px 30px #0003}
+    .modal h2{font-size:17px;color:var(--vert);margin-bottom:16px;
+      padding-bottom:10px;border-bottom:1px solid var(--bord)}
+    .form-group{margin-bottom:14px}
+    label{display:block;font-size:12px;font-weight:700;color:var(--txt2);
+      margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}
+    input,select,textarea{width:100%;border:1.5px solid var(--bord);border-radius:9px;
+      padding:10px 12px;font-size:14px;font-family:inherit;background:#fff;color:var(--txt)}
+    input:focus,select:focus,textarea:focus{outline:none;border-color:var(--vert3)}
+    .radio-group{display:flex;gap:8px;flex-wrap:wrap}
+    .radio-btn{flex:1;min-width:80px;text-align:center;padding:9px 6px;
+      border-radius:9px;border:1.5px solid var(--bord);font-size:13px;
+      cursor:pointer;background:#fff;transition:.15s;font-family:inherit}
+    .radio-btn.sel{background:var(--vert);color:#fff;border-color:var(--vert)}
+    .modal-actions{display:flex;gap:8px;margin-top:18px}
+    .modal-actions .btn{flex:1;justify-content:center}
+    /* VIDE */
+    .vide{text-align:center;padding:40px 20px;color:#aaa}
+    .vide .ico{font-size:48px;margin-bottom:10px}
+    /* TOTAL SURFACE */
+    .stat-bar{background:#fff;border-radius:12px;padding:12px 14px;
+      margin-bottom:12px;border:1.5px solid var(--bord);
+      display:flex;gap:16px;flex-wrap:wrap}
+    .stat{text-align:center;flex:1}
+    .stat strong{display:block;font-size:22px;color:var(--vert);font-weight:800}
+    .stat span{font-size:11px;color:var(--txt2)}
+    /* CALCUL RENDEMENT */
+    .calcul-box{background:linear-gradient(135deg,#e8f5e9,#f1f8e9);border:1.5px solid #a5d6a7;
+      border-radius:10px;padding:10px 12px;margin-top:8px;display:flex;gap:14px;flex-wrap:wrap}
+    .calcul-item{text-align:center;flex:1;min-width:70px}
+    .calcul-item strong{display:block;font-size:18px;font-weight:800;color:#2d5a1b}
+    .calcul-item span{font-size:10px;color:#4a6035;text-transform:uppercase;letter-spacing:.5px}
+    /* scrollbar slim */
+    ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#ccc;border-radius:4px}
+    /* CARTE */
+    .carte-overlay{display:none;position:fixed;inset:0;z-index:300;flex-direction:column;background:#000}
+    .carte-overlay.show{display:flex}
+    .carte-header{background:linear-gradient(135deg,var(--vert),var(--vert2));color:#fff;
+      padding:10px 14px;display:flex;align-items:center;gap:10px;flex-shrink:0}
+    .carte-header h2{flex:1;font-size:16px}
+    .carte-header .btn{padding:7px 12px;font-size:12px}
+    #map{flex:1;width:100%}
+    .carte-toolbar{background:#fff;padding:8px 12px;display:flex;gap:8px;flex-wrap:wrap;
+      align-items:center;flex-shrink:0;border-top:1px solid var(--bord)}
+    .carte-toolbar label{font-size:11px;font-weight:700;color:var(--txt2);white-space:nowrap}
+    /* parcelles dessinées */
+    .draw-hint{position:absolute;bottom:80px;left:50%;transform:translateX(-50%);
+      background:#1a3a1aee;color:#fff;border-radius:12px;padding:10px 18px;
+      font-size:13px;z-index:1000;text-align:center;pointer-events:none;
+      box-shadow:0 2px 12px #0004}
+    /* popup leaflet custom */
+    .ilot-popup strong{font-size:15px;color:var(--vert);display:block;margin-bottom:4px}
+    .ilot-popup span{font-size:12px;color:#555}
+    .leaflet-popup-content-wrapper{border-radius:12px!important}
+  </style>
+</head>
+<body>
+
+<div class="bandeau">
+  <h1>🌿 Suivi Prairies Permanentes</h1>
+  <p id="bandeau-annee">Chargement…</p>
+</div>
+
+<div class="onglets-annee" id="onglets-annee"></div>
+
+<main>
+  <div class="stat-bar" id="stat-bar">
+    <div class="stat"><strong id="stat-ilots">0</strong><span>Îlots</span></div>
+    <div class="stat"><strong id="stat-parcelles">0</strong><span>Parcelles</span></div>
+    <div class="stat"><strong id="stat-amendts">0</strong><span>Amendements</span></div>
+    <div class="stat"><strong id="stat-coupes">0</strong><span>Coupes saisies</span></div>
+  </div>
+
+  <div class="actions">
+    <button class="btn btn-pri" onclick="ouvrirModalIlot()">＋ Nouvel îlot PAC</button>
+    <label class="btn btn-sec btn-sm" style="cursor:pointer">
+      📂 Import Telepac (.dbf)
+      <input type="file" accept=".dbf" style="display:none" onchange="importerDBF(this)"/>
+    </label>
+    <button class="btn btn-sec btn-sm" onclick="exporter()">📥 Export JSON</button>
+    <button class="btn btn-sec btn-sm" onclick="ouvrirCarte()">🛰️ Carte satellite</button>
+    <button class="btn btn-sec btn-sm" onclick="ouvrirParams()">⚙️ Paramètres</button>
+    <button class="btn btn-sec btn-sm" id="btn-copier-annee" onclick="ouvrirCopierAnnee()" style="display:none">📋 Copier depuis…</button>
+    <button class="btn btn-sec btn-sm" onclick="ouvrirGitHub()" id="btn-gh" title="Sauvegarde en ligne">☁️ GitHub</button>
+  </div>
+  <div id="gh-status-bar" style="display:none;font-size:11px;padding:4px 12px;background:#eaf4ea;color:#3a6a3a;border-radius:8px;margin:0 0 6px 0;text-align:center"></div>
+
+  <!-- onglets vue -->
+  <div style="display:flex;gap:6px;margin:0 0 10px 0;border-bottom:2px solid #e8f0e4;padding-bottom:0">
+    <button id="vue-tab-ilots"  onclick="setVue('ilots')"  style="padding:7px 18px;border:none;border-radius:8px 8px 0 0;cursor:pointer;font-weight:600;font-size:13px;background:var(--vert);color:#fff">🌿 Îlots</button>
+    <button id="vue-tab-bilan"  onclick="setVue('bilan')"  style="padding:7px 18px;border:none;border-radius:8px 8px 0 0;cursor:pointer;font-weight:600;font-size:13px;background:#e8f0e4;color:#4a7a4a">📊 Bilan balles</button>
+  </div>
+
+  <div id="liste-ilots"></div>
+  <div id="vue-bilan" style="display:none"></div>
+</main>
+
+<!-- MODAL PARAMETRES -->
+<div class="overlay" id="modal-params">
+  <div class="modal">
+    <h2>⚙️ Paramètres</h2>
+    <div style="font-weight:600;color:#5a7;margin-bottom:6px;font-size:13px">🎁 Poids des balles</div>
+    <div class="form-group">
+      <label>🔵 Poids balle ronde (kg)</label>
+      <input type="number" id="p-balle-ronde" value="300" min="1" placeholder="ex : 300"/>
+    </div>
+    <div class="form-group">
+      <label>🟫 Poids balle rectangulaire (kg)</label>
+      <input type="number" id="p-balle-rect" value="500" min="1" placeholder="ex : 500"/>
+    </div>
+    <div style="font-weight:600;color:#5a7;margin:10px 0 6px;font-size:13px">💧 Lisier</div>
+    <div class="form-group">
+      <label>Volume du tonneau à lisier (litres)</label>
+      <input type="number" id="p-tonneau" value="10000" min="1" placeholder="ex : 10000"/>
+    </div>
+    <div class="form-group">
+      <label>Teneur en azote du lisier (g N / litre)</label>
+      <input type="number" id="p-azote-litre" value="2.5" min="0" step="0.1" placeholder="ex : 2.5"/>
+    </div>
+    <div style="background:#f2f5ee;border-radius:10px;padding:10px 12px;font-size:12px;color:#555;margin-bottom:4px">
+      Ces valeurs servent au calcul automatique du rendement lors des coupes et de la dose à l'hectare pour le lisier, ainsi que de l'azote épandu.
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-sec" onclick="fermerModals()">Annuler</button>
+      <button class="btn btn-pri" onclick="sauvegarderParams()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ILOT -->
+<div class="overlay" id="modal-ilot">
+  <div class="modal">
+    <h2 id="modal-ilot-titre">Nouvel îlot PAC</h2>
+    <div class="form-group">
+      <label>N° Îlot PAC</label>
+      <input type="text" id="f-num" placeholder="ex : 0012, AB045…"/>
+    </div>
+    <div class="form-group">
+      <label>Nom de l'îlot</label>
+      <input type="text" id="f-nom" placeholder="ex : Grand pré, Bas de la côte…"/>
+    </div>
+    <div class="form-group">
+      <label>Surface (ha)</label>
+      <input type="number" id="f-surface" step="0.01" placeholder="ex : 3.45"/>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-sec" onclick="fermerModals()">Annuler</button>
+      <button class="btn btn-pri" onclick="sauvegarderIlot()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL PARCELLE -->
+<div class="overlay" id="modal-parcelle">
+  <div class="modal">
+    <h2>Ajouter une parcelle</h2>
+    <div class="form-group">
+      <label>Nom de la parcelle</label>
+      <input type="text" id="f-parcelle-nom" placeholder="ex : Coin de la source, Têtard…"/>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-sec" onclick="fermerModals()">Annuler</button>
+      <button class="btn btn-pri" onclick="sauvegarderParcelle()">Ajouter</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL AMENDEMENT -->
+<div class="overlay" id="modal-amendt">
+  <div class="modal">
+    <h2>Amendement</h2>
+    <div class="form-group">
+      <label>Type</label>
+      <div class="radio-group">
+        <button class="radio-btn" data-v="lisier" onclick="selRadio(this,'amendt-type');majBlocLisier('f')">💧 Lisier</button>
+        <button class="radio-btn" data-v="fumier" onclick="selRadio(this,'amendt-type');majBlocLisier('f')">🌾 Fumier</button>
+        <button class="radio-btn" data-v="engrais" onclick="selRadio(this,'amendt-type');majBlocLisier('f')">🌿 Engrais</button>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Date d'épandage</label>
+      <input type="date" id="f-amendt-date"/>
+    </div>
+    <!-- bloc lisier -->
+    <div id="f-bloc-lisier" style="display:none">
+      <div class="form-group">
+        <label>Nombre de tonneaux épandus</label>
+        <input type="number" id="f-ntonneaux" min="0" step="0.5" placeholder="ex : 4" oninput="calcLisier('f')"/>
+      </div>
+      <div id="f-lisier-box" class="calcul-box" style="display:none">
+        <div>💧 Volume total : <strong><span id="f-lisier-vol"></span> L</strong>
+          (<span id="f-lisier-m3"></span> m³)</div>
+        <div>📐 Dose : <strong><span id="f-lisier-dose"></span> m³/ha</strong></div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Quantité / dose (libre)</label>
+      <input type="text" id="f-amendt-qte" placeholder="ex : 25 m³/ha, 400 kg/ha…"/>
+    </div>
+    <div class="form-group">
+      <label>Remarque (facultatif)</label>
+      <input type="text" id="f-amendt-rem" placeholder="ex : avant pluie, post-coupe…"/>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-sec" onclick="fermerModals()">Annuler</button>
+      <button class="btn btn-pri" onclick="sauvegarderAmendt()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL COUPE -->
+<div class="overlay" id="modal-coupe">
+  <div class="modal">
+    <h2 id="modal-coupe-titre">1ère coupe</h2>
+    <div class="form-group">
+      <label>Utilisation</label>
+      <div class="radio-group" id="coupe-options"></div>
+    </div>
+    <!-- pâturage -->
+    <div id="f-bloc-paturage" style="display:none">
+      <div class="form-group">
+        <label>🐄 Date de début de pâturage</label>
+        <input type="date" id="f-coupe-debut"/>
+      </div>
+      <div class="form-group">
+        <label>🐄 Date de fin de pâturage</label>
+        <input type="date" id="f-coupe-fin"/>
+      </div>
+    </div>
+    <!-- foin / regain / herbe dure -->
+    <div id="f-bloc-foin" style="display:none">
+      <div class="form-group">
+        <label>✂️ Date de coupe</label>
+        <input type="date" id="f-coupe-date"/>
+      </div>
+      <div class="form-group">
+        <label>🧺 Date de pressage</label>
+        <input type="date" id="f-coupe-pressage"/>
+      </div>
+      <div class="form-group">
+        <label>🔄 Nombre de fanages</label>
+        <input type="number" id="f-fanage" min="0" max="10" placeholder="0"/>
+      </div>
+      <div class="form-group">
+        <label>Type de balle</label>
+        <div class="radio-group">
+          <button class="radio-btn" data-v="ronde"  onclick="selRadio(this,'f-type-balle');calcRendement('f')">🔵 Ronde</button>
+          <button class="radio-btn" data-v="rect"   onclick="selRadio(this,'f-type-balle');calcRendement('f')">🟫 Rectangulaire</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Nombre de balles</label>
+        <input type="number" id="f-nballes" min="0" placeholder="0" oninput="calcRendement('f')"/>
+      </div>
+      <div class="calcul-box" id="f-calcul-box" style="display:none">
+        <div class="calcul-item"><strong id="f-calc-poids">—</strong><span>kg total</span></div>
+        <div class="calcul-item"><strong id="f-calc-tonne">—</strong><span>tonnes</span></div>
+        <div class="calcul-item"><strong id="f-calc-rdt">—</strong><span>t/ha</span></div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Remarque (facultatif)</label>
+      <input type="text" id="f-coupe-rem" placeholder="Rendement, conditions…"/>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-sec" onclick="fermerModals()">Annuler</button>
+      <button class="btn btn-pri" onclick="sauvegarderCoupe()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- CARTE SATELLITE -->
+<div class="carte-overlay" id="carte-overlay">
+  <div class="carte-header">
+    <h2>🛰️ Carte satellite – Campagne <span id="carte-annee-label"></span></h2>
+    <button class="btn btn-sec btn-sm" onclick="fermerCarte()">✕ Fermer</button>
+  </div>
+  <div class="carte-toolbar">
+    <label>Charger îlots PAC :</label>
+    <label class="btn btn-pri btn-sm" style="cursor:pointer">
+      📂 .shp + .dbf
+      <input type="file" accept=".shp,.dbf,.shx" multiple style="display:none" onchange="chargerShapefile(this)"/>
+    </label>
+    <div style="width:1px;background:#ddd;height:24px;margin:0 2px"></div>
+    <label style="color:var(--vert);font-weight:700">✏️ Dessiner :</label>
+    <select id="draw-ilot-select" style="border:1.5px solid var(--bord);border-radius:8px;padding:5px 8px;font-size:12px;font-family:inherit;max-width:130px">
+      <option value="">— Choisir îlot —</option>
+    </select>
+    <button class="btn btn-sec btn-sm" id="btn-draw" onclick="activerDessin()" disabled>✏️ Tracer</button>
+    <button class="btn btn-sec btn-sm" id="btn-draw-ilot" onclick="parcelleDepuisIlotPAC()" disabled style="background:#e8f5e9;color:#2d5a1b;border-color:#a5d6a7">📐 Tout l'îlot</button>
+    <button class="btn btn-danger btn-sm" id="btn-draw-cancel" style="display:none" onclick="annulerDessin()">✕ Annuler</button>
+    <span id="pac-mem-status" style="font-size:11px;flex:1;text-align:right"></span>
+    <span id="carte-status" style="font-size:11px;color:#888"></span>
+  </div>
+  <div id="map"></div>
+</div>
+
+<!-- FICHE PARCELLE -->
+<div class="overlay" id="modal-fiche-parcelle">
+  <div class="modal" style="max-height:92vh">
+    <h2 id="fp-titre">Fiche parcelle</h2>
+
+    <!-- AMENDEMENTS -->
+    <div style="margin-bottom:10px">
+      <div class="section-titre" style="margin-bottom:8px">🧪 Amendements
+        <button class="btn btn-sec btn-sm" style="margin-left:auto" onclick="fpAjouterAmendt()">＋ Ajouter</button>
+      </div>
+      <div id="fp-amendts"></div>
+    </div>
+
+    <!-- COUPES -->
+    <div style="margin-bottom:6px">
+      <div class="section-titre" style="margin-bottom:8px">✂️ Coupes / utilisations</div>
+      <div class="coupes-grid" id="fp-coupes"></div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-sec" onclick="fermerModals()">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL AMENDEMENT PARCELLE -->
+<div class="overlay" id="modal-fp-amendt">
+  <div class="modal">
+    <h2>Amendement – <span id="fp-amendt-titre"></span></h2>
+    <div class="form-group">
+      <label>Type</label>
+      <div class="radio-group">
+        <button class="radio-btn" data-v="lisier" onclick="selRadio(this,'fp-amendt-type');majBlocLisier('fp')">💧 Lisier</button>
+        <button class="radio-btn" data-v="fumier" onclick="selRadio(this,'fp-amendt-type');majBlocLisier('fp')">🌾 Fumier</button>
+        <button class="radio-btn" data-v="engrais" onclick="selRadio(this,'fp-amendt-type');majBlocLisier('fp')">🌿 Engrais</button>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Date</label>
+      <input type="date" id="fp-amendt-date"/>
+    </div>
+    <!-- bloc lisier -->
+    <div id="fp-bloc-lisier" style="display:none">
+      <div class="form-group">
+        <label>Nombre de tonneaux épandus</label>
+        <input type="number" id="fp-ntonneaux" min="0" step="0.5" placeholder="ex : 4" oninput="calcLisier('fp')"/>
+      </div>
+      <div id="fp-lisier-box" class="calcul-box" style="display:none">
+        <div>💧 Volume total : <strong><span id="fp-lisier-vol"></span> L</strong>
+          (<span id="fp-lisier-m3"></span> m³)</div>
+        <div>📐 Dose : <strong><span id="fp-lisier-dose"></span> m³/ha</strong></div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Quantité / dose (libre)</label>
+      <input type="text" id="fp-amendt-qte" placeholder="ex : 25 m³/ha, 400 kg/ha…"/>
+    </div>
+    <div class="form-group">
+      <label>Remarque</label>
+      <input type="text" id="fp-amendt-rem" placeholder="facultatif"/>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-sec" onclick="document.getElementById('modal-fp-amendt').classList.remove('show')">Annuler</button>
+      <button class="btn btn-pri" onclick="fpSauvegarderAmendt()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL COUPE PARCELLE -->
+<div class="overlay" id="modal-fp-coupe">
+  <div class="modal">
+    <h2 id="modal-fp-coupe-titre">Coupe</h2>
+    <div class="form-group">
+      <label>Utilisation</label>
+      <div class="radio-group" id="fp-coupe-options"></div>
+    </div>
+    <div id="fp-bloc-paturage" style="display:none">
+      <div class="form-group">
+        <label>🐄 Date de début de pâturage</label>
+        <input type="date" id="fp-coupe-debut"/>
+      </div>
+      <div class="form-group">
+        <label>🐄 Date de fin de pâturage</label>
+        <input type="date" id="fp-coupe-fin"/>
+      </div>
+    </div>
+    <div id="fp-bloc-foin" style="display:none">
+      <div class="form-group">
+        <label>✂️ Date de coupe</label>
+        <input type="date" id="fp-coupe-date"/>
+      </div>
+      <div class="form-group">
+        <label>🧺 Date de pressage</label>
+        <input type="date" id="fp-coupe-pressage"/>
+      </div>
+      <div class="form-group">
+        <label>🔄 Nombre de fanages</label>
+        <input type="number" id="fp-fanage" min="0" max="10" placeholder="0"/>
+      </div>
+      <div class="form-group">
+        <label>Type de balle</label>
+        <div class="radio-group">
+          <button class="radio-btn" data-v="ronde" onclick="selRadio(this,'fp-type-balle');calcRendement('fp')">🔵 Ronde</button>
+          <button class="radio-btn" data-v="rect"  onclick="selRadio(this,'fp-type-balle');calcRendement('fp')">🟫 Rectangulaire</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Nombre de balles</label>
+        <input type="number" id="fp-nballes" min="0" placeholder="0" oninput="calcRendement('fp')"/>
+      </div>
+      <div class="calcul-box" id="fp-calcul-box" style="display:none">
+        <div class="calcul-item"><strong id="fp-calc-poids">—</strong><span>kg total</span></div>
+        <div class="calcul-item"><strong id="fp-calc-tonne">—</strong><span>tonnes</span></div>
+        <div class="calcul-item"><strong id="fp-calc-rdt">—</strong><span>t/ha</span></div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Remarque</label>
+      <input type="text" id="fp-coupe-rem" placeholder="Rendement, conditions…"/>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-sec" onclick="document.getElementById('modal-fp-coupe').classList.remove('show')">Annuler</button>
+      <button class="btn btn-pri" onclick="fpSauvegarderCoupe()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL GITHUB -->
+<div class="overlay" id="modal-github">
+  <div class="modal">
+    <h2>☁️ Sauvegarde GitHub</h2>
+    <div style="font-size:12px;color:#555;margin-bottom:12px">
+      Vos données sont sauvegardées dans votre dépôt GitHub privé.<br/>
+      <a href="https://github.com/settings/tokens" target="_blank" style="color:var(--vert)">Créer un token</a> → Fine-grained → repo <strong>carnet-sanitaire</strong> → Contents (lecture + écriture).
+    </div>
+    <div class="form-group">
+      <label>Token GitHub (ghp_…)</label>
+      <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxx" style="font-family:monospace"/>
+    </div>
+    <div id="gh-last-save" style="font-size:11px;color:#888;margin-bottom:8px"></div>
+    <div class="modal-actions" style="flex-wrap:wrap;gap:8px">
+      <button class="btn btn-sec" onclick="fermerModals()">Fermer</button>
+      <button class="btn btn-sec" onclick="ghRestaurer()" style="flex:1">📥 Restaurer</button>
+      <button class="btn btn-pri" onclick="ghSauvegarder()" style="flex:1">☁️ Sauvegarder</button>
+    </div>
+    <div id="gh-msg" style="margin-top:10px;font-size:12px;text-align:center;min-height:16px"></div>
+  </div>
+</div>
+
+<!-- MODAL COPIER ANNEE -->
+<div class="overlay" id="modal-copier-annee">
+  <div class="modal">
+    <h2>📋 Copier les îlots et parcelles</h2>
+    <p style="font-size:13px;color:#555;margin-bottom:14px">
+      Copie les îlots et leurs parcelles dessinées vers <strong id="copier-vers-annee"></strong>.<br/>
+      Les amendements et coupes ne sont <strong>pas</strong> copiés.
+    </p>
+    <div class="form-group">
+      <label>Copier depuis l'année</label>
+      <div id="copier-source-liste" class="radio-group" style="flex-wrap:wrap;gap:8px"></div>
+    </div>
+    <div id="copier-avert" style="display:none;background:#fff8e1;border-radius:8px;padding:10px 12px;font-size:12px;color:#7a6000;margin-bottom:8px">
+      ⚠️ L'année <span id="copier-vers-annee2"></span> contient déjà des îlots. Ils seront remplacés.
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-sec" onclick="fermerModals()">Annuler</button>
+      <button class="btn btn-pri" onclick="executerCopie()">Copier</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CONFIRMATION SUPPRESSION -->
+<div class="overlay" id="modal-confirm">
+  <div class="modal">
+    <h2>Confirmer la suppression</h2>
+    <p id="confirm-msg" style="margin-bottom:18px;color:#555;font-size:14px"></p>
+    <div class="modal-actions">
+      <button class="btn btn-sec" onclick="fermerModals()">Annuler</button>
+      <button class="btn btn-danger" id="confirm-ok">Supprimer</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===================== DONNÉES =====================
+const COUPES_OPTIONS = [
+  ['paturage','regain','herbe_dure'],          // options à ignorer, config par coupe
+];
+const COUPES_CONFIG = [
+  {label:'1ʳᵉ coupe', opts:[{v:'paturage',l:'🐄 Pâturage'},{v:'foin',l:'🌾 Foin'}]},
+  {label:'2ᵉ coupe',  opts:[{v:'paturage',l:'🐄 Pâturage'},{v:'regain',l:'🌿 Regain'},{v:'herbe_dure',l:'🍂 Herbe dure'}]},
+  {label:'3ᵉ coupe',  opts:[{v:'paturage',l:'🐄 Pâturage'},{v:'regain',l:'🌿 Regain'}]},
+  {label:'4ᵉ coupe',  opts:[{v:'paturage',l:'🐄 Pâturage'}]},
+];
+const COUPES_ICO = {paturage:'🐄',foin:'🌾',regain:'🌿',herbe_dure:'🍂'};
+const COUPES_NOM = {paturage:'Pâturage',foin:'Foin',regain:'Regain',herbe_dure:'Herbe dure'};
+
+let donnees = {}; // { "2025": { ilots:[] } }
+let anneeActive = String(new Date().getFullYear());
+let editIlotId = null;
+let contextIlotId = null;
+let contextCoupeIdx = null;
+let amndtRadio = {};
+
+// ===================== UTILS =====================
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+function fmt(d){if(!d)return '';const [y,m,j]=d.split('-');return `${j}/${m}/${y}`}
+function today(){return new Date().toISOString().slice(0,10)}
+function getAnnee(a){
+  if(!donnees[a]) donnees[a]={ilots:[]};
+  return donnees[a];
+}
+function sauvegarderLS(){localStorage.setItem('prairies_v2',JSON.stringify(donnees))}
+function chargerLS(){
+  const raw=localStorage.getItem('prairies_v2');
+  if(raw) donnees=JSON.parse(raw);
+  // migration ancienne version
+  if(!donnees[anneeActive]) donnees[anneeActive]={ilots:[]};
+}
+
+// ===================== ONGLETS ANNEE =====================
+function initOnglets(){
+  const annees=[];
+  const cur=new Date().getFullYear();
+  for(let y=cur-1;y<=cur+1;y++) annees.push(String(y));
+  Object.keys(donnees).forEach(a=>{if(!annees.includes(a))annees.push(a)});
+  annees.sort();
+  const ct=document.getElementById('onglets-annee');
+  ct.innerHTML='';
+  annees.forEach(a=>{
+    const b=document.createElement('button');
+    b.className='onglet-annee'+(a===anneeActive?' actif':'');
+    b.textContent=a;
+    b.onclick=()=>{anneeActive=a;initOnglets();render();setVue(vueActive);majBtnCopier()};
+    ct.appendChild(b);
+  });
+  document.getElementById('bandeau-annee').textContent='Campagne '+anneeActive;
+}
+
+// ===================== VUE =====================
+let vueActive = 'ilots';
+function setVue(v){
+  vueActive = v;
+  document.getElementById('vue-tab-ilots').style.background = v==='ilots'?'var(--vert)':'#e8f0e4';
+  document.getElementById('vue-tab-ilots').style.color      = v==='ilots'?'#fff':'#4a7a4a';
+  document.getElementById('vue-tab-bilan').style.background = v==='bilan'?'var(--vert)':'#e8f0e4';
+  document.getElementById('vue-tab-bilan').style.color      = v==='bilan'?'#fff':'#4a7a4a';
+  document.getElementById('liste-ilots').style.display  = v==='ilots'?'':'none';
+  document.getElementById('vue-bilan').style.display    = v==='bilan'?'':'none';
+  if(v==='bilan') renderBilan();
+}
+
+function accumulerBalles(ilots){
+  const par = [0,1,2,3].map(()=>({nBalles:0, poidsTotal:0, surfHa:0, lignes:[]}));
+  ilots.forEach(il=>{
+    const surf = parseFloat(il.surface)||0;
+    il.coupes.forEach((c,i)=>{
+      if(!c||!c.nBalles) return;
+      par[i].nBalles    += c.nBalles;
+      par[i].poidsTotal += c.poidsTotal||(c.nBalles*(c.poidsBalle||0));
+      par[i].surfHa     += surf;
+      par[i].lignes.push({ilot:il, c, surf});
+    });
+    (il.geometries||[]).forEach(geo=>{
+      const gsurf = parseFloat(geo.surface)||0;
+      (geo.coupes||[]).forEach((c,i)=>{
+        if(!c||!c.nBalles) return;
+        par[i].nBalles    += c.nBalles;
+        par[i].poidsTotal += c.poidsTotal||(c.nBalles*(c.poidsBalle||0));
+        par[i].surfHa     += gsurf;
+        par[i].lignes.push({geo, c, surf:gsurf});
+      });
+    });
+  });
+  return par;
+}
+
+function deltaFleche(cur, prev){
+  if(!prev||!cur) return '';
+  const diff = cur - prev;
+  if(diff===0) return '<span style="color:#888">→ =</span>';
+  const pct  = Math.round(Math.abs(diff)/prev*100);
+  return diff>0
+    ? `<span style="color:#3a9a3a">▲ +${pct}%</span>`
+    : `<span style="color:#c04040">▼ -${pct}%</span>`;
+}
+
+function renderBilan(){
+  const anneeN  = anneeActive;
+  const anneeN1 = String(parseInt(anneeN)-1);
+  const ilotsN  = getAnnee(anneeN).ilots;
+  const ilotsN1 = (donnees[anneeN1]||{ilots:[]}).ilots;
+  const avecN1  = ilotsN1.length > 0;
+
+  const labels   = ['1ère coupe','2ème coupe','3ème coupe','4ème coupe'];
+  const parCoupe   = accumulerBalles(ilotsN);
+  const parCoupeN1 = accumulerBalles(ilotsN1);
+
+  const totalBalles  = parCoupe.reduce((s,p)=>s+p.nBalles,0);
+  const totalPoids   = parCoupe.reduce((s,p)=>s+p.poidsTotal,0);
+  const totalBallN1  = parCoupeN1.reduce((s,p)=>s+p.nBalles,0);
+  const totalPoidsN1 = parCoupeN1.reduce((s,p)=>s+p.poidsTotal,0);
+
+  // ---- tableau principal ----
+  const colN1 = avecN1 ? `
+    <th style="padding:8px 10px;text-align:center;color:#888">${anneeN1} balles</th>
+    <th style="padding:8px 10px;text-align:center;color:#888">${anneeN1} kg/ha</th>
+    <th style="padding:8px 10px;border-radius:0 8px 8px 0;text-align:center">Évolution</th>` : `
+    <th style="padding:8px 10px;border-radius:0 8px 8px 0;text-align:center">Moy. kg/ha</th>`;
+
+  let html = `
+  <div style="background:#fff;border-radius:14px;padding:16px;box-shadow:0 2px 8px #0001;margin-bottom:16px">
+    <div style="font-weight:700;font-size:16px;color:var(--vert);margin-bottom:14px">📊 Bilan balles — Campagne ${anneeN}
+      ${avecN1?`<span style="font-size:12px;font-weight:400;color:#888;margin-left:8px">comparé à ${anneeN1}</span>`:''}
+    </div>
+    <table style="width:100%;border-collapse:collapse;font-size:13px">
+      <thead>
+        <tr style="background:#f2f7ee;text-align:left">
+          <th style="padding:8px 10px;border-radius:8px 0 0 8px">Coupe</th>
+          <th style="padding:8px 10px;text-align:center">${anneeN} balles</th>
+          <th style="padding:8px 10px;text-align:center">${anneeN} poids</th>
+          <th style="padding:8px 10px;text-align:center">${anneeN} kg/ha</th>
+          ${colN1}
+        </tr>
+      </thead>
+      <tbody>`;
+
+  parCoupe.forEach((p,i)=>{
+    const pN1  = parCoupeN1[i];
+    const rdt  = p.surfHa>0  ? Math.round(p.poidsTotal/p.surfHa)  : null;
+    const rdtN1= pN1.surfHa>0 ? Math.round(pN1.poidsTotal/pN1.surfHa) : null;
+    const rdtStr  = rdt  ? rdt+' kg/ha'  : '—';
+    const ptonne  = p.poidsTotal ? (p.poidsTotal/1000).toFixed(2)+' t' : '—';
+
+    let n1cols = '';
+    if(avecN1){
+      const rdtN1str = rdtN1 ? rdtN1+' kg/ha' : '—';
+      const ballN1   = pN1.nBalles||'—';
+      const evol     = (rdt&&rdtN1) ? deltaFleche(rdt,rdtN1) : (p.nBalles&&pN1.nBalles)?deltaFleche(p.nBalles,pN1.nBalles):'';
+      n1cols = `<td style="padding:8px 10px;text-align:center;color:#888">${ballN1}</td>
+        <td style="padding:8px 10px;text-align:center;color:#888">${rdtN1str}</td>
+        <td style="padding:8px 10px;text-align:center;font-weight:600">${evol||'—'}</td>`;
+    } else {
+      n1cols = `<td style="padding:8px 10px;text-align:center;font-weight:600;color:${rdt?'#3a7a3a':'#aaa'}">${rdtStr}</td>`;
+    }
+
+    html += `<tr style="border-top:1px solid #e8f0e4">
+      <td style="padding:8px 10px;font-weight:600;color:#4a7a4a">${labels[i]}</td>
+      <td style="padding:8px 10px;text-align:center">${p.nBalles||'—'}</td>
+      <td style="padding:8px 10px;text-align:center">${ptonne}</td>
+      <td style="padding:8px 10px;text-align:center;font-weight:600;color:${rdt?'#3a7a3a':'#aaa'}">${rdtStr}</td>
+      ${n1cols}
+    </tr>`;
+
+    // Détail par îlot (année N seulement)
+    if(p.lignes.length>1){
+      html += p.lignes.map(({ilot,geo,c,surf})=>{
+        const nom  = geo ? geo.nom : (ilot?`Îlot n°${ilot.num}${ilot.nom?' · '+ilot.nom:''}`:'-');
+        const pds  = c.poidsTotal||(c.nBalles*(c.poidsBalle||0));
+        const rdtL = surf>0 ? Math.round(pds/surf)+' kg/ha' : '—';
+        const colspan = avecN1 ? 3 : 1;
+        return `<tr style="background:#fafcf8;font-size:12px;color:#666">
+          <td style="padding:4px 10px 4px 24px">↳ ${nom}</td>
+          <td style="padding:4px 10px;text-align:center">${c.nBalles}</td>
+          <td style="padding:4px 10px;text-align:center">${(pds/1000).toFixed(2)} t</td>
+          <td style="padding:4px 10px;text-align:center">${rdtL}</td>
+          <td colspan="${colspan}" style="padding:4px 10px;text-align:center;color:#ccc">—</td>
+        </tr>`;
+      }).join('');
+    }
+  });
+
+  // ligne total
+  const evolTotal = avecN1&&totalBalles&&totalBallN1 ? deltaFleche(totalBalles,totalBallN1) : '';
+  const n1TotalCols = avecN1
+    ? `<td style="padding:10px;text-align:center;color:#888">${totalBallN1||'—'}</td>
+       <td style="padding:10px;text-align:center;color:#888">${totalPoidsN1?(totalPoidsN1/1000).toFixed(2)+' t':'—'}</td>
+       <td style="padding:10px;border-radius:0 8px 8px 0;text-align:center;font-weight:700">${evolTotal||'—'}</td>`
+    : `<td style="padding:10px;border-radius:0 8px 8px 0;text-align:center">—</td>`;
+
+  html += `</tbody>
+      <tfoot>
+        <tr style="background:#eaf4e4;font-weight:700;border-top:2px solid #c5ddb5">
+          <td style="padding:10px;border-radius:8px 0 0 8px">TOTAL</td>
+          <td style="padding:10px;text-align:center">${totalBalles||'—'}</td>
+          <td style="padding:10px;text-align:center">${totalPoids?(totalPoids/1000).toFixed(2)+' t':'—'}</td>
+          <td style="padding:10px;text-align:center">—</td>
+          ${n1TotalCols}
+        </tr>
+      </tfoot>
+    </table>
+    ${totalBalles===0?'<div style="text-align:center;color:#aaa;font-size:13px;margin-top:14px">Aucune balle enregistrée pour cette campagne</div>':''}
+    ${!avecN1?`<div style="font-size:11px;color:#bbb;margin-top:8px;text-align:right">Aucune donnée ${anneeN1} — le comparatif apparaîtra automatiquement</div>`:''}
+  </div>`;
+
+  // ---- tableau lisier ----
+  html += bilanLisier(ilotsN, ilotsN1, anneeN, anneeN1, avecN1);
+
+  document.getElementById('vue-bilan').innerHTML = html;
+}
+
+function accumulerLisier(ilots){
+  // par ilot : {nom, nTon, volL, surf}
+  // total global
+  let total = {nTon:0, volL:0, surfHa:0, lignes:[]};
+  ilots.forEach(il=>{
+    const surf = parseFloat(il.surface)||0;
+    let ilTon=0, ilVol=0;
+    il.amendements.forEach(a=>{
+      if(a.type!=='lisier'||!a.nTonneaux) return;
+      ilTon += a.nTonneaux;
+      ilVol += a.volTotal||(a.nTonneaux*params.tonneau);
+    });
+    // aussi parcelles
+    (il.geometries||[]).forEach(geo=>{
+      const gs = parseFloat(geo.surface)||0;
+      (geo.amendements||[]).forEach(a=>{
+        if(a.type!=='lisier'||!a.nTonneaux) return;
+        ilTon += a.nTonneaux;
+        ilVol += a.volTotal||(a.nTonneaux*params.tonneau);
+      });
+    });
+    if(!ilTon) return;
+    total.nTon   += ilTon;
+    total.volL   += ilVol;
+    total.surfHa += surf;
+    total.lignes.push({nom:`Îlot n°${il.num}${il.nom?' · '+il.nom:''}`, nTon:ilTon, volL:ilVol, surf});
+  });
+  return total;
+}
+
+function bilanLisier(ilotsN, ilotsN1, anneeN, anneeN1, avecN1){
+  const lN  = accumulerLisier(ilotsN);
+  const lN1 = avecN1 ? accumulerLisier(ilotsN1) : null;
+  if(!lN.nTon && (!lN1||!lN1.nTon)) return '';
+
+  const azote = params.azoteLitre||2.5; // g N/L
+
+  function ligneDetail(nom, nTon, volL, surf){
+    const m3    = volL/1000;
+    const doseM3= surf>0 ? (m3/surf).toFixed(1) : '—';
+    const azN   = volL*azote/1000; // kg N
+    const azHa  = surf>0 ? (azN/surf).toFixed(1) : '—';
+    return {nom, nTon, volL, m3:m3.toFixed(0), doseM3, azN:azN.toFixed(1), azHa};
+  }
+
+  function row(d, style=''){
+    return `<tr style="border-top:1px solid #e8f0e4${style?';'+style:''}">
+      <td style="padding:8px 10px;font-weight:600;color:#4a7a4a">${d.nom}</td>
+      <td style="padding:8px 10px;text-align:center">${d.nTon}</td>
+      <td style="padding:8px 10px;text-align:center">${Number(d.volL).toLocaleString('fr-FR')} L</td>
+      <td style="padding:8px 10px;text-align:center">${d.m3} m³</td>
+      <td style="padding:8px 10px;text-align:center">${d.doseM3} m³/ha</td>
+      <td style="padding:8px 10px;text-align:center">${d.azN} kg N</td>
+      <td style="padding:8px 10px;text-align:right;border-radius:0 8px 8px 0">${d.azHa} kg N/ha</td>
+    </tr>`;
+  }
+
+  const totN  = ligneDetail('TOTAL '+anneeN,  lN.nTon,  lN.volL,  lN.surfHa);
+  const totN1 = lN1&&lN1.nTon ? ligneDetail('TOTAL '+anneeN1, lN1.nTon, lN1.volL, lN1.surfHa) : null;
+
+  let rows = '';
+  if(lN.lignes.length>1){
+    lN.lignes.forEach(l=>{
+      rows += row(ligneDetail(l.nom, l.nTon, l.volL, l.surf));
+    });
+  }
+  rows += `<tr style="background:#eaf4e4;font-weight:700;border-top:2px solid #c5ddb5">
+    <td style="padding:10px;border-radius:8px 0 0 8px">${totN.nom}</td>
+    <td style="padding:10px;text-align:center">${totN.nTon}</td>
+    <td style="padding:10px;text-align:center">${Number(lN.volL).toLocaleString('fr-FR')} L</td>
+    <td style="padding:10px;text-align:center">${totN.m3} m³</td>
+    <td style="padding:10px;text-align:center">${totN.doseM3} m³/ha</td>
+    <td style="padding:10px;text-align:center">${totN.azN} kg N</td>
+    <td style="padding:10px;text-align:right;border-radius:0 8px 8px 0">${totN.azHa} kg N/ha</td>
+  </tr>`;
+
+  if(totN1){
+    rows += `<tr style="background:#f5f7f2;font-weight:600;border-top:1px solid #dde8d0;color:#888">
+      <td style="padding:8px 10px;border-radius:8px 0 0 8px">${totN1.nom}</td>
+      <td style="padding:8px 10px;text-align:center">${totN1.nTon}</td>
+      <td style="padding:8px 10px;text-align:center">${Number(lN1.volL).toLocaleString('fr-FR')} L</td>
+      <td style="padding:8px 10px;text-align:center">${totN1.m3} m³</td>
+      <td style="padding:8px 10px;text-align:center">${totN1.doseM3} m³/ha</td>
+      <td style="padding:8px 10px;text-align:center">${totN1.azN} kg N</td>
+      <td style="padding:8px 10px;text-align:right;border-radius:0 8px 8px 0">${totN1.azHa} kg N/ha</td>
+    </tr>`;
+    // évolution
+    if(lN.volL && lN1.volL){
+      const pct = Math.round((lN.volL-lN1.volL)/lN1.volL*100);
+      const fl  = pct>0?`▲ +${pct}%`:pct<0?`▼ ${pct}%`:'→ =';
+      const col = pct>0?'#3a9a3a':pct<0?'#c04040':'#888';
+      rows += `<tr style="background:#f0f5ec;font-size:12px">
+        <td colspan="7" style="padding:6px 10px;text-align:right;color:${col};font-weight:700">
+          Évolution volume lisier ${anneeN1}→${anneeN} : <span>${fl}</span>
+        </td>
+      </tr>`;
+    }
+  }
+
+  return `
+  <div style="background:#fff;border-radius:14px;padding:16px;box-shadow:0 2px 8px #0001;margin-bottom:16px">
+    <div style="font-weight:700;font-size:16px;color:#5a8a9a;margin-bottom:14px">💧 Bilan lisier — Campagne ${anneeN}
+      ${avecN1&&lN1&&lN1.nTon?`<span style="font-size:12px;font-weight:400;color:#888;margin-left:8px">comparé à ${anneeN1}</span>`:''}
+    </div>
+    <div style="font-size:11px;color:#888;margin-bottom:8px">Azote calculé sur base de ${azote} g N/L (paramètre modifiable)</div>
+    <table style="width:100%;border-collapse:collapse;font-size:13px">
+      <thead>
+        <tr style="background:#eaf4f8;text-align:left">
+          <th style="padding:8px 10px;border-radius:8px 0 0 0">Îlot</th>
+          <th style="padding:8px 10px;text-align:center">Tonneaux</th>
+          <th style="padding:8px 10px;text-align:center">Volume (L)</th>
+          <th style="padding:8px 10px;text-align:center">Volume (m³)</th>
+          <th style="padding:8px 10px;text-align:center">Dose m³/ha</th>
+          <th style="padding:8px 10px;text-align:center">Azote total</th>
+          <th style="padding:8px 10px;text-align:right;border-radius:0 8px 0 0">Azote/ha</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+  </div>`;
+}
+
+// ===================== RENDER =====================
+function render(){
+  const {ilots}=getAnnee(anneeActive);
+  // stats
+  let nParcelles=0,nAmendts=0,nCoupes=0;
+  ilots.forEach(il=>{
+    nParcelles+=il.parcelles.length;
+    nAmendts+=il.amendements.length;
+    il.coupes.forEach(c=>{if(c&&c.type)nCoupes++});
+  });
+  document.getElementById('stat-ilots').textContent=ilots.length;
+  document.getElementById('stat-parcelles').textContent=nParcelles;
+  document.getElementById('stat-amendts').textContent=nAmendts;
+  document.getElementById('stat-coupes').textContent=nCoupes;
+
+  const ct=document.getElementById('liste-ilots');
+  if(!ilots.length){
+    ct.innerHTML=`<div class="vide"><div class="ico">🌿</div><p>Aucun îlot pour ${anneeActive}</p><p style="font-size:12px;margin-top:6px">Ajoutez votre premier îlot PAC</p></div>`;
+    return;
+  }
+  ct.innerHTML=ilots.map(il=>renderIlot(il)).join('');
+}
+
+function renderIlot(il){
+  const ouvert=il.ouvert!==false;
+  return `
+  <div class="ilot-card" id="card-${il.id}">
+    <div class="ilot-header" onclick="toggleIlot('${il.id}')">
+      <div class="ilot-num">${il.num||'—'}</div>
+      <div class="ilot-nom">
+        <strong>${il.nom||'Sans nom'}</strong>
+        <small>${il.surface?il.surface+' ha':''} · ${il.parcelles.length} parcelle${il.parcelles.length>1?'s':''}</small>
+      </div>
+      <span onclick="event.stopPropagation();ouvrirCarteIlot('${il.num}')" title="Voir sur la carte" style="font-size:18px;cursor:pointer;opacity:.85;padding:2px 4px">🛰️</span>
+      <span class="ilot-chevron ${ouvert?'ouvert':''}">▾</span>
+    </div>
+    ${ouvert?`
+    <div class="ilot-body">
+      ${renderParcelles(il)}
+      ${!(il.geometries&&il.geometries.length)?renderAmendements(il):''}
+      ${!(il.geometries&&il.geometries.length)?renderCoupes(il):''}
+      <div style="padding:8px 14px 12px;display:flex;gap:6px;flex-wrap:wrap">
+        <button class="btn btn-sec btn-sm" onclick="ouvrirModalIlot('${il.id}')">✏️ Modifier</button>
+        <button class="btn btn-danger btn-sm" onclick="confirmerSupprIlot('${il.id}')">🗑️ Supprimer</button>
+      </div>
+    </div>`:''}</div>`;
+}
+
+function renderParcelles(il){
+  const geoByNom = {};
+  (il.geometries||[]).forEach((g,gi)=>{ geoByNom[g.nom] = {g, gi}; });
+
+  const items = il.parcelles.map((nom, pi)=>{
+    const entry = geoByNom[nom];
+    if(entry){
+      const {g, gi} = entry;
+      if(!g.amendements) g.amendements=[];
+      if(!g.coupes) g.coupes=[null,null,null,null];
+      const nA = g.amendements.length;
+      const nC = g.coupes.filter(c=>c&&c.type).length;
+      const surf = g.surface ? `📐 ${g.surface} ha` : '';
+      const coupesHtml = COUPES_CONFIG.map((cfg,ci)=>{
+        const c = g.coupes[ci];
+        const val = c&&c.type ? `${COUPES_ICO[c.type]} ${COUPES_NOM[c.type]}` : '<span style="color:#bbb">Toucher pour saisir</span>';
+        return `<div onclick="ouvrirFpCoupe('${il.id}',${gi},${ci})" style="flex:1;min-width:90px;background:var(--gris);border-radius:8px;padding:6px 8px;border:1px solid var(--bord);cursor:pointer" class="coupe-cell">
+          <div style="font-size:10px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">${cfg.label}</div>
+          <div style="font-size:12px;color:var(--txt)">${val}</div>
+          ${c&&c.type?`<div style="font-size:10px;color:#888">${c.type==='paturage'
+            ?`🐄 ${fmt(c.debut)||'—'}${c.fin?' → '+fmt(c.fin):''}`
+            :`✂️ ${fmt(c.date)||'—'}${c.pressage?' · 🧺 '+fmt(c.pressage):''}${c.fanage?'<br/>🔄 '+c.fanage+' fanage'+(c.fanage>1?'s':''):''}`
+          }</div>${coupeBalleInfo(c, parseFloat(g.surface)||0)}`:''}
+        </div>`;
+      }).join('');
+      const amendtsHtml = g.amendements.length ? g.amendements.map(a=>`
+        <span class="amendt-badge ${a.type}" style="font-size:11px;margin:2px 2px 0 0">
+          ${{lisier:'💧',fumier:'🌾',engrais:'🌿'}[a.type]} ${fmt(a.date)}${a.qte?' · '+a.qte:''}
+        </span>`).join('') : '<span style="font-size:11px;color:#bbb">Aucun amendement</span>';
+      return `<div class="parcelle-item" id="pitem-${il.id}-${gi}">
+        <div class="parcelle-item-header" onclick="ouvrirFicheParcelle('${il.id}',${gi})" style="cursor:pointer">
+          <span class="parcelle-ico">🌿</span>
+          <div class="parcelle-info">
+            <strong>${nom}</strong>
+            <small>${surf}</small>
+          </div>
+          <button onclick="event.stopPropagation();confirmerSupprParcelle('${il.id}',${pi})" class="btn btn-danger btn-sm" style="padding:5px 8px">✕</button>
+          <span style="font-size:13px;color:#7a9a7a;background:#eaf4ea;border-radius:6px;padding:3px 8px;font-weight:600">✏️ Saisir</span>
+        </div>
+        <div class="parcelle-item-body">
+          <div style="font-size:11px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">✂️ Coupes</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">${coupesHtml}</div>
+          <div style="font-size:11px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">🧪 Amendements</div>
+          <div>${amendtsHtml}</div>
+        </div>
+      </div>`;
+    } else {
+      // parcelle sans géométrie dessinée
+      return `<div class="parcelle-item">
+        <div class="parcelle-item-header">
+          <span class="parcelle-ico">🌿</span>
+          <div class="parcelle-info">
+            <strong>${nom}</strong>
+            <small style="color:#aaa">Pas de contour dessiné</small>
+          </div>
+          <button onclick="confirmerSupprParcelle('${il.id}',${pi})" class="btn btn-danger btn-sm" style="padding:5px 8px">✕</button>
+        </div>
+      </div>`;
+    }
+  }).join('');
+
+  return `<div class="parcelles-zone">
+    <div class="section-titre">🗺️ Parcelles
+      <span class="parcelle-add" onclick="ouvrirModalParcelle('${il.id}')" style="margin-left:auto">＋ Ajouter</span>
+    </div>
+    ${items||'<span style="font-size:12px;color:#bbb">Aucune parcelle</span>'}
+  </div>`;
+}
+
+function toggleParcelle(ilotId, gi){
+  const il = trouverIlot(ilotId);
+  const g  = il.geometries[gi];
+  g._ouvert = !g._ouvert;
+  sauvegarderLS();
+  render();
+}
+
+function amndtLisierInfo(a, surf){
+  if(a.type!=='lisier'||!a.nTonneaux) return '';
+  const dose = surf>0 ? ` · ${(a.volM3/surf).toFixed(1)} m³/ha` : '';
+  return ` · 💧 ${a.nTonneaux} ton. · ${a.volM3.toFixed(1)} m³${dose}`;
+}
+
+function renderAmendements(il){
+  const surf = parseFloat(il.surface)||0;
+  const items=il.amendements.map((a,i)=>`
+    <div class="amendt-item">
+      <span class="amendt-badge ${a.type}">${{lisier:'💧 Lisier',fumier:'🌾 Fumier',engrais:'🌿 Engrais'}[a.type]}</span>
+      <span class="amendt-detail">${fmt(a.date)}${amndtLisierInfo(a,surf)}${a.qte?' · '+a.qte:''} ${a.rem?'· '+a.rem:''}</span>
+      <button class="btn btn-danger btn-sm" style="padding:3px 8px;font-size:11px" onclick="supprimerAmendt('${il.id}',${i})">✕</button>
+    </div>`).join('');
+  return `<div class="section">
+    <div class="section-titre">🧪 Amendements
+      <button class="btn btn-sec btn-sm" style="margin-left:auto" onclick="ouvrirModalAmendt('${il.id}')">＋ Ajouter</button>
+    </div>
+    ${items||'<span style="font-size:12px;color:#aaa">Aucun amendement</span>'}
+  </div>`;
+}
+
+function coupeBalleInfo(c, surf){
+  if(!c||c.type==='paturage'||!c.nBalles) return '';
+  const total = c.poidsTotal||(c.nBalles*(c.poidsBalle||0));
+  const rdt   = surf>0?` · ${(total/1000/surf).toFixed(2)} t/ha`:'';
+  return `<div style="font-size:11px;color:#7c9;margin-top:2px">🎁 ${c.nBalles} balles · ${(total/1000).toFixed(2)} t${rdt}</div>`;
+}
+
+function renderCoupes(il){
+  const surf = parseFloat(il.surface)||0;
+  const cells=COUPES_CONFIG.map((cfg,i)=>{
+    const c=il.coupes[i];
+    const val=c&&c.type?`<div class="coupe-val"><span class="coupe-ico">${COUPES_ICO[c.type]||''}</span>${COUPES_NOM[c.type]||c.type}</div>
+      <div class="coupe-date">${c.type==='paturage'
+        ?`🐄 ${fmt(c.debut)||'—'}${c.fin?' → '+fmt(c.fin):''}`
+        :`✂️ ${fmt(c.date)||'—'}${c.pressage?'<br/>🧺 '+fmt(c.pressage):''}${c.fanage?'<br/>🔄 '+c.fanage+' fanage'+(c.fanage>1?'s':''):''}`
+      }</div>${coupeBalleInfo(c,surf)}`:
+      `<div class="coupe-vide">Non renseigné</div>`;
+    return `<div class="coupe-cell" onclick="ouvrirModalCoupe('${il.id}',${i})" style="cursor:pointer">
+      <div class="coupe-label">${cfg.label}</div>${val}</div>`;
+  }).join('');
+  return `<div class="section">
+    <div class="section-titre">✂️ Coupes / utilisations</div>
+    <div class="coupes-grid">${cells}</div>
+  </div>`;
+}
+
+// ===================== ILOTS =====================
+function toggleIlot(id){
+  const il=trouverIlot(id);
+  if(il){il.ouvert=!il.ouvert;sauvegarderLS();render();}
+}
+function trouverIlot(id){return getAnnee(anneeActive).ilots.find(i=>i.id===id)}
+
+function ouvrirModalIlot(id=null){
+  editIlotId=id;
+  document.getElementById('modal-ilot-titre').textContent=id?'Modifier l\'îlot':'Nouvel îlot PAC';
+  if(id){
+    const il=trouverIlot(id);
+    document.getElementById('f-num').value=il.num||'';
+    document.getElementById('f-nom').value=il.nom||'';
+    document.getElementById('f-surface').value=il.surface||'';
+  } else {
+    document.getElementById('f-num').value='';
+    document.getElementById('f-nom').value='';
+    document.getElementById('f-surface').value='';
+  }
+  document.getElementById('modal-ilot').classList.add('show');
+}
+
+function sauvegarderIlot(){
+  const num=document.getElementById('f-num').value.trim();
+  const nom=document.getElementById('f-nom').value.trim();
+  const surface=document.getElementById('f-surface').value.trim();
+  if(!num&&!nom){alert('Renseignez au moins le numéro ou le nom.');return;}
+  const {ilots}=getAnnee(anneeActive);
+  if(editIlotId){
+    const il=trouverIlot(editIlotId);
+    il.num=num;il.nom=nom;il.surface=surface;
+  } else {
+    ilots.push({id:uid(),num,nom,surface,parcelles:[],amendements:[],coupes:[null,null,null,null],ouvert:true});
+  }
+  sauvegarderLS();fermerModals();render();
+}
+
+function confirmerSupprIlot(id){
+  const il=trouverIlot(id);
+  document.getElementById('confirm-msg').textContent=`Supprimer l'îlot "${il.num} – ${il.nom}" et toutes ses données ?`;
+  document.getElementById('confirm-ok').onclick=()=>{supprimerIlot(id)};
+  document.getElementById('modal-confirm').classList.add('show');
+}
+function supprimerIlot(id){
+  const {ilots}=getAnnee(anneeActive);
+  const idx=ilots.findIndex(i=>i.id===id);
+  if(idx>=0){ilots.splice(idx,1);sauvegarderLS();fermerModals();render();}
+}
+
+// ===================== PARCELLES =====================
+function ouvrirModalParcelle(ilotId){
+  contextIlotId=ilotId;
+  document.getElementById('f-parcelle-nom').value='';
+  document.getElementById('modal-parcelle').classList.add('show');
+}
+function sauvegarderParcelle(){
+  const nom=document.getElementById('f-parcelle-nom').value.trim();
+  if(!nom){alert('Renseignez le nom de la parcelle.');return;}
+  trouverIlot(contextIlotId).parcelles.push(nom);
+  sauvegarderLS();fermerModals();render();
+}
+function confirmerSupprParcelle(ilotId,idx){
+  const il=trouverIlot(ilotId);
+  document.getElementById('confirm-msg').textContent=`Supprimer la parcelle "${il.parcelles[idx]}" ?`;
+  document.getElementById('confirm-ok').onclick=()=>{il.parcelles.splice(idx,1);sauvegarderLS();fermerModals();render();};
+  document.getElementById('modal-confirm').classList.add('show');
+}
+
+// ===================== AMENDEMENTS =====================
+function ouvrirModalAmendt(ilotId){
+  contextIlotId=ilotId;
+  amndtRadio={};
+  document.querySelectorAll('[data-v]').forEach(b=>b.classList.remove('sel'));
+  document.getElementById('f-amendt-date').value=today();
+  document.getElementById('f-amendt-qte').value='';
+  document.getElementById('f-amendt-rem').value='';
+  document.getElementById('f-ntonneaux').value='';
+  document.getElementById('f-bloc-lisier').style.display='none';
+  document.getElementById('f-lisier-box').style.display='none';
+  _surfaceAmendt = parseFloat(trouverIlot(ilotId).surface)||0;
+  document.getElementById('modal-amendt').classList.add('show');
+}
+function sauvegarderAmendt(){
+  if(!amndtRadio['amendt-type']){alert('Choisissez un type d\'amendement.');return;}
+  const isLis = amndtRadio['amendt-type']==='lisier';
+  const nTon  = isLis ? (parseFloat(document.getElementById('f-ntonneaux').value)||0) : 0;
+  const vol   = nTon * params.tonneau;
+  trouverIlot(contextIlotId).amendements.push({
+    type:     amndtRadio['amendt-type'],
+    date:     document.getElementById('f-amendt-date').value,
+    qte:      document.getElementById('f-amendt-qte').value.trim(),
+    rem:      document.getElementById('f-amendt-rem').value.trim(),
+    nTonneaux:isLis ? nTon : 0,
+    volTotal: isLis ? vol  : 0,
+    volM3:    isLis ? vol/1000 : 0
+  });
+  sauvegarderLS();fermerModals();render();
+}
+function supprimerAmendt(ilotId,idx){
+  trouverIlot(ilotId).amendements.splice(idx,1);
+  sauvegarderLS();render();
+}
+
+// ===================== COUPES =====================
+function ouvrirModalCoupe(ilotId,coupeIdx){
+  contextIlotId=ilotId;
+  contextCoupeIdx=coupeIdx;
+  const cfg=COUPES_CONFIG[coupeIdx];
+  document.getElementById('modal-coupe-titre').textContent=cfg.label;
+  const ct=document.getElementById('coupe-options');
+  ct.innerHTML=cfg.opts.map(o=>`<button class="radio-btn" data-v="${o.v}" onclick="selRadio(this,'coupe-type')">${o.l}</button>`).join('');
+  // surface de l'îlot pour calcul rendement
+  _surfaceContexte = parseFloat(trouverIlot(ilotId).surface)||0;
+  // masquer les blocs dates par défaut
+  document.getElementById('f-bloc-paturage').style.display='none';
+  document.getElementById('f-bloc-foin').style.display='none';
+  document.getElementById('f-calcul-box').style.display='none';
+  amndtRadio['f-type-balle']=null;
+  document.querySelectorAll('#f-bloc-foin .radio-btn').forEach(b=>b.classList.remove('sel'));
+  document.getElementById('f-nballes').value='';
+  document.getElementById('f-fanage').value='';
+  const existing=trouverIlot(ilotId).coupes[coupeIdx];
+  if(existing&&existing.type){
+    const btn=ct.querySelector(`[data-v="${existing.type}"]`);
+    if(btn){btn.classList.add('sel');amndtRadio['coupe-type']=existing.type;}
+    majBlocsDates('f', existing.type);
+    if(existing.type==='paturage'){
+      document.getElementById('f-coupe-debut').value=existing.debut||today();
+      document.getElementById('f-coupe-fin').value=existing.fin||'';
+    } else {
+      document.getElementById('f-coupe-date').value=existing.date||today();
+      document.getElementById('f-coupe-pressage').value=existing.pressage||'';
+      document.getElementById('f-fanage').value=existing.fanage||'';
+      // balles
+      if(existing.typeBalle){
+        amndtRadio['f-type-balle']=existing.typeBalle;
+        const bb=document.querySelector(`#f-bloc-foin [data-v="${existing.typeBalle}"]`);
+        if(bb) bb.classList.add('sel');
+      }
+      document.getElementById('f-nballes').value=existing.nBalles||'';
+      calcRendement('f');
+    }
+    document.getElementById('f-coupe-rem').value=existing.rem||'';
+  } else {
+    amndtRadio['coupe-type']=null;
+    document.getElementById('f-coupe-rem').value='';
+  }
+  document.getElementById('modal-coupe').classList.add('show');
+}
+function sauvegarderCoupe(){
+  if(!amndtRadio['coupe-type']){alert('Choisissez une utilisation.');return;}
+  const il=trouverIlot(contextIlotId);
+  const isPat = amndtRadio['coupe-type']==='paturage';
+  const nB = parseInt(document.getElementById('f-nballes').value)||0;
+  const tB = amndtRadio['f-type-balle']||'';
+  const pB = tB==='ronde'?params.balleRonde:tB==='rect'?params.balleRect:0;
+  il.coupes[contextCoupeIdx]={
+    type:      amndtRadio['coupe-type'],
+    debut:     isPat ? document.getElementById('f-coupe-debut').value : '',
+    fin:       isPat ? document.getElementById('f-coupe-fin').value   : '',
+    date:      isPat ? '' : document.getElementById('f-coupe-date').value,
+    pressage:  isPat ? '' : document.getElementById('f-coupe-pressage').value,
+    fanage:    isPat ? 0  : (parseInt(document.getElementById('f-fanage').value)||0),
+    typeBalle: isPat ? '' : tB,
+    nBalles:   isPat ? 0  : nB,
+    poidsBalle:isPat ? 0  : pB,
+    poidsTotal:isPat ? 0  : nB*pB,
+    rem:       document.getElementById('f-coupe-rem').value.trim()
+  };
+  sauvegarderLS();fermerModals();render();
+}
+
+// ===================== RADIO =====================
+function selRadio(btn,key){
+  const parent=btn.closest('.radio-group');
+  parent.querySelectorAll('.radio-btn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+  amndtRadio[key]=btn.dataset.v;
+  // afficher les bons champs de dates selon le type de coupe
+  if(key==='coupe-type')   majBlocsDates('f',  btn.dataset.v);
+  if(key==='fp-coupe-type') majBlocsDates('fp', btn.dataset.v);
+}
+
+function majBlocsDates(prefix, type){
+  const estPaturage = type==='paturage';
+  const bp = document.getElementById(prefix+'-bloc-paturage');
+  const bf = document.getElementById(prefix+'-bloc-foin');
+  if(bp) bp.style.display = estPaturage ? '' : 'none';
+  if(bf) bf.style.display = estPaturage ? 'none' : '';
+}
+
+// ===================== FERMER =====================
+function fermerModals(){
+  document.querySelectorAll('.overlay').forEach(o=>o.classList.remove('show'));
+}
+document.querySelectorAll('.overlay').forEach(o=>{
+  o.addEventListener('click',e=>{if(e.target===o)fermerModals();});
+});
+
+// ===================== EXPORT =====================
+function exporter(){
+  const blob=new Blob([JSON.stringify(donnees,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`prairies_${anneeActive}.json`;
+  a.click();
+}
+
+// ===================== CARTE SATELLITE =====================
+let map = null;
+let geojsonLayer = null;
+
+// Projection Lambert 93 (EPSG:2154) → WGS84 utilisée par tous les fichiers PAC français
+proj4.defs('EPSG:2154','+proj=lcc +lat_1=49 +lat_2=44 +lat_0=46.5 +lon_0=3 +x_0=700000 +y_0=6600000 +ellps=GRS80 +units=m +no_defs');
+const l93toWGS = (x, y) => proj4('EPSG:2154','WGS84',[x, y]);
+
+function ouvrirCarte(){
+  document.getElementById('carte-annee-label').textContent = anneeActive;
+  document.getElementById('carte-overlay').classList.add('show');
+  setTimeout(()=>{
+    if(!map){
+      map = L.map('map',{zoomControl:true});
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{
+        attribution:'Esri World Imagery',maxZoom:20
+      }).addTo(map);
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',{
+        attribution:'',maxZoom:20,opacity:0.8
+      }).addTo(map);
+      map.setView([45.5, 4.5], 10);
+    } else {
+      map.invalidateSize();
+    }
+    mettreAJourSelectDessin();
+    afficherParcellsDessinées();
+    chargerFichiersPACMem();
+  }, 100);
+}
+
+function fermerCarte(){
+  document.getElementById('carte-overlay').classList.remove('show');
+}
+
+// ---- Calcul surface (Lambert 93 + formule du lacet) ----
+function surfaceHa(coords){
+  // coords : [[lng, lat], ...] en WGS84 → reprojection L93 → shoelace
+  const pts = coords.map(([lng,lat])=>proj4('WGS84','EPSG:2154',[lng,lat]));
+  let area = 0;
+  const n = pts.length;
+  for(let i=0;i<n;i++){
+    const j=(i+1)%n;
+    area += pts[i][0]*pts[j][1] - pts[j][0]*pts[i][1];
+  }
+  return Math.round(Math.abs(area/2)/10000*100)/100; // m² → ha, 2 décimales
+}
+
+// ---- Parcelles dessinées ----
+let drawnLayer = null;   // calque des parcelles sauvegardées
+let drawControl = null;  // contrôle Leaflet.draw actif
+let drawHint    = null;  // div hint
+
+function mettreAJourSelectDessin(){
+  const sel = document.getElementById('draw-ilot-select');
+  if(!sel) return;
+  const ilots = (donnees[anneeActive]||{ilots:[]}).ilots;
+  sel.innerHTML = '<option value="">— Choisir îlot —</option>' +
+    ilots.map(il=>`<option value="${il.id}">Îlot ${il.num}${il.nom?' – '+il.nom:''}</option>`).join('');
+  sel.onchange = ()=>{
+    const ok = !!sel.value;
+    document.getElementById('btn-draw').disabled = !ok;
+    document.getElementById('btn-draw-ilot').disabled = !ok;
+  };
+}
+
+function afficherParcellsDessinées(){
+  if(drawnLayer){ map.removeLayer(drawnLayer); }
+  drawnLayer = L.layerGroup().addTo(map);
+  const ilots = (donnees[anneeActive]||{ilots:[]}).ilots;
+  ilots.forEach(il=>{
+    (il.geometries||[]).forEach((g,gi)=>{
+      // migration : ajouter amendements/coupes si absents
+      if(!g.amendements) g.amendements=[];
+      if(!g.coupes) g.coupes=[null,null,null,null];
+      if(!g.surface && g.coords) g.surface = surfaceHa(g.coords);
+      const nAmendts = g.amendements.length;
+      const nCoupes  = g.coupes.filter(c=>c&&c.type).length;
+      const surfLabel = g.surface ? `${g.surface} ha` : '';
+      const poly = L.polygon(g.coords.map(([ln,la])=>[la,ln]),{
+        color:'#c8a84b', weight:2.5, fillColor:'#f0d070', fillOpacity:0.4, dashArray:'6 4'
+      });
+      poly.bindPopup(`<div class="ilot-popup">
+        <strong>📍 ${g.nom}</strong>
+        <span>Îlot n° ${il.num}${il.nom?' – '+il.nom:''}</span><br/>
+        ${surfLabel?`<span style="color:#2d5a1b;font-weight:700">📐 ${surfLabel}</span><br/>`:''}
+        <span style="color:#555">🧪 ${nAmendts} amendement${nAmendts>1?'s':''} · ✂️ ${nCoupes} coupe${nCoupes>1?'s':''}</span>
+        <button onclick="ouvrirFicheParcelle('${il.id}',${gi})" style="margin-top:7px;background:#2d5a1b;color:#fff;border:none;border-radius:8px;padding:7px 0;font-size:13px;cursor:pointer;width:100%;font-family:Georgia,serif">📋 Ouvrir la fiche</button>
+        <button onclick="supprimerGeometrie('${il.id}',${gi})" style="margin-top:5px;background:#ffeaea;color:#c0392b;border:1.5px solid #f5c6c6;border-radius:8px;padding:5px 0;font-size:12px;cursor:pointer;width:100%;font-family:Georgia,serif">🗑️ Supprimer la parcelle</button>
+      </div>`,{minWidth:180});
+      poly.on('mouseover',function(){ this.setStyle({fillOpacity:0.65}); });
+      poly.on('mouseout', function(){ this.setStyle({fillOpacity:0.4}); });
+      drawnLayer.addLayer(poly);
+    });
+  });
+}
+
+// ===================== FICHE PARCELLE =====================
+let fpIlotId = null, fpGi = null, fpCoupeIdx = null;
+
+function ouvrirFicheParcelle(ilotId, gi){
+  // fermer la carte si on vient de la carte
+  fermerCarte();
+  fpIlotId = ilotId; fpGi = gi;
+  const il = trouverIlot(ilotId);
+  const g  = il.geometries[gi];
+  if(!g.amendements) g.amendements=[];
+  if(!g.coupes) g.coupes=[null,null,null,null];
+
+  if(!g.surface && g.coords) g.surface = surfaceHa(g.coords);
+  const surfStr = g.surface ? `  ·  📐 ${g.surface} ha` : '';
+  document.getElementById('fp-titre').textContent = `📍 ${g.nom}  —  Îlot n° ${il.num}${il.nom?' · '+il.nom:''}${surfStr}`;
+  fpRenderAmendts();
+  fpRenderCoupes();
+  document.getElementById('modal-fiche-parcelle').classList.add('show');
+}
+
+function fpGetGeo(){ return trouverIlot(fpIlotId).geometries[fpGi]; }
+
+function fpRenderAmendts(){
+  const g = fpGetGeo();
+  const surf = parseFloat(g.surface)||0;
+  const ct = document.getElementById('fp-amendts');
+  if(!g.amendements.length){
+    ct.innerHTML='<span style="font-size:12px;color:#aaa">Aucun amendement</span>';
+    return;
+  }
+  ct.innerHTML = g.amendements.map((a,i)=>`
+    <div class="amendt-item">
+      <span class="amendt-badge ${a.type}">${{lisier:'💧 Lisier',fumier:'🌾 Fumier',engrais:'🌿 Engrais'}[a.type]}</span>
+      <span class="amendt-detail">${fmt(a.date)}${amndtLisierInfo(a,surf)}${a.qte?' · '+a.qte:''} ${a.rem?'· '+a.rem:''}</span>
+      <button class="btn btn-danger btn-sm" style="padding:3px 8px;font-size:11px" onclick="fpSupprimerAmendt(${i})">✕</button>
+    </div>`).join('');
+}
+
+function fpRenderCoupes(){
+  const g = fpGetGeo();
+  const surf = parseFloat(g.surface)||0;
+  document.getElementById('fp-coupes').innerHTML = COUPES_CONFIG.map((cfg,i)=>{
+    const c = g.coupes[i];
+    const val = c&&c.type
+      ? `<div class="coupe-val"><span class="coupe-ico">${COUPES_ICO[c.type]||''}</span>${COUPES_NOM[c.type]}</div>
+         <div class="coupe-date">${c.type==='paturage'
+           ?`🐄 ${fmt(c.debut)||'—'}${c.fin?' → '+fmt(c.fin):''}`
+           :`✂️ ${fmt(c.date)||'—'}${c.pressage?'<br/>🧺 '+fmt(c.pressage):''}${c.fanage?'<br/>🔄 '+c.fanage+' fanage'+(c.fanage>1?'s':''):''}`
+         }</div>${coupeBalleInfo(c,surf)}`
+      : `<div class="coupe-vide">Non renseigné</div>`;
+    return `<div class="coupe-cell" onclick="fpOuvrirCoupe(${i})" style="cursor:pointer">
+      <div class="coupe-label">${cfg.label}</div>${val}</div>`;
+  }).join('');
+}
+
+function fpAjouterAmendt(){
+  const geo = fpGetGeo();
+  document.getElementById('fp-amendt-titre').textContent = geo.nom;
+  amndtRadio['fp-amendt-type'] = null;
+  document.querySelectorAll('#modal-fp-amendt .radio-btn').forEach(b=>b.classList.remove('sel'));
+  document.getElementById('fp-amendt-date').value = today();
+  document.getElementById('fp-amendt-qte').value = '';
+  document.getElementById('fp-amendt-rem').value = '';
+  document.getElementById('fp-ntonneaux').value = '';
+  document.getElementById('fp-bloc-lisier').style.display='none';
+  document.getElementById('fp-lisier-box').style.display='none';
+  _surfaceAmendt = parseFloat(geo.surface)||0;
+  document.getElementById('modal-fp-amendt').classList.add('show');
+}
+
+function fpSauvegarderAmendt(){
+  if(!amndtRadio['fp-amendt-type']){ alert('Choisissez un type.'); return; }
+  const isLis2 = amndtRadio['fp-amendt-type']==='lisier';
+  const nTon2  = isLis2 ? (parseFloat(document.getElementById('fp-ntonneaux').value)||0) : 0;
+  const vol2   = nTon2 * params.tonneau;
+  fpGetGeo().amendements.push({
+    type:     amndtRadio['fp-amendt-type'],
+    date:     document.getElementById('fp-amendt-date').value,
+    qte:      document.getElementById('fp-amendt-qte').value.trim(),
+    rem:      document.getElementById('fp-amendt-rem').value.trim(),
+    nTonneaux:isLis2 ? nTon2 : 0,
+    volTotal: isLis2 ? vol2  : 0,
+    volM3:    isLis2 ? vol2/1000 : 0
+  });
+  sauvegarderLS();
+  document.getElementById('modal-fp-amendt').classList.remove('show');
+  fpRenderAmendts();
+  afficherParcellsDessinées();
+}
+
+function fpSupprimerAmendt(i){
+  fpGetGeo().amendements.splice(i,1);
+  sauvegarderLS(); fpRenderAmendts(); afficherParcellsDessinées();
+}
+
+function ouvrirFpCoupe(ilotId, gi, coupeIdx){
+  fpIlotId = ilotId;
+  fpGi     = gi;
+  fpOuvrirCoupe(coupeIdx);
+}
+
+function fpOuvrirCoupe(idx){
+  fpCoupeIdx = idx;
+  const cfg = COUPES_CONFIG[idx];
+  document.getElementById('modal-fp-coupe-titre').textContent = cfg.label;
+  const ct = document.getElementById('fp-coupe-options');
+  ct.innerHTML = cfg.opts.map(o=>`<button class="radio-btn" data-v="${o.v}" onclick="selRadio(this,'fp-coupe-type')">${o.l}</button>`).join('');
+  const geo = fpGetGeo();
+  _surfaceContexte = parseFloat(geo.surface)||0;
+  const existing = geo.coupes[idx];
+  amndtRadio['fp-coupe-type'] = null;
+  amndtRadio['fp-type-balle'] = null;
+  document.querySelectorAll('#fp-bloc-foin .radio-btn').forEach(b=>b.classList.remove('sel'));
+  document.getElementById('fp-nballes').value = '';
+  document.getElementById('fp-fanage').value  = '';
+  document.getElementById('fp-calcul-box').style.display = 'none';
+  document.getElementById('fp-bloc-paturage').style.display='none';
+  document.getElementById('fp-bloc-foin').style.display='none';
+  if(existing&&existing.type){
+    const btn = ct.querySelector(`[data-v="${existing.type}"]`);
+    if(btn){ btn.classList.add('sel'); amndtRadio['fp-coupe-type']=existing.type; }
+    majBlocsDates('fp', existing.type);
+    if(existing.type==='paturage'){
+      document.getElementById('fp-coupe-debut').value = existing.debut||today();
+      document.getElementById('fp-coupe-fin').value   = existing.fin||'';
+    } else {
+      document.getElementById('fp-coupe-date').value     = existing.date||today();
+      document.getElementById('fp-coupe-pressage').value = existing.pressage||'';
+      document.getElementById('fp-fanage').value         = existing.fanage||'';
+      if(existing.typeBalle){
+        amndtRadio['fp-type-balle'] = existing.typeBalle;
+        const bb = document.querySelector(`#fp-bloc-foin .radio-btn[data-v="${existing.typeBalle}"]`);
+        if(bb) bb.classList.add('sel');
+      }
+      if(existing.nBalles){ document.getElementById('fp-nballes').value = existing.nBalles; calcRendement('fp'); }
+    }
+    document.getElementById('fp-coupe-rem').value = existing.rem||'';
+  } else {
+    document.getElementById('fp-coupe-rem').value = '';
+  }
+  document.getElementById('modal-fp-coupe').classList.add('show');
+}
+
+function fpSauvegarderCoupe(){
+  if(!amndtRadio['fp-coupe-type']){ alert('Choisissez une utilisation.'); return; }
+  const isPat2 = amndtRadio['fp-coupe-type']==='paturage';
+  const nB2 = parseInt(document.getElementById('fp-nballes').value)||0;
+  const tB2 = amndtRadio['fp-type-balle']||'';
+  const pB2 = tB2==='ronde'?params.balleRonde:tB2==='rect'?params.balleRect:0;
+  fpGetGeo().coupes[fpCoupeIdx] = {
+    type:      amndtRadio['fp-coupe-type'],
+    debut:     isPat2 ? document.getElementById('fp-coupe-debut').value : '',
+    fin:       isPat2 ? document.getElementById('fp-coupe-fin').value   : '',
+    date:      isPat2 ? '' : document.getElementById('fp-coupe-date').value,
+    pressage:  isPat2 ? '' : document.getElementById('fp-coupe-pressage').value,
+    fanage:    isPat2 ? 0  : (parseInt(document.getElementById('fp-fanage').value)||0),
+    typeBalle: isPat2 ? '' : tB2,
+    nBalles:   isPat2 ? 0  : nB2,
+    poidsBalle:isPat2 ? 0  : pB2,
+    poidsTotal:isPat2 ? 0  : nB2*pB2,
+    rem:       document.getElementById('fp-coupe-rem').value.trim()
+  };
+  sauvegarderLS();
+  document.getElementById('modal-fp-coupe').classList.remove('show');
+  fpRenderCoupes();
+  afficherParcellsDessinées();
+}
+
+function supprimerGeometrie(ilotId, gi){
+  const il = trouverIlot(ilotId);
+  if(!il||!il.geometries) return;
+  if(!confirm(`Supprimer la parcelle "${il.geometries[gi].nom}" ?`)) return;
+  il.geometries.splice(gi,1);
+  // retirer aussi de parcelles[] si même nom et plus de géométrie avec ce nom
+  sauvegarderLS();
+  afficherParcellsDessinées();
+  render();
+}
+
+function desactiverCouchePAC(){
+  // empêche les clics sur les îlots PAC pendant le dessin
+  if(!geojsonLayer) return;
+  geojsonLayer.eachLayer(l=>{
+    if(l._path) l._path.style.pointerEvents='none';
+    if(l._renderer && l._renderer._container) l._renderer._container.style.pointerEvents='none';
+  });
+}
+function reactiverCouchePAC(){
+  if(!geojsonLayer) return;
+  geojsonLayer.eachLayer(l=>{
+    if(l._path) l._path.style.pointerEvents='';
+    if(l._renderer && l._renderer._container) l._renderer._container.style.pointerEvents='';
+  });
+}
+
+function parcelleDepuisIlotPAC(){
+  const sel    = document.getElementById('draw-ilot-select');
+  const ilotId = sel.value;
+  if(!ilotId){ alert('Choisissez d\'abord un îlot.'); return; }
+  if(!geojsonLayer){ alert('Chargez d\'abord les fichiers PAC (.shp + .dbf).'); return; }
+
+  const il = trouverIlot(ilotId);
+  const num = String(parseInt(il.num));
+
+  // trouver le calque PAC correspondant à ce numéro
+  let coordsTrouvees = null;
+  geojsonLayer.eachLayer(layer=>{
+    const p = layer.feature && layer.feature.properties;
+    if(p && String(parseInt(p.NUMERO||p.NUM_ILOT||0)) === num){
+      // extraire les coordonnées [lng, lat] du premier ring
+      const latlngs = layer.getLatLngs();
+      const ring = Array.isArray(latlngs[0]) ? latlngs[0] : latlngs;
+      coordsTrouvees = ring.map(pt=> pt.lng !== undefined ? [pt.lng, pt.lat] : [pt[1], pt[0]]);
+      if(coordsTrouvees.length && coordsTrouvees[0].join() !== coordsTrouvees[coordsTrouvees.length-1].join())
+        coordsTrouvees.push(coordsTrouvees[0]); // fermer
+    }
+  });
+
+  if(!coordsTrouvees){ alert(`Îlot n° ${il.num} introuvable dans le calque PAC. Chargez les fichiers shapefile.`); return; }
+
+  const nom = prompt(`Nom de la parcelle pour l'îlot ${il.num}${il.nom?' – '+il.nom:''} ?`, il.nom||`Îlot ${il.num}`);
+  if(!nom) return;
+
+  if(!il.geometries) il.geometries=[];
+  const surf = surfaceHa(coordsTrouvees);
+  il.geometries.push({nom:nom.trim(), coords:coordsTrouvees, surface:surf, amendements:[], coupes:[null,null,null,null]});
+  if(!il.parcelles.includes(nom.trim())) il.parcelles.push(nom.trim());
+
+  sauvegarderLS();
+  afficherParcellsDessinées();
+  render();
+  document.getElementById('carte-status').textContent = `✅ Parcelle "${nom.trim()}" créée — ${surf} ha`;
+}
+
+function activerDessin(){
+  const sel   = document.getElementById('draw-ilot-select');
+  const ilotId= sel.value;
+  if(!ilotId){ alert('Choisissez d\'abord un îlot.'); return; }
+  if(drawControl){ map.removeControl(drawControl); drawControl=null; }
+
+  // désactiver les clics sur les îlots PAC
+  desactiverCouchePAC();
+
+  const editGroup = new L.FeatureGroup().addTo(map);
+  drawControl = new L.Control.Draw({
+    draw:{
+      polygon:{ shapeOptions:{color:'#c8a84b',fillColor:'#f0d070',fillOpacity:0.5}, showArea:true, metric:true },
+      polyline:false, rectangle:false, circle:false, marker:false, circlemarker:false
+    },
+    edit:{ featureGroup:editGroup }
+  });
+  map.addControl(drawControl);
+
+  // déclencher automatiquement le mode dessin polygone
+  setTimeout(()=>{
+    const btn = document.querySelector('.leaflet-draw-draw-polygon');
+    if(btn) btn.click();
+  }, 100);
+
+  // hint
+  if(!drawHint){ drawHint=document.createElement('div'); drawHint.className='draw-hint'; document.getElementById('map').appendChild(drawHint); }
+  const il = trouverIlot(ilotId);
+  drawHint.textContent = `✏️ Îlot ${il.num}${il.nom?' – '+il.nom:''} · Cliquez pour poser des points · Double-clic pour terminer`;
+  drawHint.style.display='block';
+
+  document.getElementById('btn-draw').style.display='none';
+  document.getElementById('btn-draw-cancel').style.display='';
+
+  map.once(L.Draw.Event.CREATED, function(e){
+    const latlngs = e.layer.getLatLngs()[0];
+    const coords  = latlngs.map(p=>[p.lng, p.lat]);
+    coords.push(coords[0]); // fermer le polygone
+
+    annulerDessin();
+
+    const nom = prompt(`Nom de cette parcelle dans l'îlot ${il.num} ?`, '');
+    if(!nom) return;
+
+    if(!il.geometries) il.geometries=[];
+    il.geometries.push({nom:nom.trim(), coords, surface:surfaceHa(coords)});
+    // ajouter aussi dans parcelles[] si pas déjà présent
+    if(!il.parcelles.includes(nom.trim())) il.parcelles.push(nom.trim());
+
+    sauvegarderLS();
+    afficherParcellsDessinées();
+    render();
+    document.getElementById('carte-status').textContent=`✅ Parcelle "${nom}" sauvegardée dans l'îlot ${il.num}`;
+  });
+}
+
+function annulerDessin(){
+  if(drawControl){ map.removeControl(drawControl); drawControl=null; }
+  if(drawHint){ drawHint.style.display='none'; }
+  reactiverCouchePAC();
+  document.getElementById('btn-draw').style.display='';
+  document.getElementById('btn-draw-cancel').style.display='none';
+}
+
+function ouvrirCarteIlot(num){
+  ouvrirCarte();
+  // zoomer sur l'îlot dès que la carte et le calque sont prêts
+  const tryZoom = (tries) => {
+    if(!geojsonLayer){ if(tries>20) return; setTimeout(()=>tryZoom(tries+1), 200); return; }
+    geojsonLayer.eachLayer(layer => {
+      const p = layer.feature && layer.feature.properties;
+      if(p && String(parseInt(p.NUMERO||0)) === String(parseInt(num))){
+        map.fitBounds(layer.getBounds(), {padding:[40,40], maxZoom:17});
+        layer.setStyle({color:'#fff',fillColor:'#ffdd00',fillOpacity:0.6,weight:3});
+        setTimeout(()=>{ if(geojsonLayer) geojsonLayer.resetStyle(layer); }, 2500);
+        layer.openPopup();
+      }
+    });
+  };
+  setTimeout(()=>tryZoom(0), 400);
+}
+
+function ouvrirDepuisCarte(ilotId){
+  fermerCarte();
+  // ouvrir la fiche et scroller dessus
+  const il = trouverIlot(ilotId);
+  if(!il) return;
+  il.ouvert = true;
+  sauvegarderLS();
+  render();
+  setTimeout(()=>{
+    const card = document.getElementById('card-'+ilotId);
+    if(card) card.scrollIntoView({behavior:'smooth', block:'start'});
+  }, 100);
+}
+
+/* ---- Parseur .shp maison (polygones Lambert 93) ---- */
+function parseShp(buf){
+  const v = new DataView(buf);
+  const fileLen = v.getInt32(24, false) * 2;
+  const features = [];
+  let off = 100;
+  while(off < fileLen && off + 8 < buf.byteLength){
+    const recIdx   = v.getInt32(off,   false);
+    const recWords = v.getInt32(off+4, false);
+    const recBytes = recWords * 2;
+    off += 8;
+    if(off + recBytes > buf.byteLength) break;
+    const sType = v.getInt32(off, true);
+    if(sType === 5 || sType === 15 || sType === 25){ // Polygon / PolygonZ / PolygonM
+      const numParts  = v.getInt32(off+36, true);
+      const numPoints = v.getInt32(off+40, true);
+      const partsBase  = off + 44;
+      const pointsBase = partsBase + numParts * 4;
+      const parts = [];
+      for(let i=0;i<numParts;i++) parts.push(v.getInt32(partsBase + i*4, true));
+      const rings = [];
+      for(let i=0;i<parts.length;i++){
+        const start = parts[i];
+        const end   = i < parts.length-1 ? parts[i+1] : numPoints;
+        const ring  = [];
+        for(let p=start;p<end;p++){
+          const x = v.getFloat64(pointsBase + p*16,   true);
+          const y = v.getFloat64(pointsBase + p*16+8, true);
+          const [lng,lat] = l93toWGS(x, y);
+          ring.push([lng, lat]);
+        }
+        rings.push(ring);
+      }
+      features.push({type:'Feature', geometry:{type:'Polygon', coordinates:rings}, properties:{_rec: recIdx}});
+    }
+    off += recBytes;
+  }
+  return features;
+}
+
+/* ---- Parseur .dbf maison ---- */
+function parseDbf(buf){
+  const v = new DataView(buf);
+  const nRecs    = v.getUint32(4, true);
+  const hdrSize  = v.getUint16(8, true);
+  const recSize  = v.getUint16(10, true);
+  const fields = [];
+  let off = 32;
+  while(v.getUint8(off) !== 0x0D){
+    let name='';
+    for(let i=0;i<11;i++){ const c=v.getUint8(off+i); if(c!==0) name+=String.fromCharCode(c); }
+    fields.push({name:name.trim(), len:v.getUint8(off+16)});
+    off+=32;
+  }
+  const rows = [];
+  for(let r=0;r<nRecs;r++){
+    const base = hdrSize + r * recSize;
+    if(v.getUint8(base) === 0x2A) continue;
+    let pos = base+1;
+    const row={};
+    fields.forEach(f=>{
+      let val='';
+      for(let i=0;i<f.len;i++) val+=String.fromCharCode(v.getUint8(pos+i));
+      row[f.name]=val.trim();
+      pos+=f.len;
+    });
+    rows.push(row);
+  }
+  return rows;
+}
+
+// ---- IndexedDB pour stocker les fichiers PAC ----
+const PAC_DB_NAME = 'prairies_pac', PAC_DB_VER = 1, PAC_STORE = 'fichiers';
+
+function ouvrirPacDB(){
+  return new Promise((res,rej)=>{
+    const req = indexedDB.open(PAC_DB_NAME, PAC_DB_VER);
+    req.onupgradeneeded = e => e.target.result.createObjectStore(PAC_STORE);
+    req.onsuccess = e => res(e.target.result);
+    req.onerror   = e => rej(e.target.error);
+  });
+}
+function pacDBSet(key, val){
+  return ouvrirPacDB().then(db=>new Promise((res,rej)=>{
+    const tx = db.transaction(PAC_STORE,'readwrite');
+    tx.objectStore(PAC_STORE).put(val, key);
+    tx.oncomplete=res; tx.onerror=rej;
+  }));
+}
+function pacDBGet(key){
+  return ouvrirPacDB().then(db=>new Promise((res,rej)=>{
+    const req = db.transaction(PAC_STORE,'readonly').objectStore(PAC_STORE).get(key);
+    req.onsuccess = e => res(e.target.result);
+    req.onerror   = rej;
+  }));
+}
+function pacDBDel(key){
+  return ouvrirPacDB().then(db=>new Promise((res,rej)=>{
+    const tx = db.transaction(PAC_STORE,'readwrite');
+    tx.objectStore(PAC_STORE).delete(key);
+    tx.oncomplete=res; tx.onerror=rej;
+  }));
+}
+
+function afficherGeojsonSurCarte(shpBuf, dbfBuf){
+  const features = parseShp(shpBuf);
+  const rows     = dbfBuf ? parseDbf(dbfBuf) : [];
+  features.forEach((f,i)=>{ if(rows[i]) Object.assign(f.properties, rows[i]); });
+  const geojson = {type:'FeatureCollection', features};
+  if(geojsonLayer){ map.removeLayer(geojsonLayer); }
+  const ilots = (donnees[anneeActive]||{ilots:[]}).ilots;
+  const ilotByNum = {};
+  ilots.forEach(il=>{ ilotByNum[String(parseInt(il.num))] = il; });
+  geojsonLayer = L.geoJSON(geojson,{
+    style: feat=>{
+      const num=String(parseInt(feat.properties.NUMERO||feat.properties.NUM_ILOT||0));
+      const connu=!!ilotByNum[num];
+      return {color:connu?'#fff':'#f0d070',weight:2,fillColor:connu?'#6ab04c':'#f0d070',fillOpacity:0.4};
+    },
+    onEachFeature:(feat,layer)=>{
+      const p=feat.properties;
+      const num=String(parseInt(p.NUMERO||p.NUM_ILOT||'?'));
+      const il=ilotByNum[num];
+      const surf=p.SURF_TOT?parseFloat(p.SURF_TOT).toFixed(2)+' ha':'';
+      const nom=il?(il.nom||'Sans nom'):'Non dans le suivi';
+      const btnOuvrir=il?`<button onclick="ouvrirDepuisCarte('${il.id}')" style="margin-top:8px;background:#2d5a1b;color:#fff;border:none;border-radius:8px;padding:7px 0;font-size:13px;cursor:pointer;width:100%;font-family:Georgia,serif">📋 Ouvrir la fiche</button>`:'';
+      layer.bindPopup(`<div class="ilot-popup"><strong>Îlot n° ${num}</strong><span>${nom}</span><br/><span style="color:#888">${surf}</span>${btnOuvrir}</div>`,{minWidth:160});
+      layer.on('mouseover',function(){ this.setStyle({fillOpacity:0.65}); });
+      layer.on('mouseout', function(){ geojsonLayer.resetStyle(this); });
+    }
+  }).addTo(map);
+  if(geojsonLayer.getBounds().isValid()) map.fitBounds(geojsonLayer.getBounds(),{padding:[16,16]});
+  afficherParcellsDessinées();
+  mettreAJourSelectDessin();
+  return features.length;
+}
+
+function chargerFichiersPACMem(){
+  // tente de charger depuis IndexedDB
+  Promise.all([pacDBGet('shp'), pacDBGet('dbf'), pacDBGet('nom')])
+  .then(([shpBuf, dbfBuf, nom])=>{
+    if(!shpBuf){ majStatutPAC(false,''); return; }
+    const n = afficherGeojsonSurCarte(shpBuf, dbfBuf);
+    document.getElementById('carte-status').textContent = `✅ ${n} îlot(s) — ${nom||'fichier mémorisé'}`;
+    majStatutPAC(true, nom||'');
+  }).catch(()=>majStatutPAC(false,''));
+}
+
+function majStatutPAC(present, nom){
+  const el = document.getElementById('pac-mem-status');
+  if(!el) return;
+  if(present){
+    el.innerHTML = `💾 <span style="color:#2d5a1b;font-weight:700">${nom||'Fichier PAC mémorisé'}</span> <button onclick="effacerFichiersPAC()" class="btn btn-danger btn-sm" style="padding:3px 8px;font-size:11px">✕ Effacer</button>`;
+  } else {
+    el.innerHTML = `<span style="color:#aaa;font-size:11px">Aucun fichier PAC mémorisé</span>`;
+  }
+}
+
+function effacerFichiersPAC(){
+  Promise.all([pacDBDel('shp'),pacDBDel('dbf'),pacDBDel('nom')]).then(()=>{
+    if(geojsonLayer){ map.removeLayer(geojsonLayer); geojsonLayer=null; }
+    majStatutPAC(false,'');
+    document.getElementById('carte-status').textContent='Fichiers PAC supprimés';
+  });
+}
+
+function chargerShapefile(input){
+  const files   = Array.from(input.files);
+  const shpFile = files.find(f=>f.name.toLowerCase().endsWith('.shp'));
+  const dbfFile = files.find(f=>f.name.toLowerCase().endsWith('.dbf'));
+  if(!shpFile){ alert('Sélectionnez le fichier .shp (et aussi le .dbf).'); input.value=''; return; }
+  document.getElementById('carte-status').textContent = '⏳ Lecture en cours…';
+
+  const readBuf = f => new Promise((res,rej)=>{ const r=new FileReader(); r.onload=e=>res(e.target.result); r.onerror=rej; r.readAsArrayBuffer(f); });
+
+  Promise.all([readBuf(shpFile), dbfFile ? readBuf(dbfFile) : Promise.resolve(null)])
+  .then(([shpBuf, dbfBuf])=>{
+    const n = afficherGeojsonSurCarte(shpBuf, dbfBuf);
+    document.getElementById('carte-status').textContent = `✅ ${n} îlot(s) affiché(s) — mémorisé`;
+    // sauvegarder dans IndexedDB
+    const saves = [pacDBSet('shp', shpBuf), pacDBSet('nom', shpFile.name)];
+    if(dbfBuf) saves.push(pacDBSet('dbf', dbfBuf));
+    Promise.all(saves).then(()=>majStatutPAC(true, shpFile.name));
+    input.value='';
+  })
+  .catch(err=>{ console.error(err); alert('Erreur : '+err.message); input.value=''; });
+}
+
+// ===================== IMPORT DBF TELEPAC =====================
+function importerDBF(input){
+  const file = input.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    try{
+      const buf = e.target.result;
+      const view = new DataView(buf);
+      const nRecs = view.getUint32(4, true);
+      const headerSize = view.getUint16(8, true);
+      const recSize = view.getUint16(10, true);
+
+      // lire les champs
+      const fields = [];
+      let offset = 32;
+      while(view.getUint8(offset) !== 0x0D){
+        let name = '';
+        for(let i=0;i<11;i++){
+          const c = view.getUint8(offset+i);
+          if(c !== 0) name += String.fromCharCode(c);
+        }
+        const type = String.fromCharCode(view.getUint8(offset+11));
+        const len  = view.getUint8(offset+16);
+        fields.push({name:name.trim(), type, len});
+        offset += 32;
+      }
+      offset++; // skip 0x0D
+
+      // lire les enregistrements
+      const ilots = [];
+      for(let r=0;r<nRecs;r++){
+        const recStart = headerSize + r * recSize;
+        if(view.getUint8(recStart) === 0x2A) continue; // supprimé
+        let pos = recStart + 1;
+        const row = {};
+        fields.forEach(f=>{
+          let val = '';
+          for(let i=0;i<f.len;i++) val += String.fromCharCode(view.getUint8(pos+i));
+          row[f.name] = val.trim();
+          pos += f.len;
+        });
+        ilots.push(row);
+      }
+
+      // vérifier que c'est bien un fichier îlots PAC
+      if(!ilots.length || !('NUMERO' in ilots[0])){
+        alert('Fichier DBF non reconnu. Utilisez le fichier _ilot_ de Telepac.');
+        input.value='';
+        return;
+      }
+
+      // détecter l'année
+      const annee = ilots[0].CAMPAGNE || anneeActive;
+
+      // compter les îlots déjà présents
+      if(!donnees[annee]) donnees[annee]={ilots:[]};
+      const existants = donnees[annee].ilots.map(i=>String(i.num));
+      let ajouts = 0, ignores = 0;
+
+      ilots.forEach(row=>{
+        const num = row.NUMERO || row.NUM_ILOT || '';
+        if(existants.includes(num)){ignores++;return;}
+        const surf = parseFloat(row.SURF_TOT||row.SURF||'0');
+        donnees[annee].ilots.push({
+          id: uid(),
+          num: num,
+          nom: '',
+          surface: isNaN(surf)?'':surf.toFixed(2),
+          parcelles:[],
+          amendements:[],
+          coupes:[null,null,null,null],
+          ouvert:false
+        });
+        ajouts++;
+      });
+
+      // trier par numéro
+      donnees[annee].ilots.sort((a,b)=>parseInt(a.num)-parseInt(b.num));
+
+      sauvegarderLS();
+      anneeActive = String(annee);
+      initOnglets();
+      render();
+      alert(`✅ Import terminé pour la campagne ${annee}\n${ajouts} îlot(s) ajouté(s)${ignores?' · '+ignores+' déjà présent(s)':''}\n\nPensez à renseigner le nom de chaque îlot.`);
+    } catch(err){
+      console.error(err);
+      alert('Erreur lors de la lecture du fichier DBF : '+err.message);
+    }
+    input.value='';
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+// ===================== PARAMETRES =====================
+let params = {balleRonde:300, balleRect:500, tonneau:10000, azoteLitre:2.5};
+
+function chargerParams(){
+  const raw = localStorage.getItem('prairies_params');
+  if(raw) params = {...params, ...JSON.parse(raw)};
+}
+function sauvegarderParams(){
+  params.balleRonde  = parseFloat(document.getElementById('p-balle-ronde').value)||300;
+  params.balleRect   = parseFloat(document.getElementById('p-balle-rect').value)||500;
+  params.tonneau     = parseFloat(document.getElementById('p-tonneau').value)||10000;
+  params.azoteLitre  = parseFloat(document.getElementById('p-azote-litre').value)||2.5;
+  localStorage.setItem('prairies_params', JSON.stringify(params));
+  fermerModals();
+}
+function ouvrirParams(){
+  document.getElementById('p-balle-ronde').value  = params.balleRonde;
+  document.getElementById('p-balle-rect').value   = params.balleRect;
+  document.getElementById('p-tonneau').value      = params.tonneau;
+  document.getElementById('p-azote-litre').value  = params.azoteLitre;
+  document.getElementById('modal-params').classList.add('show');
+}
+
+let _surfaceAmendt = 0;
+
+function majBlocLisier(prefix){
+  const isLisier = (amndtRadio[prefix==='f'?'amendt-type':'fp-amendt-type']==='lisier');
+  document.getElementById(prefix+'-bloc-lisier').style.display = isLisier ? '' : 'none';
+  if(!isLisier) document.getElementById(prefix+'-lisier-box').style.display='none';
+}
+
+function calcLisier(prefix){
+  const n    = parseFloat(document.getElementById(prefix+'-ntonneaux').value)||0;
+  const vol  = n * params.tonneau;
+  const m3   = vol/1000;
+  const surf = _surfaceAmendt;
+  const box  = document.getElementById(prefix+'-lisier-box');
+  if(!n){ box.style.display='none'; return; }
+  document.getElementById(prefix+'-lisier-vol').textContent  = vol.toLocaleString('fr-FR');
+  document.getElementById(prefix+'-lisier-m3').textContent   = m3.toFixed(1);
+  document.getElementById(prefix+'-lisier-dose').textContent = surf>0 ? (m3/surf).toFixed(1) : '—';
+  box.style.display='flex';
+}
+
+// surface courante dans le contexte de coupe (îlot ou parcelle)
+let _surfaceContexte = 0;
+
+function calcRendement(prefix){
+  const n      = parseFloat(document.getElementById(prefix+'-nballes').value)||0;
+  const type   = amndtRadio[prefix+'-type-balle'];
+  const poids  = type==='ronde' ? params.balleRonde : type==='rect' ? params.balleRect : 0;
+  const box    = document.getElementById(prefix+'-calcul-box');
+  if(!n || !poids){ if(box) box.style.display='none'; return; }
+  const total  = n * poids;
+  const tonnes = (total/1000).toFixed(2);
+  const surf   = _surfaceContexte || 0;
+  const rdt    = surf>0 ? (total/1000/surf).toFixed(2) : '—';
+  document.getElementById(prefix+'-calc-poids').textContent = total.toLocaleString('fr-FR');
+  document.getElementById(prefix+'-calc-tonne').textContent = tonnes;
+  document.getElementById(prefix+'-calc-rdt').textContent   = surf>0 ? rdt : '(surface manquante)';
+  if(box) box.style.display='flex';
+}
+
+// ===================== COPIER ANNEE =====================
+let copierSourceAnnee = null;
+
+function majBtnCopier(){
+  const autres = Object.keys(donnees).filter(a=>a!==anneeActive && donnees[a].ilots && donnees[a].ilots.length>0);
+  const btn = document.getElementById('btn-copier-annee');
+  if(btn) btn.style.display = autres.length>0 ? '' : 'none';
+}
+
+function ouvrirCopierAnnee(){
+  copierSourceAnnee = null;
+  const autres = Object.keys(donnees).filter(a=>a!==anneeActive && donnees[a].ilots && donnees[a].ilots.length>0).sort();
+  document.getElementById('copier-vers-annee').textContent  = anneeActive;
+  document.getElementById('copier-vers-annee2').textContent = anneeActive;
+  const liste = document.getElementById('copier-source-liste');
+  liste.innerHTML = autres.map(a=>`<button class="radio-btn" data-v="${a}" onclick="selRadio(this,'copier-src');copierSourceAnnee='${a}';majAvertCopie()">${a} (${donnees[a].ilots.length} îlots)</button>`).join('');
+  majAvertCopie();
+  document.getElementById('modal-copier-annee').classList.add('show');
+}
+
+function majAvertCopie(){
+  const dest = getAnnee(anneeActive);
+  const avert = document.getElementById('copier-avert');
+  avert.style.display = (dest.ilots.length>0) ? '' : 'none';
+}
+
+function executerCopie(){
+  if(!copierSourceAnnee){ alert('Choisissez une année source.'); return; }
+  const src  = donnees[copierSourceAnnee].ilots;
+  const dest = getAnnee(anneeActive);
+  dest.ilots = src.map(il=>({
+    id:         uid(),
+    num:        il.num,
+    nom:        il.nom,
+    surface:    il.surface,
+    parcelles:  [...(il.parcelles||[])],
+    amendements:[],
+    coupes:     [null,null,null,null],
+    geometries: (il.geometries||[]).map(g=>({
+      nom:        g.nom,
+      coords:     g.coords ? [...g.coords] : [],
+      surface:    g.surface,
+      amendements:[],
+      coupes:     [null,null,null,null],
+      _ouvert:    false
+    })),
+    ouvert: false
+  }));
+  sauvegarderLS();
+  fermerModals();
+  render();
+  majBtnCopier();
+}
+
+// ===================== GITHUB SAUVEGARDE =====================
+const GH_OWNER = 'davjog';
+const GH_REPO  = 'carnet-sanitaire';
+const GH_FILE  = 'data/prairies-backup.json';
+
+function ghToken(){ return localStorage.getItem('prairies_gh_token')||''; }
+function ghHeaders(t){ return { Authorization:`token ${t}`, 'Content-Type':'application/json' }; }
+
+function ouvrirGitHub(){
+  const t = ghToken();
+  document.getElementById('gh-token').value = t;
+  const lastSave = localStorage.getItem('prairies_gh_lastsave');
+  document.getElementById('gh-last-save').textContent = lastSave ? `Dernière sauvegarde : ${lastSave}` : '';
+  document.getElementById('gh-msg').textContent = '';
+  document.getElementById('modal-github').classList.add('show');
+}
+
+function ghMsg(txt, col='#555'){ document.getElementById('gh-msg').style.color=col; document.getElementById('gh-msg').textContent=txt; }
+
+async function ghSauvegarder(){
+  const t = document.getElementById('gh-token').value.trim();
+  if(!t){ ghMsg('Token manquant.','#c04'); return; }
+  localStorage.setItem('prairies_gh_token', t);
+  ghMsg('Sauvegarde en cours…','#888');
+  try {
+    const payload  = JSON.stringify({ savedAt: new Date().toISOString(), donnees }, null, 2);
+    const content  = btoa(unescape(encodeURIComponent(payload)));
+    const url      = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}`;
+    let sha;
+    const existing = await fetch(url, { headers: ghHeaders(t) });
+    if(existing.ok){ const d = await existing.json(); sha = d.sha; }
+    const body = { message: 'Sauvegarde prairies', content, ...(sha?{sha}:{}) };
+    const res  = await fetch(url, { method:'PUT', headers: ghHeaders(t), body: JSON.stringify(body) });
+    if(!res.ok){ const e=await res.json(); throw new Error(e.message||res.status); }
+    const now = new Date().toLocaleString('fr-FR');
+    localStorage.setItem('prairies_gh_lastsave', now);
+    document.getElementById('gh-last-save').textContent = `Dernière sauvegarde : ${now}`;
+    ghMsg('✅ Sauvegarde réussie !','#3a7a3a');
+    ghStatusBar('✅ Sauvegardé le '+now);
+  } catch(e){ ghMsg('❌ Erreur : '+e.message,'#c04'); }
+}
+
+async function ghRestaurer(){
+  const t = document.getElementById('gh-token').value.trim();
+  if(!t){ ghMsg('Token manquant.','#c04'); return; }
+  localStorage.setItem('prairies_gh_token', t);
+  ghMsg('Restauration en cours…','#888');
+  try {
+    const url = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}`;
+    const res = await fetch(url, { headers: ghHeaders(t) });
+    if(!res.ok) throw new Error('Fichier introuvable sur GitHub');
+    const d   = await res.json();
+    let text;
+    if(d.download_url){
+      const r2 = await fetch(d.download_url);
+      text = await r2.text();
+    } else {
+      text = decodeURIComponent(escape(atob(d.content.replace(/\s/g,''))));
+    }
+    const parsed = JSON.parse(text);
+    if(!parsed.donnees) throw new Error('Format invalide');
+    if(!confirm(`Restaurer les données du ${parsed.savedAt ? new Date(parsed.savedAt).toLocaleString('fr-FR') : '?'} ?\nVos données locales seront remplacées.`)) return;
+    donnees = parsed.donnees;
+    sauvegarderLS();
+    fermerModals();
+    initOnglets();
+    render();
+    majBtnCopier();
+    ghStatusBar('📥 Restauré depuis GitHub');
+  } catch(e){ ghMsg('❌ Erreur : '+e.message,'#c04'); }
+}
+
+function ghStatusBar(msg){
+  const bar = document.getElementById('gh-status-bar');
+  bar.textContent = msg;
+  bar.style.display = '';
+  setTimeout(()=>{ bar.style.display='none'; }, 5000);
+}
+
+// ===================== INIT =====================
+chargerParams();
+chargerLS();
+initOnglets();
+render();
+majBtnCopier();
+
+// Service Worker (PWA / installation Android)
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('/prairies-sw.js').catch(()=>{});
+}
+</script>
+</body>
+</html>
