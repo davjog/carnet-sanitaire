@@ -1,7 +1,8 @@
-const CACHE = 'prairies-v1';
+const CACHE = 'prairies-v2';
+const BASE  = self.registration.scope;
 const ASSETS = [
-  '/prairies.html',
-  '/prairies-manifest.json',
+  BASE + 'prairies.html',
+  BASE + 'prairies-manifest.json',
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',
   'https://unpkg.com/proj4@2.9.0/dist/proj4.js',
@@ -23,6 +24,6 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
   e.respondWith(
-    caches.match(e.request).then(r => r || fetch(e.request).catch(() => caches.match('/prairies.html')))
+    caches.match(e.request).then(r => r || fetch(e.request).catch(() => caches.match(BASE + 'prairies.html')))
   );
 });
