@@ -1166,8 +1166,18 @@ function sauvegarderParcelle(){
 }
 function confirmerSupprParcelle(ilotId,idx){
   const il=trouverIlot(ilotId);
-  document.getElementById('confirm-msg').textContent=`Supprimer la parcelle "${il.parcelles[idx]}" ?`;
-  document.getElementById('confirm-ok').onclick=()=>{il.parcelles.splice(idx,1);sauvegarderLS();fermerModals();render();};
+  const nomParcelle = il.parcelles[idx];
+  document.getElementById('confirm-msg').textContent=`Supprimer la parcelle "${nomParcelle}" et toutes ses données (coupes, amendements, contour) ?`;
+  document.getElementById('confirm-ok').onclick=()=>{
+    // supprimer la géométrie associée si elle existe
+    const gi = (il.geometries||[]).findIndex(g=>g.nom===nomParcelle);
+    if(gi>=0) il.geometries.splice(gi,1);
+    il.parcelles.splice(idx,1);
+    sauvegarderLS();
+    fermerModals();
+    afficherParcellsDessinées();
+    render();
+  };
   document.getElementById('modal-confirm').classList.add('show');
 }
 
