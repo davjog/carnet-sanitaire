@@ -958,7 +958,7 @@ function renderIlot(il){
     <div class="ilot-header" onclick="toggleIlot('${il.id}')">
       <div class="ilot-num">${il.num||'—'}</div>
       <div class="ilot-nom">
-        <strong>${il.nom||'Sans nom'}</strong>
+        ${il.nom?`<strong>${il.nom}</strong>`:''}
         <small>${il.surface?il.surface+' ha':''} · ${il.parcelles.length} parcelle${il.parcelles.length>1?'s':''}</small>
       </div>
       <span onclick="event.stopPropagation();ouvrirCarteIlot('${il.num}')" title="Voir sur la carte" style="font-size:18px;cursor:pointer;opacity:.85;padding:2px 4px">🛰️</span>
