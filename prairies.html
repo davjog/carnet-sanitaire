@@ -618,7 +618,15 @@ function getAnnee(a){
   if(!donnees[a]) donnees[a]={ilots:[]};
   return donnees[a];
 }
-function sauvegarderLS(){localStorage.setItem('prairies_v2',JSON.stringify(donnees))}
+let ghAutoSaveTimer = null;
+function sauvegarderLS(){
+  localStorage.setItem('prairies_v2', JSON.stringify(donnees));
+  if(ghToken()){
+    clearTimeout(ghAutoSaveTimer);
+    ghStatusBarQuiet('⏳ Sauvegarde en ligne dans 15s…');
+    ghAutoSaveTimer = setTimeout(ghAutoSauvegarder, 15000);
+  }
+}
 function chargerLS(){
   const raw=localStorage.getItem('prairies_v2');
   if(raw) donnees=JSON.parse(raw);
@@ -2229,6 +2237,65 @@ function ghStatusBar(msg){
   bar.style.display = '';
   setTimeout(()=>{ bar.style.display='none'; }, 5000);
 }
+function ghStatusBarQuiet(msg){
+  const bar = document.getElementById('gh-status-bar');
+  bar.textContent = msg;
+  bar.style.display = '';
+}
+
+async function ghAutoSauvegarder(){
+  const t = ghToken();
+  if(!t) return;
+  try {
+    const payload = JSON.stringify({ savedAt: new Date().toISOString(), donnees }, null, 2);
+    const content = btoa(unescape(encodeURIComponent(payload)));
+    const url = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}`;
+    let sha;
+    const existing = await fetch(url, { headers: ghHeaders(t) });
+    if(existing.ok){ const d = await existing.json(); sha = d.sha; }
+    const body = { message: 'Sauvegarde auto prairies', content, ...(sha?{sha}:{}) };
+    const res = await fetch(url, { method:'PUT', headers: ghHeaders(t), body: JSON.stringify(body) });
+    if(!res.ok){ const e=await res.json(); throw new Error(e.message||res.status); }
+    const now = new Date().toLocaleString('fr-FR');
+    localStorage.setItem('prairies_gh_lastsave', now);
+    ghStatusBar('☁️ Sauvegardé en ligne — ' + now);
+  } catch(e){
+    ghStatusBar('⚠️ Sauvegarde en ligne échouée : ' + e.message);
+  }
+}
+
+async function ghAutoRestaurer(){
+  const t = ghToken();
+  if(!t) return;
+  try {
+    const url = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}`;
+    const res = await fetch(url, { headers: ghHeaders(t) });
+    if(!res.ok) return;
+    const d = await res.json();
+    let text;
+    if(d.download_url){
+      const r2 = await fetch(d.download_url);
+      text = await r2.text();
+    } else {
+      text = decodeURIComponent(escape(atob(d.content.replace(/\s/g,''))));
+    }
+    const parsed = JSON.parse(text);
+    if(!parsed.donnees || !parsed.savedAt) return;
+    const ghDate = new Date(parsed.savedAt).getTime();
+    const lastSave = localStorage.getItem('prairies_gh_lastsave');
+    // Compare: if GitHub backup is strictly newer than what we last synced, auto-restore
+    const localDate = lastSave ? new Date(lastSave).getTime() : 0;
+    if(ghDate <= localDate) return; // local already up to date
+    donnees = parsed.donnees;
+    localStorage.setItem('prairies_v2', JSON.stringify(donnees));
+    const now = new Date(parsed.savedAt).toLocaleString('fr-FR');
+    localStorage.setItem('prairies_gh_lastsave', now);
+    initOnglets();
+    render();
+    majBtnCopier();
+    ghStatusBar('📥 Données restaurées depuis GitHub (' + now + ')');
+  } catch(e){ /* silencieux au démarrage */ }
+}
 
 // ===================== INIT =====================
 chargerParams();
@@ -2236,6 +2303,9 @@ chargerLS();
 initOnglets();
 render();
 majBtnCopier();
+
+// Auto-restauration depuis GitHub au démarrage
+ghAutoRestaurer();
 
 // Service Worker (PWA / installation Android)
 if('serviceWorker' in navigator){
