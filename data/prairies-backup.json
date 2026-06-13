@@ -1,12 +1,12 @@
 {
-  "savedAt": "2026-06-13T21:38:49.035Z",
+  "savedAt": "2026-06-13T21:48:04.371Z",
   "donnees": {
     "2025": {
       "ilots": [
         {
           "id": "mqcvnlwr5oouo",
-          "num": "1 sous chalet",
-          "nom": "",
+          "num": "1",
+          "nom": "sous chalet",
           "surface": "1.09",
           "parcelles": [],
           "amendements": [],
@@ -17,12 +17,12 @@
             null
           ],
           "geometries": [],
-          "ouvert": false
+          "ouvert": true
         },
         {
           "id": "mqcvnlwr3yb30",
-          "num": "2 plan",
-          "nom": "",
+          "num": "2",
+          "nom": "plan",
           "surface": "0.84",
           "parcelles": [
             "Îlot 2"
@@ -298,12 +298,12 @@
               "_ouvert": false
             }
           ],
-          "ouvert": false
+          "ouvert": true
         },
         {
           "id": "mqcvnlwrafwcl",
-          "num": "3 sous batiment",
-          "nom": "",
+          "num": "3",
+          "nom": "sous batiment",
           "surface": "3.53",
           "parcelles": [],
           "amendements": [],
@@ -314,12 +314,12 @@
             null
           ],
           "geometries": [],
-          "ouvert": false
+          "ouvert": true
         },
         {
           "id": "mqcvnlwro0fkn",
-          "num": "4 nantet en bas de la route",
-          "nom": "",
+          "num": "4",
+          "nom": "nantet en bas de la route",
           "surface": "0.31",
           "parcelles": [],
           "amendements": [],
@@ -334,8 +334,8 @@
         },
         {
           "id": "mqcvnlwrasmog",
-          "num": "5 grangette gardet",
-          "nom": "",
+          "num": "5",
+          "nom": "grangette gardet",
           "surface": "4.54",
           "parcelles": [
             "gardet",
@@ -748,8 +748,8 @@
         },
         {
           "id": "mqcvnlwrb5g8s",
-          "num": "6 grangette lea",
-          "nom": "",
+          "num": "6",
+          "nom": "grangette lea",
           "surface": "3.56",
           "parcelles": [],
           "amendements": [],
@@ -764,8 +764,8 @@
         },
         {
           "id": "mqcvnlwrzgkfl",
-          "num": "7 dodo",
-          "nom": "",
+          "num": "7",
+          "nom": "dodo",
           "surface": "0.93",
           "parcelles": [
             "Îlot 7"
@@ -925,12 +925,12 @@
               "_ouvert": false
             }
           ],
-          "ouvert": false
+          "ouvert": true
         },
         {
           "id": "mqcvnlwr50s5k",
-          "num": "8 tonton louis",
-          "nom": "",
+          "num": "8",
+          "nom": "tonton louis",
           "surface": "0.16",
           "parcelles": [],
           "amendements": [],
@@ -945,8 +945,8 @@
         },
         {
           "id": "mqcvnlwrb1k9t",
-          "num": "10 chardonnay",
-          "nom": "",
+          "num": "10",
+          "nom": "chardonnay",
           "surface": "1.37",
           "parcelles": [
             "Îlot 10 chardonnay"
@@ -1050,8 +1050,8 @@
         },
         {
           "id": "mqcvnlwrlyxae",
-          "num": "11 petit plan",
-          "nom": "",
+          "num": "11",
+          "nom": "petit plan",
           "surface": "2.09",
           "parcelles": [],
           "amendements": [],
@@ -1066,8 +1066,8 @@
         },
         {
           "id": "mqcvnlwrlv40k",
-          "num": "12 piste en haut",
-          "nom": "",
+          "num": "12",
+          "nom": "piste en haut",
           "surface": "4.61",
           "parcelles": [],
           "amendements": [],
@@ -1082,8 +1082,8 @@
         },
         {
           "id": "mqcvnlwr3402x",
-          "num": "13 piste en bas",
-          "nom": "",
+          "num": "13",
+          "nom": "piste en bas",
           "surface": "2.58",
           "parcelles": [],
           "amendements": [],
@@ -1098,8 +1098,8 @@
         },
         {
           "id": "mqcvnlwrqmmu4",
-          "num": "14 rucher",
-          "nom": "",
+          "num": "14",
+          "nom": "rucher",
           "surface": "0.08",
           "parcelles": [],
           "amendements": [],
@@ -1114,8 +1114,8 @@
         },
         {
           "id": "mqcvnlwrr2tz0",
-          "num": "15 hervé",
-          "nom": "",
+          "num": "15",
+          "nom": "hervé",
           "surface": "0.45",
           "parcelles": [
             "Îlot 15 herver"
@@ -1211,8 +1211,8 @@
         },
         {
           "id": "mqcvnlwroxqyt",
-          "num": "16 alpages",
-          "nom": "",
+          "num": "16",
+          "nom": "alpages",
           "surface": "1.05",
           "parcelles": [
             "Îlot 16 alpage"
@@ -1356,8 +1356,8 @@
         },
         {
           "id": "mqcvnlwrde8xr",
-          "num": "17 bourgaillet",
-          "nom": "",
+          "num": "17",
+          "nom": "bourgaillet",
           "surface": "1.02",
           "parcelles": [],
           "amendements": [],
@@ -1372,8 +1372,8 @@
         },
         {
           "id": "mqcvnlwrrlce8",
-          "num": "19 praise en bas de la route",
-          "nom": "",
+          "num": "19",
+          "nom": "praise en bas de la route",
           "surface": "3.15",
           "parcelles": [],
           "amendements": [],
@@ -1388,8 +1388,8 @@
         },
         {
           "id": "mqcvnlwrc97oq",
-          "num": "20 praise en haut de la route",
-          "nom": "",
+          "num": "20",
+          "nom": "praise en haut de la route",
           "surface": "6.27",
           "parcelles": [],
           "amendements": [],
@@ -1404,8 +1404,8 @@
         },
         {
           "id": "mqcvnlwrhrc8z",
-          "num": "21 praise a l entré",
-          "nom": "",
+          "num": "21",
+          "nom": "praise a l entré",
           "surface": "0.43",
           "parcelles": [],
           "amendements": [],
@@ -1420,8 +1420,8 @@
         },
         {
           "id": "mqcvnlwrcho9f",
-          "num": "22 la sable",
-          "nom": "",
+          "num": "22",
+          "nom": "la sable",
           "surface": "0.27",
           "parcelles": [
             "sable",
@@ -3134,7 +3134,7 @@
             null,
             null
           ],
-          "ouvert": true
+          "ouvert": false
         },
         {
           "id": "mqctp4ewucn60",
@@ -3151,7 +3151,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "Îlot 2",
@@ -3429,7 +3429,7 @@
             null,
             null
           ],
-          "ouvert": true
+          "ouvert": false
         },
         {
           "id": "mqctp4ew3fsu6",
@@ -3444,7 +3444,7 @@
             null,
             null
           ],
-          "ouvert": true
+          "ouvert": false
         },
         {
           "id": "mqctp4ewwnlj2",
@@ -6216,6 +6216,9 @@
           ]
         }
       ]
+    },
+    "2027": {
+      "ilots": []
     }
   }
 }
