@@ -2283,6 +2283,8 @@ async function ghAutoSauvegarder(){
 async function ghAutoRestaurer(){
   const t = ghToken();
   if(!t) return;
+  // N'auto-restaure que si aucune donnée locale (nouvel appareil / navigateur vide)
+  if(localStorage.getItem('prairies_v2')) return;
   try {
     const url = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}`;
     const res = await fetch(url, { headers: ghHeaders(t) });
@@ -2296,20 +2298,19 @@ async function ghAutoRestaurer(){
       text = decodeURIComponent(escape(atob(d.content.replace(/\s/g,''))));
     }
     const parsed = JSON.parse(text);
-    if(!parsed.donnees || !parsed.savedAt) return;
-    const ghDate = new Date(parsed.savedAt).getTime();
-    const lastSaveIso = localStorage.getItem('prairies_gh_lastsave_iso');
-    const localDate = lastSaveIso ? new Date(lastSaveIso).getTime() : 0;
-    if(ghDate <= localDate) return; // local already up to date
+    if(!parsed.donnees) return;
     donnees = parsed.donnees;
     localStorage.setItem('prairies_v2', JSON.stringify(donnees));
-    const now = new Date(parsed.savedAt).toLocaleString('fr-FR');
-    localStorage.setItem('prairies_gh_lastsave', now);
-    localStorage.setItem('prairies_gh_lastsave_iso', parsed.savedAt);
+    if(parsed.savedAt){
+      const now = new Date(parsed.savedAt).toLocaleString('fr-FR');
+      localStorage.setItem('prairies_gh_lastsave', now);
+      localStorage.setItem('prairies_gh_lastsave_iso', parsed.savedAt);
+    }
     initOnglets();
     render();
     majBtnCopier();
-    ghStatusBar('📥 Données restaurées depuis GitHub (' + now + ')');
+    const label = parsed.savedAt ? new Date(parsed.savedAt).toLocaleString('fr-FR') : '';
+    ghStatusBar('📥 Données restaurées depuis GitHub (' + label + ')');
   } catch(e){ /* silencieux au démarrage */ }
 }
 
