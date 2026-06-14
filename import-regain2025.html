@@ -147,6 +147,9 @@ function importer(){
     }
 
     localStorage.setItem('prairies_v2', JSON.stringify(donnees));
+    const isoNow = new Date().toISOString();
+    localStorage.setItem('prairies_gh_lastsave_iso', isoNow);
+    localStorage.setItem('prairies_gh_lastsave', new Date().toLocaleString('fr-FR'));
 
     // Mettre le poids balle regain dans params (220 kg)
     // On garde balleRonde à 230, mais on note que regain = 220 dans les coupes

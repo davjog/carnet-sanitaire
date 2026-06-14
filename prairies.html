@@ -2205,8 +2205,10 @@ async function ghSauvegarder(){
     const body = { message: 'Sauvegarde prairies', content, ...(sha?{sha}:{}) };
     const res  = await fetch(url, { method:'PUT', headers: ghHeaders(t), body: JSON.stringify(body) });
     if(!res.ok){ const e=await res.json(); throw new Error(e.message||res.status); }
+    const isoNow = new Date().toISOString();
     const now = new Date().toLocaleString('fr-FR');
     localStorage.setItem('prairies_gh_lastsave', now);
+    localStorage.setItem('prairies_gh_lastsave_iso', isoNow);
     document.getElementById('gh-last-save').textContent = `Dernière sauvegarde : ${now}`;
     ghMsg('✅ Sauvegarde réussie !','#3a7a3a');
     ghStatusBar('✅ Sauvegardé le '+now);
@@ -2268,8 +2270,10 @@ async function ghAutoSauvegarder(){
     const body = { message: 'Sauvegarde auto prairies', content, ...(sha?{sha}:{}) };
     const res = await fetch(url, { method:'PUT', headers: ghHeaders(t), body: JSON.stringify(body) });
     if(!res.ok){ const e=await res.json(); throw new Error(e.message||res.status); }
+    const isoNow2 = new Date().toISOString();
     const now = new Date().toLocaleString('fr-FR');
     localStorage.setItem('prairies_gh_lastsave', now);
+    localStorage.setItem('prairies_gh_lastsave_iso', isoNow2);
     ghStatusBar('☁️ Sauvegardé en ligne — ' + now);
   } catch(e){
     ghStatusBar('⚠️ Sauvegarde en ligne échouée : ' + e.message);
@@ -2294,14 +2298,14 @@ async function ghAutoRestaurer(){
     const parsed = JSON.parse(text);
     if(!parsed.donnees || !parsed.savedAt) return;
     const ghDate = new Date(parsed.savedAt).getTime();
-    const lastSave = localStorage.getItem('prairies_gh_lastsave');
-    // Compare: if GitHub backup is strictly newer than what we last synced, auto-restore
-    const localDate = lastSave ? new Date(lastSave).getTime() : 0;
+    const lastSaveIso = localStorage.getItem('prairies_gh_lastsave_iso');
+    const localDate = lastSaveIso ? new Date(lastSaveIso).getTime() : 0;
     if(ghDate <= localDate) return; // local already up to date
     donnees = parsed.donnees;
     localStorage.setItem('prairies_v2', JSON.stringify(donnees));
     const now = new Date(parsed.savedAt).toLocaleString('fr-FR');
     localStorage.setItem('prairies_gh_lastsave', now);
+    localStorage.setItem('prairies_gh_lastsave_iso', parsed.savedAt);
     initOnglets();
     render();
     majBtnCopier();

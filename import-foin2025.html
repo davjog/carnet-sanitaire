@@ -150,6 +150,10 @@ function importer(){
     const donnees = raw ? JSON.parse(raw) : {};
     donnees['2025'] = { ilots };
     localStorage.setItem('prairies_v2', JSON.stringify(donnees));
+    // Marquer comme plus récent que la sauvegarde GitHub pour bloquer l'auto-restore
+    const isoNow = new Date().toISOString();
+    localStorage.setItem('prairies_gh_lastsave_iso', isoNow);
+    localStorage.setItem('prairies_gh_lastsave', new Date().toLocaleString('fr-FR'));
 
     // Met aussi les paramètres avec poids balle ronde = 230 kg
     const paramsRaw = localStorage.getItem('prairies_params');
