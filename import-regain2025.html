@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Import regain 2025</title>
+<style>
+  body { font-family: Arial, sans-serif; background:#2d5a1b; color:#fff; display:flex;
+         flex-direction:column; align-items:center; justify-content:center; min-height:100vh; margin:0; }
+  .card { background:#fff; color:#333; border-radius:12px; padding:32px; max-width:540px; width:90%; text-align:center; }
+  h2 { color:#2d5a1b; margin-top:0; }
+  .btn { background:#2d5a1b; color:#fff; border:none; padding:14px 32px; border-radius:8px;
+         font-size:16px; cursor:pointer; margin-top:16px; width:100%; }
+  .btn:hover { background:#1e3e12; }
+  .warn { background:#fff3cd; border:1px solid #ffc107; border-radius:6px; padding:12px; margin:12px 0; font-size:14px; color:#856404; }
+  .info { background:#d1e7dd; border:1px solid #a3cfbb; border-radius:6px; padding:12px; margin:12px 0; font-size:14px; color:#0f5132; }
+  .list { text-align:left; font-size:13px; max-height:240px; overflow-y:auto; background:#f5f5f5;
+          border-radius:6px; padding:10px 14px; margin:12px 0; }
+  .list li { margin:3px 0; }
+  #status { margin-top:14px; font-weight:bold; font-size:15px; }
+  #log { text-align:left; font-size:12px; background:#f9f9f9; border-radius:6px; padding:10px;
+         margin-top:10px; max-height:160px; overflow-y:auto; display:none; color:#555; }
+</style>
+</head>
+<body>
+<div class="card">
+  <h2>🌿 Import Regain 2025 — 2ᵉ coupe</h2>
+  <p>Ce chargement va ajouter la <strong>2ᵉ coupe (regain)</strong> aux îlots 2025 déjà présents dans l'application.</p>
+  <div class="info">ℹ️ La 1ʳᵉ coupe (foin) et les autres années ne sont pas touchées. Seule la 2ᵉ coupe est ajoutée.</div>
+  <div class="warn">⚠️ Si une 2ᵉ coupe existe déjà sur un îlot, elle sera remplacée.</div>
+  <div class="list">
+    <strong>Regain 2025 (20 parcelles) :</strong>
+    <ul>
+      <li>Îlot 1 — Sous chalet (0.47 ha) — 3 balles</li>
+      <li>Îlot 2 — Plan (0.80 ha) — 6 balles</li>
+      <li>Îlot 3 — Sous bâtiment (1.50 ha) — 14 balles</li>
+      <li>Îlot 5 — Gardet (0.60 ha) — 1 balle</li>
+      <li>Îlot 5 — Grangette (1.68 ha) — 0 balle</li>
+      <li>Îlot 7 — Do (0.93 ha) — 3 balles</li>
+      <li>Îlot 8 — Tonton Louis (0.16 ha) — 1 balle</li>
+      <li>Îlot 10 — Chardonnay (1.37 ha) — 10 balles</li>
+      <li>Îlot 15 — Hervé (0.45 ha) — 3 balles</li>
+      <li>Îlot 16 — Alpage (1.05 ha) — 4 balles</li>
+      <li>Îlot 22 — La Sable (0.28 ha) — 1 balle</li>
+      <li>Îlot 23 — Granier (0.15 ha) — 0 balle</li>
+      <li>Îlot 24 — Tovet (0.39 ha) — 3 balles</li>
+      <li>Îlot 25 — Verdette David (0.10 ha) — 0 balle</li>
+      <li>Îlot 26 — Allard Raccourci (0.30 ha) — 2 balles</li>
+      <li>Îlot 27 — Verdette Allard (0.41 ha) — 3 balles</li>
+      <li>Îlot 28 — Derex Verdette en bas route (0.26 ha) — 2 balles</li>
+      <li>Îlot 29 — Joguet Biolle (0.77 ha) — 0 balle</li>
+      <li>Îlot 30 — La Balle (0.48 ha) — 3 balles</li>
+      <li>Jardin Enfant (0.18 ha) — 1 balle</li>
+    </ul>
+    <strong>Poids balle regain :</strong> 220 kg (rondes)<br>
+    <strong>Total regain :</strong> 60 balles — 13 200 kg
+  </div>
+  <button class="btn" onclick="importer()">✅ Ajouter la 2ᵉ coupe regain</button>
+  <div id="status"></div>
+  <div id="log"></div>
+</div>
+
+<script>
+// Données regain : [n° ilot, nom parcelle, nb balles]
+// Pour îlot 5 : gardet et grangette ont des entrées séparées (geometries)
+const REGAIN = [
+  { num:'1',  nom:'sous chalet',                geo:null, nb:3  },
+  { num:'2',  nom:'plan',                       geo:null, nb:6  },
+  { num:'3',  nom:'sous bâtiment',              geo:null, nb:14 },
+  { num:'5',  nom:'gardet / grangette',         geo:'gardet',    nb:1  },
+  { num:'5',  nom:'gardet / grangette',         geo:'grangette', nb:0  },
+  { num:'7',  nom:'do',                         geo:null, nb:3  },
+  { num:'8',  nom:'tonton Louis Mouille',       geo:null, nb:1  },
+  { num:'10', nom:'chardonnay',                 geo:null, nb:10 },
+  { num:'15', nom:'hervé',                      geo:null, nb:3  },
+  { num:'16', nom:'alpage',                     geo:null, nb:4  },
+  { num:'22', nom:'la sable',                   geo:null, nb:1  },
+  { num:'23', nom:'granier',                    geo:null, nb:0  },
+  { num:'24', nom:'tovet',                      geo:null, nb:3  },
+  { num:'25', nom:'verdette David',             geo:null, nb:0  },
+  { num:'26', nom:'allard raccourci',           geo:null, nb:2  },
+  { num:'27', nom:'verdette Allard',            geo:null, nb:3  },
+  { num:'28', nom:'Derex Verdette en bas route',geo:null, nb:2  },
+  { num:'29', nom:'joguet Biolle',              geo:null, nb:0  },
+  { num:'30', nom:'la balle',                   geo:null, nb:3  },
+  { num:'',   nom:'jardin enfant Mabboux',      geo:null, nb:1  },
+];
+
+function coupeRegain(nb){
+  return { type:'regain', debut:'', fin:'', date:'', pressage:'',
+           fanage:0, typeBalle:'ronde', nBalles:nb, poidsBalle:220,
+           poidsTotal: Math.round(nb*220), rem:'' };
+}
+
+function normalise(s){ return (s||'').toLowerCase().trim().replace(/[éèê]/g,'e').replace(/[àâ]/g,'a'); }
+
+function importer(){
+  const logEl = document.getElementById('log');
+  logEl.style.display = '';
+  logEl.innerHTML = '';
+  const log = msg => { logEl.innerHTML += msg + '<br>'; };
+
+  try {
+    const raw = localStorage.getItem('prairies_v2');
+    if(!raw){ throw new Error('Aucune donnée trouvée. Faites d\'abord l\'import foin 2025.'); }
+    const donnees = JSON.parse(raw);
+    if(!donnees['2025'] || !donnees['2025'].ilots){
+      throw new Error('Pas de données 2025. Faites d\'abord l\'import foin 2025.');
+    }
+
+    const ilots = donnees['2025'].ilots;
+    let ok = 0, skip = 0;
+
+    for(const r of REGAIN){
+      // Trouver l'îlot par numéro (ou par nom si num vide)
+      let ilot = null;
+      if(r.num){
+        ilot = ilots.find(il => String(il.num) === r.num);
+      } else {
+        // Îlot sans numéro : chercher par nom approché
+        ilot = ilots.find(il => normalise(il.nom).includes('jardin') || normalise(il.nom).includes('mabboux'));
+      }
+
+      if(!ilot){
+        log(`⚠️ Îlot ${r.num||'?'} (${r.nom}) non trouvé`);
+        skip++; continue;
+      }
+
+      if(r.geo){
+        // Îlot 5 : parcelle dans geometries
+        const geos = ilot.geometries || [];
+        const geo = geos.find(g => normalise(g.nom) === normalise(r.geo));
+        if(!geo){
+          log(`⚠️ Parcelle "${r.geo}" non trouvée dans îlot ${r.num}`);
+          skip++; continue;
+        }
+        if(!geo.coupes) geo.coupes = [null,null,null,null];
+        geo.coupes[1] = coupeRegain(r.nb);
+        log(`✅ Îlot ${r.num} / ${r.geo} → ${r.nb} balles regain`);
+        ok++;
+      } else {
+        // Îlot normal : coupe au niveau îlot
+        if(!ilot.coupes) ilot.coupes = [null,null,null,null];
+        ilot.coupes[1] = coupeRegain(r.nb);
+        log(`✅ Îlot ${r.num} (${ilot.nom}) → ${r.nb} balles regain`);
+        ok++;
+      }
+    }
+
+    localStorage.setItem('prairies_v2', JSON.stringify(donnees));
+
+    // Mettre le poids balle regain dans params (220 kg)
+    // On garde balleRonde à 230, mais on note que regain = 220 dans les coupes
+    // (les poids sont déjà stockés dans chaque coupe donc ok)
+
+    const statusEl = document.getElementById('status');
+    statusEl.innerHTML = `✅ ${ok} coupes ajoutées${skip ? ` — ⚠️ ${skip} non trouvées` : ''}. Redirection…`;
+    statusEl.style.color = ok > 0 ? '#2d5a1b' : '#c04';
+    setTimeout(()=>{ window.location = './prairies.html'; }, 1800);
+  } catch(e) {
+    document.getElementById('status').innerHTML = '❌ Erreur : ' + e.message;
+    document.getElementById('status').style.color = '#c04';
+  }
+}
+</script>
+</body>
+</html>

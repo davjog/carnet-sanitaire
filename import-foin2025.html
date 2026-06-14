@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Import foin 2025</title>
+<style>
+  body { font-family: Arial, sans-serif; background:#2d5a1b; color:#fff; display:flex;
+         flex-direction:column; align-items:center; justify-content:center; min-height:100vh; margin:0; }
+  .card { background:#fff; color:#333; border-radius:12px; padding:32px; max-width:520px; width:90%; text-align:center; }
+  h2 { color:#2d5a1b; margin-top:0; }
+  .btn { background:#2d5a1b; color:#fff; border:none; padding:14px 32px; border-radius:8px;
+         font-size:16px; cursor:pointer; margin-top:16px; width:100%; }
+  .btn:hover { background:#1e3e12; }
+  .warn { background:#fff3cd; border:1px solid #ffc107; border-radius:6px; padding:12px; margin:12px 0; font-size:14px; color:#856404; }
+  .list { text-align:left; font-size:13px; max-height:240px; overflow-y:auto; background:#f5f5f5;
+          border-radius:6px; padding:10px 14px; margin:12px 0; }
+  .list li { margin:3px 0; }
+  #status { margin-top:14px; font-weight:bold; font-size:15px; }
+</style>
+</head>
+<body>
+<div class="card">
+  <h2>🌾 Import Foin 2025</h2>
+  <p>Ce chargement va injecter les données du fichier <strong>exel foin2025.xlsx</strong> dans l'application Prairies pour l'année <strong>2025 — 1ʳᵉ coupe</strong>.</p>
+  <div class="warn">⚠️ Les données 2025 existantes seront <strong>remplacées</strong>. Les autres années ne sont pas touchées.</div>
+  <div class="list">
+    <strong>Parcelles importées (19) :</strong>
+    <ul>
+      <li>Îlot 1 — Sous chalet (0.47 ha) — 8 balles — 08/06/2025</li>
+      <li>Îlot 2 — Plan (0.80 ha) — 17 balles — 16/06/2025</li>
+      <li>Îlot 3 — Sous bâtiment (1.50 ha) — 0 balles — 19/06/2025</li>
+      <li>Îlot 5 — Gardet (0.60 ha) — 3.5 balles — 08/06/2025</li>
+      <li>Îlot 5 — Grangette (1.68 ha) — 27 balles — 16/06/2025</li>
+      <li>Îlot 7 — Do (0.93 ha) — 16 balles — 08/06/2025</li>
+      <li>Îlot 8 — Tonton Louis Mouille (0.16 ha) — 3 balles — 08/06/2025</li>
+      <li>Îlot 10 — Chardonnay (1.37 ha) — 22 balles — 17/06/2025</li>
+      <li>Îlot 15 — Hervé (0.45 ha) — 11 balles — 10/06/2025</li>
+      <li>Îlot 16 — Alpage (1.05 ha) — 19 balles — 10/06/2025</li>
+      <li>Îlot 22 — La Sable (0.28 ha) — 4.5 balles — 08/06/2025</li>
+      <li>Îlot 23 — Granier (0.15 ha) — 3 balles — 17/06/2025</li>
+      <li>Îlot 24 — Tovet (0.39 ha) — 9 balles — 09/06/2025</li>
+      <li>Îlot 25 — Verdette David (0.10 ha) — 2 balles — 15/06/2025</li>
+      <li>Îlot 26 — Allard Raccourci (0.30 ha) — 6 balles — 09/06/2025</li>
+      <li>Îlot 27 — Verdette Allard (0.41 ha) — 10 balles — 15/06/2025</li>
+      <li>Îlot 28 — Derex Verdette en bas route (0.26 ha) — 5 balles — 10/06/2025</li>
+      <li>Îlot 29 — Joguet Biolle (0.77 ha) — 13 balles — 17/06/2025</li>
+      <li>Îlot 30 — La Balle (0.48 ha) — 11 balles</li>
+      <li>Jardin Enfant Mabboux (0.18 ha) — 5 balles — 15/06/2025</li>
+    </ul>
+    <strong>Poids balle :</strong> 230 kg (rondes)<br>
+    <strong>Total balles :</strong> 195 — <strong>Surface totale :</strong> 12.33 ha — <strong>Poids total :</strong> 44 850 kg
+  </div>
+  <button class="btn" onclick="importer()">✅ Importer dans l'application</button>
+  <div id="status"></div>
+</div>
+
+<script>
+function uid(){ return 'il_'+Math.random().toString(36).slice(2,10); }
+function coupe1(nb, date, pt){
+  return { type:'foin', debut:'', fin:'', date:date||'', pressage:'',
+           fanage:0, typeBalle:'ronde', nBalles:nb, poidsBalle:230, poidsTotal:pt||Math.round(nb*230), rem:'' };
+}
+
+function importer(){
+  const ilots = [
+    { id:uid(), num:'1',  nom:'sous chalet',                surface:0.47, parcelles:["tout l'îlot"],
+      amendements:[], coupes:[coupe1(8,'2025-06-08',1840),null,null,null],
+      geometries:[], ouvert:false },
+
+    { id:uid(), num:'2',  nom:'plan',                       surface:0.80, parcelles:["tout l'îlot"],
+      amendements:[], coupes:[coupe1(17,'2025-06-16',3910),null,null,null],
+      geometries:[], ouvert:false },
+
+    { id:uid(), num:'3',  nom:'sous bâtiment',              surface:1.50, parcelles:["tout l'îlot"],
+      amendements:[], coupes:[{type:'foin',debut:'',fin:'',date:'2025-06-19',pressage:'',fanage:0,typeBalle:'ronde',nBalles:0,poidsBalle:230,poidsTotal:0,rem:''},null,null,null],
+      geometries:[], ouvert:false },
+
+    { id:uid(), num:'5',  nom:'gardet / grangette',         surface:2.28, parcelles:['gardet','grangette'],
+      amendements:[], coupes:[null,null,null,null],
+      geometries:[
+        { nom:'gardet',    coords:[], surface:0.60, amendements:[], _ouvert:false,
+          coupes:[coupe1(3.5,'2025-06-08',805),null,null,null] },
+        { nom:'grangette', coords:[], surface:1.68, amendements:[], _ouvert:false,
+          coupes:[coupe1(27,'2025-06-16',6210),null,null,null] }
+      ], ouvert:false },
+
+    { id:uid(), num:'7',  nom:'do',                         surface:0.93, parcelles:["tout l'îlot"],
+      amendements:[], coupes:[coupe1(16,'2025-06-08',3680),null,null,null],
+      geometries:[], ouvert:false },
+
+    { id:uid(), num:'8',  nom:'tonton Louis Mouille',       surface:0.16, parcelles:["tout l'îlot"],
+      amendements:[], coupes:[coupe1(3,'2025-06-08',690),null,null,null],
+      geometries:[], ouvert:false },
+
+    { id:uid(), num:'10', nom:'chardonnay',                 surface:1.37, parcelles:["tout l'îlot"],
+      amendements:[], coupes:[coupe1(22,'2025-06-17',5060),null,null,null],
+      geometries:[], ouvert:false },
+
+    { id:uid(), num:'15', nom:'hervé',                      surface:0.45, parcelles:["tout l'îlot"],
+      amendements:[], coupes:[coupe1(11,'2025-06-10',2530),null,null,null],
+      geometries:[], ouvert:false },
+
+    { id:uid(), num:'16', nom:'alpage',                     surface:1.05, parcelles:["tout l'îlot"],
+      amendements:[], coupes:[coupe1(19,'2025-06-10',4370),null,null,null],
+      geometries:[], ouvert:false },
+
+    { id:uid(), num:'22', nom:'la sable',                   surface:0.28, parcelles:["tout l'îlot"],
+      amendements:[], coupes:[coupe1(4.5,'2025-06-08',1035),null,null,null],
+      geometries:[], ouvert:false },
+
+    { id:uid(), num:'23', nom:'granier',                    surface:0.15, parcelles:["tout l'îlot"],
+      amendements:[], coupes:[coupe1(3,'2025-06-17',690),null,null,null],
+      geometries:[], ouvert:false },
+
+    { id:uid(), num:'24', nom:'tovet',                      surface:0.39, parcelles:["tout l'îlot"],
+      amendements:[], coupes:[coupe1(9,'2025-06-09',2070),null,null,null],
+      geometries:[], ouvert:false },
+
+    { id:uid(), num:'25', nom:'verdette David',             surface:0.10, parcelles:["tout l'îlot"],
+      amendements:[], coupes:[coupe1(2,'2025-06-15',460),null,null,null],
+      geometries:[], ouvert:false },
+
+    { id:uid(), num:'26', nom:'allard raccourci',           surface:0.30, parcelles:["tout l'îlot"],
+      amendements:[], coupes:[coupe1(6,'2025-06-09',1380),null,null,null],
+      geometries:[], ouvert:false },
+
+    { id:uid(), num:'27', nom:'verdette Allard',            surface:0.41, parcelles:["tout l'îlot"],
+      amendements:[], coupes:[coupe1(10,'2025-06-15',2300),null,null,null],
+      geometries:[], ouvert:false },
+
+    { id:uid(), num:'28', nom:'Derex Verdette en bas route',surface:0.26, parcelles:["tout l'îlot"],
+      amendements:[], coupes:[coupe1(5,'2025-06-10',1150),null,null,null],
+      geometries:[], ouvert:false },
+
+    { id:uid(), num:'29', nom:'joguet Biolle',              surface:0.77, parcelles:["tout l'îlot"],
+      amendements:[], coupes:[coupe1(13,'2025-06-17',2990),null,null,null],
+      geometries:[], ouvert:false },
+
+    { id:uid(), num:'30', nom:'la balle',                   surface:0.48, parcelles:["tout l'îlot"],
+      amendements:[], coupes:[coupe1(11,'',2530),null,null,null],
+      geometries:[], ouvert:false },
+
+    { id:uid(), num:'',   nom:'jardin enfant Mabboux',      surface:0.18, parcelles:["tout l'îlot"],
+      amendements:[], coupes:[coupe1(5,'2025-06-15',1150),null,null,null],
+      geometries:[], ouvert:false },
+  ];
+
+  try {
+    const raw = localStorage.getItem('prairies_v2');
+    const donnees = raw ? JSON.parse(raw) : {};
+    donnees['2025'] = { ilots };
+    localStorage.setItem('prairies_v2', JSON.stringify(donnees));
+
+    // Met aussi les paramètres avec poids balle ronde = 230 kg
+    const paramsRaw = localStorage.getItem('prairies_params');
+    const params = paramsRaw ? JSON.parse(paramsRaw) : {};
+    params.balleRonde = 230;
+    localStorage.setItem('prairies_params', JSON.stringify(params));
+
+    document.getElementById('status').innerHTML = '✅ Import réussi ! Redirection…';
+    document.getElementById('status').style.color = '#2d5a1b';
+    setTimeout(()=>{ window.location = './prairies.html'; }, 1200);
+  } catch(e) {
+    document.getElementById('status').innerHTML = '❌ Erreur : ' + e.message;
+    document.getElementById('status').style.color = '#c04';
+  }
+}
+</script>
+</body>
+</html>
