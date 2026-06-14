@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-06-14T18:24:40.938Z",
+  "savedAt": "2026-06-14T18:51:34.299Z",
   "donnees": {
     "2025": {
       "ilots": [
@@ -17,7 +17,7 @@
             null
           ],
           "geometries": [],
-          "ouvert": true
+          "ouvert": false
         },
         {
           "id": "mqcvnlwr3yb30",
@@ -298,7 +298,7 @@
               "_ouvert": false
             }
           ],
-          "ouvert": true
+          "ouvert": false
         },
         {
           "id": "mqcvnlwrafwcl",
@@ -314,7 +314,7 @@
             null
           ],
           "geometries": [],
-          "ouvert": true
+          "ouvert": false
         },
         {
           "id": "mqcvnlwro0fkn",
@@ -1930,7 +1930,7 @@
               "_ouvert": false
             }
           ],
-          "ouvert": false
+          "ouvert": true
         },
         {
           "id": "mqcvnlwrl5zd5",
