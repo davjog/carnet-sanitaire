@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-06-14T16:07:06.438Z",
+  "savedAt": "2026-06-14T16:27:05.888Z",
   "donnees": {
     "2025": {
       "ilots": [
@@ -3147,8 +3147,8 @@
       "ilots": [
         {
           "id": "mqctp4ew36isv",
-          "num": "1 sous chalet",
-          "nom": "",
+          "num": "1",
+          "nom": "sous chalet",
           "surface": "1.09",
           "parcelles": [],
           "amendements": [],
@@ -3162,8 +3162,8 @@
         },
         {
           "id": "mqctp4ewucn60",
-          "num": "2 plan",
-          "nom": "",
+          "num": "2",
+          "nom": "plan",
           "surface": "0.84",
           "parcelles": [
             "Îlot 2"
@@ -3442,8 +3442,8 @@
         },
         {
           "id": "mqctp4ewxg4ip",
-          "num": "3 sous batiment",
-          "nom": "",
+          "num": "3",
+          "nom": "sous batiment",
           "surface": "3.53",
           "parcelles": [],
           "amendements": [],
@@ -3457,8 +3457,8 @@
         },
         {
           "id": "mqctp4ew3fsu6",
-          "num": "4 nantet en bas de la route",
-          "nom": "",
+          "num": "4",
+          "nom": "nantet en bas de la route",
           "surface": "0.31",
           "parcelles": [],
           "amendements": [],
@@ -3472,8 +3472,8 @@
         },
         {
           "id": "mqctp4ewwnlj2",
-          "num": "5 grangette gardet",
-          "nom": "",
+          "num": "5",
+          "nom": "grangette gardet",
           "surface": "4.54",
           "parcelles": [
             "gardet",
@@ -3894,8 +3894,8 @@
         },
         {
           "id": "mqctp4ewx7izb",
-          "num": "6 grangette lea",
-          "nom": "",
+          "num": "6",
+          "nom": "lea grangette",
           "surface": "3.56",
           "parcelles": [],
           "amendements": [],
@@ -3905,12 +3905,12 @@
             null,
             null
           ],
-          "ouvert": false
+          "ouvert": true
         },
         {
           "id": "mqctp4ew4qbvk",
-          "num": "7 dodo",
-          "nom": "",
+          "num": "7",
+          "nom": "dodo",
           "surface": "0.93",
           "parcelles": [
             "Îlot 7"
@@ -4100,8 +4100,8 @@
         },
         {
           "id": "mqctp4ewn461d",
-          "num": "10 chardonnay",
-          "nom": "",
+          "num": "10",
+          "nom": "chardonnay",
           "surface": "1.37",
           "parcelles": [
             "Îlot 10 chardonnay"
@@ -4113,7 +4113,7 @@
             null,
             null
           ],
-          "ouvert": false,
+          "ouvert": true,
           "geometries": [
             {
               "nom": "Îlot 10 chardonnay",
@@ -4411,7 +4411,7 @@
             null,
             null
           ],
-          "ouvert": false,
+          "ouvert": true,
           "geometries": [
             {
               "nom": "Îlot 12 piste en haut",
@@ -5578,7 +5578,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "Îlot 23 granier",
@@ -5674,7 +5674,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "Îlot 24 tovet",
@@ -5814,7 +5814,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "Îlot 25 verdette david",
