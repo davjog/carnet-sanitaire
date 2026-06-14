@@ -189,6 +189,8 @@
       <input type="file" accept=".dbf" style="display:none" onchange="importerDBF(this)"/>
     </label>
     <button class="btn btn-sec btn-sm" onclick="exporter()">📥 Export JSON</button>
+    <button class="btn btn-sec btn-sm" onclick="document.getElementById('input-import-json').click()">📤 Import JSON</button>
+    <input type="file" id="input-import-json" accept=".json" style="display:none" onchange="importerJSON(this)">
     <button class="btn btn-sec btn-sm" onclick="ouvrirCarte()">🛰️ Carte satellite</button>
     <button class="btn btn-sec btn-sm" onclick="ouvrirParams()">⚙️ Paramètres</button>
     <button class="btn btn-sec btn-sm" id="btn-copier-annee" onclick="ouvrirCopierAnnee()" style="display:none">📋 Copier depuis…</button>
@@ -1343,6 +1345,37 @@ function exporter(){
   a.href=URL.createObjectURL(blob);
   a.download=`prairies_${anneeActive}.json`;
   a.click();
+}
+
+function importerJSON(input){
+  const file = input.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const parsed = JSON.parse(e.target.result);
+      // Accepte soit le format backup GitHub {savedAt, donnees} soit directement {annee: {ilots:[]}}
+      const data = parsed.donnees || parsed;
+      const annees = Object.keys(data);
+      if(!annees.length || !annees.every(a => data[a] && Array.isArray(data[a].ilots)))
+        throw new Error('Format JSON invalide');
+      const liste = annees.map(a => `${a} (${data[a].ilots.length} îlots)`).join(', ');
+      if(!confirm(`Importer les données :\n${liste}\n\nLes années existantes seront remplacées uniquement pour les années présentes dans le fichier.`)) {
+        input.value = '';
+        return;
+      }
+      annees.forEach(a => { donnees[a] = data[a]; });
+      sauvegarderLS();
+      initOnglets();
+      render();
+      majBtnCopier();
+      ghStatusBar('✅ Import JSON réussi — ' + liste);
+    } catch(err) {
+      alert('❌ Erreur import JSON : ' + err.message);
+    }
+    input.value = '';
+  };
+  reader.readAsText(file);
 }
 
 // ===================== CARTE SATELLITE =====================
