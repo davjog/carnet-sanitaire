@@ -1004,16 +1004,20 @@ function renderParcelles(il){
       const surf = g.surface ? `📐 ${g.surface} ha` : '';
       const coupesHtml = COUPES_CONFIG.map((cfg,ci)=>{
         const c = g.coupes[ci];
-        const val = c&&c.type ? `${COUPES_ICO[c.type]} ${COUPES_NOM[c.type]}` : '<span style="color:#bbb">Toucher pour saisir</span>';
+        if(!c||!c.type) return '';
         return `<div onclick="ouvrirFpCoupe('${il.id}',${gi},${ci})" style="flex:1;min-width:90px;background:var(--gris);border-radius:8px;padding:6px 8px;border:1px solid var(--bord);cursor:pointer" class="coupe-cell">
           <div style="font-size:10px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px">${cfg.label}</div>
-          <div style="font-size:12px;color:var(--txt)">${val}</div>
-          ${c&&c.type?`<div style="font-size:10px;color:#888">${c.type==='paturage'
+          <div style="font-size:12px;color:var(--txt)">${COUPES_ICO[c.type]} ${COUPES_NOM[c.type]}</div>
+          <div style="font-size:10px;color:#888">${c.type==='paturage'
             ?`🐄 ${fmt(c.debut)||'—'}${c.fin?' → '+fmt(c.fin):''}`
             :`✂️ ${fmt(c.date)||'—'}${c.pressage?' · 🧺 '+fmt(c.pressage):''}${c.fanage?'<br/>🔄 '+c.fanage+' fanage'+(c.fanage>1?'s':''):''}`
-          }</div>${coupeBalleInfo(c, parseFloat(g.surface)||0)}`:''}
+          }</div>${coupeBalleInfo(c, parseFloat(g.surface)||0)}
         </div>`;
       }).join('');
+      const nextEmptyGeo = g.coupes.findIndex(c=>!c||!c.type);
+      const btnAjouterGeo = nextEmptyGeo>=0
+        ? `<button onclick="event.stopPropagation();ouvrirFpCoupe('${il.id}',${gi},${nextEmptyGeo})" class="btn btn-sec btn-sm" style="margin-top:4px">+ Ajouter coupe</button>`
+        : '';
       const amendtsHtml = g.amendements.length ? g.amendements.map(a=>`
         <span class="amendt-badge ${a.type}" style="font-size:11px;margin:2px 2px 0 0">
           ${{lisier:'💧',fumier:'🌾',engrais:'🌿'}[a.type]} ${fmt(a.date)}${a.qte?' · '+a.qte:''}
@@ -1030,7 +1034,8 @@ function renderParcelles(il){
         </div>
         <div class="parcelle-item-body">
           <div style="font-size:11px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">✂️ Coupes</div>
-          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">${coupesHtml}</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:4px">${coupesHtml}</div>
+          ${btnAjouterGeo}
           <div style="font-size:11px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">🧪 Amendements</div>
           <div>${amendtsHtml}</div>
         </div>
@@ -1097,20 +1102,27 @@ function coupeBalleInfo(c, surf){
 
 function renderCoupes(il){
   const surf = parseFloat(il.surface)||0;
-  const cells=COUPES_CONFIG.map((cfg,i)=>{
-    const c=il.coupes[i];
-    const val=c&&c.type?`<div class="coupe-val"><span class="coupe-ico">${COUPES_ICO[c.type]||''}</span>${COUPES_NOM[c.type]||c.type}</div>
+  const cells = COUPES_CONFIG.map((cfg,i)=>{
+    const c = il.coupes[i];
+    if(!c||!c.type) return '';
+    return `<div class="coupe-cell" onclick="ouvrirModalCoupe('${il.id}',${i})" style="cursor:pointer">
+      <div class="coupe-label">${cfg.label}</div>
+      <div class="coupe-val"><span class="coupe-ico">${COUPES_ICO[c.type]||''}</span>${COUPES_NOM[c.type]||c.type}</div>
       <div class="coupe-date">${c.type==='paturage'
         ?`🐄 ${fmt(c.debut)||'—'}${c.fin?' → '+fmt(c.fin):''}`
         :`✂️ ${fmt(c.date)||'—'}${c.pressage?'<br/>🧺 '+fmt(c.pressage):''}${c.fanage?'<br/>🔄 '+c.fanage+' fanage'+(c.fanage>1?'s':''):''}`
-      }</div>${coupeBalleInfo(c,surf)}`:
-      `<div class="coupe-vide">Non renseigné</div>`;
-    return `<div class="coupe-cell" onclick="ouvrirModalCoupe('${il.id}',${i})" style="cursor:pointer">
-      <div class="coupe-label">${cfg.label}</div>${val}</div>`;
+      }</div>${coupeBalleInfo(c,surf)}
+    </div>`;
   }).join('');
+  const nextEmpty = il.coupes.findIndex(c=>!c||!c.type);
+  const btnAjouter = nextEmpty>=0
+    ? `<button onclick="ouvrirModalCoupe('${il.id}',${nextEmpty})" class="btn btn-sec btn-sm" style="margin-top:4px">+ Ajouter coupe</button>`
+    : '';
+  const hasCoupes = il.coupes.some(c=>c&&c.type);
   return `<div class="section">
     <div class="section-titre">✂️ Coupes / utilisations</div>
-    <div class="coupes-grid">${cells}</div>
+    ${hasCoupes?`<div class="coupes-grid">${cells}</div>`:''}
+    ${btnAjouter}
   </div>`;
 }
 
