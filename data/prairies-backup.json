@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-06-14T16:27:16.489Z",
+  "savedAt": "2026-06-14T18:24:38.623Z",
   "donnees": {
     "2025": {
       "ilots": [
@@ -3905,7 +3905,7 @@
             null,
             null
           ],
-          "ouvert": true
+          "ouvert": false
         },
         {
           "id": "mqctp4ew4qbvk",
@@ -4085,8 +4085,8 @@
         },
         {
           "id": "mqctp4ewvoc5x",
-          "num": "8 tonton louis",
-          "nom": "",
+          "num": "8",
+          "nom": "tonton louis",
           "surface": "0.16",
           "parcelles": [],
           "amendements": [],
@@ -4096,7 +4096,7 @@
             null,
             null
           ],
-          "ouvert": false
+          "ouvert": true
         },
         {
           "id": "mqctp4ewn461d",
@@ -4398,8 +4398,8 @@
         },
         {
           "id": "mqctp4ew4ut1b",
-          "num": "12 piste en haut",
-          "nom": "",
+          "num": "12",
+          "nom": "piste en haut",
           "surface": "4.61",
           "parcelles": [
             "Îlot 12 piste en haut"
@@ -4411,7 +4411,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "Îlot 12 piste en haut",
@@ -4594,8 +4594,8 @@
         },
         {
           "id": "mqctp4ewzukyd",
-          "num": "13 piste en bas",
-          "nom": "",
+          "num": "13",
+          "nom": "piste en bas",
           "surface": "2.58",
           "parcelles": [
             "Îlot 13 piste en bas"
@@ -4738,8 +4738,8 @@
         },
         {
           "id": "mqctp4ewamn09",
-          "num": "14 rucher",
-          "nom": "",
+          "num": "14",
+          "nom": "rucher",
           "surface": "0.08",
           "parcelles": [],
           "amendements": [],
@@ -4753,8 +4753,8 @@
         },
         {
           "id": "mqctp4ewwknr7",
-          "num": "15 hervé",
-          "nom": "",
+          "num": "15",
+          "nom": "hervé",
           "surface": "0.45",
           "parcelles": [
             "Îlot 15 herver"
@@ -4861,8 +4861,8 @@
         },
         {
           "id": "mqctp4ew1kpxe",
-          "num": "16 alpages",
-          "nom": "",
+          "num": "16",
+          "nom": "alpages",
           "surface": "1.05",
           "parcelles": [
             "Îlot 16 alpage"
@@ -5005,8 +5005,8 @@
         },
         {
           "id": "mqctp4ew32y06",
-          "num": "17 bourgaillet",
-          "nom": "",
+          "num": "17",
+          "nom": "bourgaillet",
           "surface": "1.02",
           "parcelles": [],
           "amendements": [],
@@ -5078,7 +5078,7 @@
             null,
             null
           ],
-          "ouvert": false,
+          "ouvert": true,
           "geometries": [
             {
               "nom": "Îlot 22 sable",
