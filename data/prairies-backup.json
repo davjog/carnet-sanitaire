@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-06-15T19:38:07.985Z",
+  "savedAt": "2026-06-15T20:34:33.602Z",
   "donnees": {
     "2025": {
       "ilots": [
@@ -31,7 +31,7 @@
             null
           ],
           "geometries": [],
-          "ouvert": true
+          "ouvert": false
         },
         {
           "id": "il_4atxpv9i",
