@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-06-15T17:51:42.339Z",
+  "savedAt": "2026-06-15T18:12:06.066Z",
   "donnees": {
     "2025": {
       "ilots": [
@@ -630,7 +630,7 @@
             null,
             null
           ],
-          "ouvert": true
+          "ouvert": false
         },
         {
           "id": "mqctp4ewucn60",
@@ -1568,7 +1568,7 @@
             null,
             null
           ],
-          "ouvert": true
+          "ouvert": false
         },
         {
           "id": "mqctp4ewn461d",
@@ -1585,7 +1585,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "Îlot 10 chardonnay",
@@ -2550,7 +2550,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "Îlot 22 sable",
@@ -3050,7 +3050,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "Îlot 23 granier",
@@ -3298,7 +3298,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "Îlot 25 verdette david",
@@ -3398,7 +3398,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "Îlot 26 raccourci allart",
@@ -3522,7 +3522,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "Îlot 27 biolle allart",
@@ -3602,7 +3602,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "derex verdette",
@@ -3690,7 +3690,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "joguet biolle",
@@ -3918,7 +3918,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "la balle",
@@ -4066,7 +4066,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "Îlot 31 sous la vigne",
