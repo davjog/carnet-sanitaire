@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-06-16T06:02:14.074Z",
+  "savedAt": "2026-06-16T06:02:41.510Z",
   "donnees": {
     "2025": {
       "ilots": [
@@ -31,7 +31,7 @@
             null
           ],
           "geometries": [],
-          "ouvert": false
+          "ouvert": true
         },
         {
           "id": "il_4atxpv9i",
@@ -1394,7 +1394,7 @@
             null,
             null
           ],
-          "ouvert": false,
+          "ouvert": true,
           "geometries": [
             {
               "nom": "Îlot 7",
@@ -2550,7 +2550,7 @@
             null,
             null
           ],
-          "ouvert": false,
+          "ouvert": true,
           "geometries": [
             {
               "nom": "Îlot 22 sable",
@@ -3022,10 +3022,10 @@
                   "date": "2026-06-11",
                   "pressage": "2026-06-14",
                   "fanage": 2,
-                  "typeBalle": "",
+                  "typeBalle": "ronde",
                   "nBalles": 4,
-                  "poidsBalle": 0,
-                  "poidsTotal": 0,
+                  "poidsBalle": 300,
+                  "poidsTotal": 1200,
                   "rem": ""
                 },
                 null,
@@ -3158,7 +3158,7 @@
             null,
             null
           ],
-          "ouvert": false,
+          "ouvert": true,
           "geometries": [
             {
               "nom": "Îlot 24 tovet",
@@ -3282,10 +3282,10 @@
                   "date": "2026-06-13",
                   "pressage": "2026-06-15",
                   "fanage": 2,
-                  "typeBalle": "ronde",
+                  "typeBalle": "",
                   "nBalles": 6,
-                  "poidsBalle": 300,
-                  "poidsTotal": 1800,
+                  "poidsBalle": 0,
+                  "poidsTotal": 0,
                   "rem": ""
                 },
                 null,
@@ -3930,7 +3930,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "la balle",
