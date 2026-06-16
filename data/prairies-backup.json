@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-06-16T06:05:28.374Z",
+  "savedAt": "2026-06-16T06:07:27.280Z",
   "donnees": {
     "2025": {
       "ilots": [
@@ -1394,7 +1394,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "Îlot 7",
@@ -3050,7 +3050,7 @@
             null,
             null
           ],
-          "ouvert": false,
+          "ouvert": true,
           "geometries": [
             {
               "nom": "Îlot 23 granier",
@@ -3127,13 +3127,13 @@
                   "type": "foin",
                   "debut": "",
                   "fin": "",
-                  "date": "",
+                  "date": "2026-06-16",
                   "pressage": "2026-06-15",
                   "fanage": 2,
                   "typeBalle": "ronde",
                   "nBalles": 1,
-                  "poidsBalle": 300,
-                  "poidsTotal": 300,
+                  "poidsBalle": 225,
+                  "poidsTotal": 225,
                   "rem": ""
                 },
                 null,
