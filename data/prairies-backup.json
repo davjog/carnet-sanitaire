@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-06-16T06:02:41.510Z",
+  "savedAt": "2026-06-16T06:04:04.512Z",
   "donnees": {
     "2025": {
       "ilots": [
@@ -2550,7 +2550,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "Îlot 22 sable",
@@ -3022,10 +3022,10 @@
                   "date": "2026-06-11",
                   "pressage": "2026-06-14",
                   "fanage": 2,
-                  "typeBalle": "ronde",
+                  "typeBalle": "",
                   "nBalles": 4,
-                  "poidsBalle": 300,
-                  "poidsTotal": 1200,
+                  "poidsBalle": 0,
+                  "poidsTotal": 0,
                   "rem": ""
                 },
                 null,
@@ -3282,10 +3282,10 @@
                   "date": "2026-06-13",
                   "pressage": "2026-06-15",
                   "fanage": 2,
-                  "typeBalle": "",
+                  "typeBalle": "ronde",
                   "nBalles": 6,
-                  "poidsBalle": 0,
-                  "poidsTotal": 0,
+                  "poidsBalle": 300,
+                  "poidsTotal": 1800,
                   "rem": ""
                 },
                 null,
