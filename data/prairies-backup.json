@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-06-16T11:54:42.474Z",
+  "savedAt": "2026-06-16T11:55:40.918Z",
   "donnees": {
     "2025": {
       "ilots": [
@@ -2316,11 +2316,11 @@
                   "debut": "",
                   "fin": "",
                   "date": "2026-06-14",
-                  "pressage": "2026-06-14",
-                  "fanage": 0,
-                  "typeBalle": "",
+                  "pressage": "2026-06-16",
+                  "fanage": 2,
+                  "typeBalle": "ronde",
                   "nBalles": 0,
-                  "poidsBalle": 0,
+                  "poidsBalle": 225,
                   "poidsTotal": 0,
                   "rem": ""
                 },
@@ -3050,7 +3050,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "Îlot 23 granier",
@@ -3310,7 +3310,7 @@
             null,
             null
           ],
-          "ouvert": false,
+          "ouvert": true,
           "geometries": [
             {
               "nom": "Îlot 25 verdette david",
