@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-06-16T06:00:08.546Z",
+  "savedAt": "2026-06-16T06:02:14.074Z",
   "donnees": {
     "2025": {
       "ilots": [
@@ -3158,7 +3158,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "Îlot 24 tovet",
