@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-06-16T06:07:27.280Z",
+  "savedAt": "2026-06-16T11:54:42.474Z",
   "donnees": {
     "2025": {
       "ilots": [
@@ -2238,7 +2238,7 @@
             null,
             null
           ],
-          "ouvert": false,
+          "ouvert": true,
           "geometries": [
             {
               "nom": "Îlot 15 herver",
