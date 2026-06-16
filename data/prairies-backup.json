@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-06-16T15:22:41.949Z",
+  "savedAt": "2026-06-16T15:23:06.407Z",
   "donnees": {
     "2025": {
       "ilots": [
@@ -3603,7 +3603,19 @@
               "surface": 0.41,
               "amendements": [],
               "coupes": [
-                null,
+                {
+                  "type": "foin",
+                  "debut": "",
+                  "fin": "",
+                  "date": "2026-06-14",
+                  "pressage": "2026-06-16",
+                  "fanage": 5,
+                  "typeBalle": "",
+                  "nBalles": 0,
+                  "poidsBalle": 0,
+                  "poidsTotal": 0,
+                  "rem": ""
+                },
                 null,
                 null,
                 null
