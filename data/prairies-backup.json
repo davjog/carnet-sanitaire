@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-06-16T06:04:59.831Z",
+  "savedAt": "2026-06-16T06:05:28.374Z",
   "donnees": {
     "2025": {
       "ilots": [
@@ -3158,7 +3158,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "Îlot 24 tovet",
@@ -3282,10 +3282,10 @@
                   "date": "2026-06-13",
                   "pressage": "2026-06-15",
                   "fanage": 2,
-                  "typeBalle": "rect",
+                  "typeBalle": "ronde",
                   "nBalles": 6,
-                  "poidsBalle": 500,
-                  "poidsTotal": 3000,
+                  "poidsBalle": 300,
+                  "poidsTotal": 1800,
                   "rem": ""
                 },
                 null,
@@ -3310,7 +3310,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "Îlot 25 verdette david",
