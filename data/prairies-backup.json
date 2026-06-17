@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-06-17T15:02:30.173Z",
+  "savedAt": "2026-06-17T15:03:18.980Z",
   "donnees": {
     "2025": {
       "ilots": [
@@ -2529,7 +2529,8 @@
           "nom": "alpages",
           "surface": "1.05",
           "parcelles": [
-            "Îlot 16 alpage"
+            "Îlot 16 alpage",
+            "alpages"
           ],
           "amendements": [],
           "coupes": [
@@ -2541,7 +2542,7 @@
           "ouvert": true,
           "geometries": [
             {
-              "nom": "Îlot 16 alpage",
+              "nom": "alpages",
               "coords": [
                 [
                   6.519790803575449,
@@ -2659,19 +2660,7 @@
               "surface": 1.11,
               "amendements": [],
               "coupes": [
-                {
-                  "type": "foin",
-                  "debut": "",
-                  "fin": "",
-                  "date": "2026-06-15",
-                  "pressage": "2026-06-17",
-                  "fanage": 2,
-                  "typeBalle": "",
-                  "nBalles": 0,
-                  "poidsBalle": 0,
-                  "poidsTotal": 0,
-                  "rem": ""
-                },
+                null,
                 null,
                 null,
                 null
