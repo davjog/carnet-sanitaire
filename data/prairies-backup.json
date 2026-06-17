@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-06-17T06:11:07.513Z",
+  "savedAt": "2026-06-17T06:11:43.782Z",
   "donnees": {
     "2025": {
       "ilots": [
@@ -1585,7 +1585,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "Îlot 10 chardonnay",
@@ -1883,7 +1883,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "Îlot 12 piste en haut",
