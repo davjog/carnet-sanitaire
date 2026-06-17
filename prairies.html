@@ -719,6 +719,22 @@ function renderBilan(){
   const totalBallN1  = parCoupeN1.reduce((s,p)=>s+p.nBalles,0);
   const totalPoidsN1 = parCoupeN1.reduce((s,p)=>s+p.poidsTotal,0);
 
+  // Surface totale fauchée (parcelles ayant au moins 1 coupe, sans double-compter)
+  function surfaceFauchee(ilots){
+    let surf = 0;
+    ilots.forEach(il=>{
+      const hasCoupeIlot = il.coupes && il.coupes.some(c=>c&&c.nBalles);
+      if(il.geometries && il.geometries.length){
+        il.geometries.forEach(g=>{ if((g.coupes||[]).some(c=>c&&c.nBalles)) surf += parseFloat(g.surface)||0; });
+      } else if(hasCoupeIlot){
+        surf += parseFloat(il.surface)||0;
+      }
+    });
+    return surf;
+  }
+  const surfN  = surfaceFauchee(ilotsN);
+  const surfN1 = surfaceFauchee(ilotsN1);
+
   // ---- tableau principal ----
   const colN1 = avecN1 ? `
     <th style="padding:8px 10px;text-align:center;color:#888">${anneeN1} balles</th>
@@ -727,10 +743,30 @@ function renderBilan(){
     <th style="padding:8px 10px;border-radius:0 8px 8px 0;text-align:center">Évolution</th>` : `
     <th style="padding:8px 10px;border-radius:0 8px 8px 0;text-align:center">Moy. kg/ha</th>`;
 
+  const rdtGlobal  = surfN>0&&totalPoids   ? Math.round(totalPoids/surfN)   : null;
+  const rdtGlobalN1= surfN1>0&&totalPoidsN1 ? Math.round(totalPoidsN1/surfN1) : null;
+
   let html = `
   <div style="background:#fff;border-radius:14px;padding:16px;box-shadow:0 2px 8px #0001;margin-bottom:16px">
-    <div style="font-weight:700;font-size:16px;color:var(--vert);margin-bottom:14px">📊 Bilan balles — Campagne ${anneeN}
+    <div style="font-weight:700;font-size:16px;color:var(--vert);margin-bottom:10px">📊 Bilan balles — Campagne ${anneeN}
       ${avecN1?`<span style="font-size:12px;font-weight:400;color:#888;margin-left:8px">comparé à ${anneeN1}</span>`:''}
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px">
+      <div style="flex:1;min-width:110px;background:#f2f7ee;border-radius:10px;padding:10px 14px;text-align:center">
+        <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.5px">Surface fauchée</div>
+        <div style="font-size:20px;font-weight:700;color:var(--vert)">${surfN>0?surfN.toFixed(2)+' ha':'—'}</div>
+        ${avecN1&&surfN1>0?`<div style="font-size:11px;color:#aaa">${anneeN1} : ${surfN1.toFixed(2)} ha</div>`:''}
+      </div>
+      <div style="flex:1;min-width:110px;background:#f2f7ee;border-radius:10px;padding:10px 14px;text-align:center">
+        <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.5px">Total balles</div>
+        <div style="font-size:20px;font-weight:700;color:var(--vert)">${totalBalles||'—'}</div>
+        ${avecN1&&totalBallN1?`<div style="font-size:11px;color:#aaa">${anneeN1} : ${totalBallN1}</div>`:''}
+      </div>
+      <div style="flex:1;min-width:110px;background:#f2f7ee;border-radius:10px;padding:10px 14px;text-align:center">
+        <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.5px">Rendement moy.</div>
+        <div style="font-size:20px;font-weight:700;color:var(--vert)">${rdtGlobal?rdtGlobal+' kg/ha':'—'}</div>
+        ${avecN1&&rdtGlobalN1?`<div style="font-size:11px;color:#aaa">${anneeN1} : ${rdtGlobalN1} kg/ha</div>`:''}
+      </div>
     </div>
     <table style="width:100%;border-collapse:collapse;font-size:13px">
       <thead>
