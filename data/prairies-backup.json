@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-06-17T15:32:03.339Z",
+  "savedAt": "2026-06-17T16:21:17.102Z",
   "donnees": {
     "2025": {
       "ilots": [
@@ -2430,7 +2430,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "hervé",
@@ -2529,7 +2529,6 @@
           "nom": "alpages",
           "surface": "1.05",
           "parcelles": [
-            "Îlot 16 alpage",
             "alpages"
           ],
           "amendements": [],
