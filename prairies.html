@@ -996,7 +996,10 @@ function render(){
     ct.innerHTML=`<div class="vide"><div class="ico">🌿</div><p>Aucun îlot pour ${anneeActive}</p><p style="font-size:12px;margin-top:6px">Ajoutez votre premier îlot PAC</p></div>`;
     return;
   }
-  ct.innerHTML=ilots.map(il=>renderIlot(il)).join('');
+  ct.innerHTML=ilots.map(il=>renderIlot(il)).join('')
+    + `<div style="text-align:center;margin:18px 0 8px">
+        <button class="btn btn-pri" onclick="ouvrirModalIlot()" style="width:100%;max-width:340px;padding:14px;font-size:15px">＋ Créer un nouvel îlot</button>
+       </div>`;
 }
 
 function renderIlot(il){
@@ -1202,7 +1205,7 @@ function sauvegarderIlot(){
     const il=trouverIlot(editIlotId);
     il.num=num;il.nom=nom;il.surface=surface;
   } else {
-    ilots.push({id:uid(),num,nom,surface,parcelles:[],amendements:[],coupes:[null,null,null,null],ouvert:true});
+    ilots.push({id:uid(),num,nom,surface:parseFloat(surface)||0,parcelles:[],amendements:[],coupes:[null,null,null,null],geometries:[],ouvert:true});
   }
   sauvegarderLS();fermerModals();render();
 }
