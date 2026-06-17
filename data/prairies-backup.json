@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-06-17T06:11:43.782Z",
+  "savedAt": "2026-06-17T06:14:30.413Z",
   "donnees": {
     "2025": {
       "ilots": [
@@ -31,7 +31,7 @@
             null
           ],
           "geometries": [],
-          "ouvert": true
+          "ouvert": false
         },
         {
           "id": "il_4atxpv9i",
@@ -630,7 +630,7 @@
             null,
             null
           ],
-          "ouvert": false
+          "ouvert": true
         },
         {
           "id": "mqctp4ewucn60",
@@ -1541,11 +1541,11 @@
                   "fin": "",
                   "date": "2026-06-11",
                   "pressage": "2026-06-13",
-                  "fanage": 2,
+                  "fanage": 0,
                   "typeBalle": "ronde",
                   "nBalles": 10,
-                  "poidsBalle": 300,
-                  "poidsTotal": 3000,
+                  "poidsBalle": 220,
+                  "poidsTotal": 2200,
                   "rem": ""
                 },
                 null,
@@ -2238,7 +2238,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "Îlot 15 herver",
@@ -2316,12 +2316,12 @@
                   "debut": "",
                   "fin": "",
                   "date": "2026-06-14",
-                  "pressage": "2026-06-16",
-                  "fanage": 2,
-                  "typeBalle": "ronde",
-                  "nBalles": 7,
-                  "poidsBalle": 225,
-                  "poidsTotal": 1575,
+                  "pressage": "2026-06-14",
+                  "fanage": 0,
+                  "typeBalle": "",
+                  "nBalles": 0,
+                  "poidsBalle": 0,
+                  "poidsTotal": 0,
                   "rem": ""
                 },
                 null,
@@ -2550,7 +2550,7 @@
             null,
             null
           ],
-          "ouvert": false,
+          "ouvert": true,
           "geometries": [
             {
               "nom": "Îlot 22 sable",
@@ -3123,19 +3123,7 @@
               "surface": 0.15,
               "amendements": [],
               "coupes": [
-                {
-                  "type": "foin",
-                  "debut": "",
-                  "fin": "",
-                  "date": "2026-06-16",
-                  "pressage": "2026-06-15",
-                  "fanage": 2,
-                  "typeBalle": "ronde",
-                  "nBalles": 1,
-                  "poidsBalle": 225,
-                  "poidsTotal": 225,
-                  "rem": ""
-                },
+                null,
                 null,
                 null,
                 null
@@ -3275,19 +3263,7 @@
               "surface": 0.39,
               "amendements": [],
               "coupes": [
-                {
-                  "type": "foin",
-                  "debut": "",
-                  "fin": "",
-                  "date": "2026-06-13",
-                  "pressage": "2026-06-15",
-                  "fanage": 2,
-                  "typeBalle": "ronde",
-                  "nBalles": 6,
-                  "poidsBalle": 300,
-                  "poidsTotal": 1800,
-                  "rem": ""
-                },
+                null,
                 null,
                 null,
                 null
@@ -3310,7 +3286,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "Îlot 25 verdette david",
@@ -3387,19 +3363,7 @@
               "surface": 0.1,
               "amendements": [],
               "coupes": [
-                {
-                  "type": "foin",
-                  "debut": "",
-                  "fin": "",
-                  "date": "2026-06-14",
-                  "pressage": "2026-06-16",
-                  "fanage": 2,
-                  "typeBalle": "",
-                  "nBalles": 1,
-                  "poidsBalle": 0,
-                  "poidsTotal": 0,
-                  "rem": ""
-                },
+                null,
                 null,
                 null,
                 null
@@ -3422,7 +3386,7 @@
             null,
             null
           ],
-          "ouvert": false,
+          "ouvert": true,
           "geometries": [
             {
               "nom": "Îlot 26 raccourci allart",
@@ -3511,19 +3475,7 @@
               "surface": 0.3,
               "amendements": [],
               "coupes": [
-                {
-                  "type": "foin",
-                  "debut": "",
-                  "fin": "",
-                  "date": "2026-06-13",
-                  "pressage": "2026-06-15",
-                  "fanage": 2,
-                  "typeBalle": "ronde",
-                  "nBalles": 5,
-                  "poidsBalle": 300,
-                  "poidsTotal": 1500,
-                  "rem": ""
-                },
+                null,
                 null,
                 null,
                 null
@@ -3603,19 +3555,7 @@
               "surface": 0.41,
               "amendements": [],
               "coupes": [
-                {
-                  "type": "foin",
-                  "debut": "",
-                  "fin": "",
-                  "date": "2026-06-14",
-                  "pressage": "2026-06-16",
-                  "fanage": 2,
-                  "typeBalle": "",
-                  "nBalles": 5,
-                  "poidsBalle": 0,
-                  "poidsTotal": 0,
-                  "rem": ""
-                },
+                null,
                 null,
                 null,
                 null
@@ -3638,7 +3578,7 @@
             null,
             null
           ],
-          "ouvert": false,
+          "ouvert": true,
           "geometries": [
             {
               "nom": "derex verdette",
@@ -3726,7 +3666,7 @@
             null,
             null
           ],
-          "ouvert": false,
+          "ouvert": true,
           "geometries": [
             {
               "nom": "joguet biolle",
@@ -3954,7 +3894,7 @@
             null,
             null
           ],
-          "ouvert": false,
+          "ouvert": true,
           "geometries": [
             {
               "nom": "la balle",
@@ -4102,7 +4042,7 @@
             null,
             null
           ],
-          "ouvert": false,
+          "ouvert": true,
           "geometries": [
             {
               "nom": "Îlot 31 sous la vigne",
