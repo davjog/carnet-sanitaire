@@ -722,6 +722,7 @@ function renderBilan(){
   // ---- tableau principal ----
   const colN1 = avecN1 ? `
     <th style="padding:8px 10px;text-align:center;color:#888">${anneeN1} balles</th>
+    <th style="padding:8px 10px;text-align:center;color:#888">${anneeN1} poids</th>
     <th style="padding:8px 10px;text-align:center;color:#888">${anneeN1} kg/ha</th>
     <th style="padding:8px 10px;border-radius:0 8px 8px 0;text-align:center">Évolution</th>` : `
     <th style="padding:8px 10px;border-radius:0 8px 8px 0;text-align:center">Moy. kg/ha</th>`;
@@ -752,10 +753,12 @@ function renderBilan(){
 
     let n1cols = '';
     if(avecN1){
-      const rdtN1str = rdtN1 ? rdtN1+' kg/ha' : '—';
-      const ballN1   = pN1.nBalles||'—';
-      const evol     = (rdt&&rdtN1) ? deltaFleche(rdt,rdtN1) : (p.nBalles&&pN1.nBalles)?deltaFleche(p.nBalles,pN1.nBalles):'';
+      const rdtN1str  = rdtN1 ? rdtN1+' kg/ha' : '—';
+      const ballN1    = pN1.nBalles||'—';
+      const ptonneN1  = pN1.poidsTotal ? (pN1.poidsTotal/1000).toFixed(2)+' t' : '—';
+      const evol      = (rdt&&rdtN1) ? deltaFleche(rdt,rdtN1) : (p.nBalles&&pN1.nBalles)?deltaFleche(p.nBalles,pN1.nBalles):'';
       n1cols = `<td style="padding:8px 10px;text-align:center;color:#888">${ballN1}</td>
+        <td style="padding:8px 10px;text-align:center;color:#888">${ptonneN1}</td>
         <td style="padding:8px 10px;text-align:center;color:#888">${rdtN1str}</td>
         <td style="padding:8px 10px;text-align:center;font-weight:600">${evol||'—'}</td>`;
     } else {
@@ -777,12 +780,40 @@ function renderBilan(){
         const pds  = poidsCoupe(c);
         const rdtL = surf>0 ? Math.round(pds/surf)+' kg/ha' : '—';
         const colspan = avecN1 ? 3 : 1;
+        // cherche la donnée N-1 pour cette parcelle
+        let n1Ball='—', n1Pds='—', n1Rdt='—';
+        if(avecN1){
+          const nomN = (geo?geo.nom:(ilot?ilot.nom:'')).toLowerCase();
+          const numN = ilot?String(ilot.num):'';
+          for(const ilN1 of ilotsN1){
+            let cN1=null, surfN1=0;
+            if(geo){
+              const gN1=(ilN1.geometries||[]).find(g=>g.nom.toLowerCase()===nomN);
+              if(gN1){cN1=(gN1.coupes||[])[i];surfN1=parseFloat(gN1.surface)||0;}
+            } else if(String(ilN1.num)===numN){
+              cN1=ilN1.coupes[i]; surfN1=parseFloat(ilN1.surface)||0;
+            }
+            if(cN1&&cN1.nBalles){
+              const pN1=poidsCoupe(cN1);
+              n1Ball=cN1.nBalles;
+              n1Pds=pN1?(pN1/1000).toFixed(2)+' t':'—';
+              n1Rdt=surfN1>0?Math.round(pN1/surfN1)+' kg/ha':'—';
+              break;
+            }
+          }
+        }
+        const n1detail = avecN1
+          ? `<td style="padding:4px 10px;text-align:center;color:#aaa">${n1Ball}</td>
+             <td style="padding:4px 10px;text-align:center;color:#aaa">${n1Pds}</td>
+             <td style="padding:4px 10px;text-align:center;color:#aaa">${n1Rdt}</td>
+             <td></td>`
+          : `<td style="padding:4px 10px;text-align:center;color:#ccc">—</td>`;
         return `<tr style="background:#fafcf8;font-size:12px;color:#666">
           <td style="padding:4px 10px 4px 24px">↳ ${nom}</td>
           <td style="padding:4px 10px;text-align:center">${c.nBalles}</td>
           <td style="padding:4px 10px;text-align:center">${(pds/1000).toFixed(2)} t</td>
           <td style="padding:4px 10px;text-align:center">${rdtL}</td>
-          <td colspan="${colspan}" style="padding:4px 10px;text-align:center;color:#ccc">—</td>
+          ${n1detail}
         </tr>`;
       }).join('');
     }
@@ -790,9 +821,11 @@ function renderBilan(){
 
   // ligne total
   const evolTotal = avecN1&&totalBalles&&totalBallN1 ? deltaFleche(totalBalles,totalBallN1) : '';
+  const rdtTotalN1 = (totalPoidsN1&&parCoupeN1.reduce((s,p)=>s+p.surfHa,0)>0) ? Math.round(totalPoidsN1/parCoupeN1.reduce((s,p)=>s+p.surfHa,0))+' kg/ha' : '—';
   const n1TotalCols = avecN1
     ? `<td style="padding:10px;text-align:center;color:#888">${totalBallN1||'—'}</td>
        <td style="padding:10px;text-align:center;color:#888">${totalPoidsN1?(totalPoidsN1/1000).toFixed(2)+' t':'—'}</td>
+       <td style="padding:10px;text-align:center;color:#888">${rdtTotalN1}</td>
        <td style="padding:10px;border-radius:0 8px 8px 0;text-align:center;font-weight:700">${evolTotal||'—'}</td>`
     : `<td style="padding:10px;border-radius:0 8px 8px 0;text-align:center">—</td>`;
 
