@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-06-17T07:22:43.442Z",
+  "savedAt": "2026-06-17T15:01:10.576Z",
   "donnees": {
     "2025": {
       "ilots": [
@@ -2667,7 +2667,7 @@
                   "pressage": "2026-06-17",
                   "fanage": 2,
                   "typeBalle": "",
-                  "nBalles": 0,
+                  "nBalles": 14,
                   "poidsBalle": 0,
                   "poidsTotal": 0,
                   "rem": ""
