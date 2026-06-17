@@ -155,6 +155,13 @@ function importer(){
     // On garde balleRonde à 230, mais on note que regain = 220 dans les coupes
     // (les poids sont déjà stockés dans chaque coupe donc ok)
 
+    // Déclencher sauvegarde GitHub si token disponible
+    const token = localStorage.getItem('prairies_gh_token');
+    if(token){
+      document.getElementById('status').innerHTML = '⏳ Sauvegarde en ligne…';
+      await ghSauvegarder(token, donnees);
+    }
+
     const statusEl = document.getElementById('status');
     statusEl.innerHTML = `✅ ${ok} coupes ajoutées${skip ? ` — ⚠️ ${skip} non trouvées` : ''}. Redirection…`;
     statusEl.style.color = ok > 0 ? '#2d5a1b' : '#c04';
@@ -163,6 +170,23 @@ function importer(){
     document.getElementById('status').innerHTML = '❌ Erreur : ' + e.message;
     document.getElementById('status').style.color = '#c04';
   }
+}
+
+async function ghSauvegarder(token, donnees){
+  try {
+    const GH_OWNER='davjog', GH_REPO='carnet-sanitaire', GH_FILE='data/prairies-backup.json';
+    const payload = JSON.stringify({ savedAt: new Date().toISOString(), donnees }, null, 2);
+    const content = btoa(unescape(encodeURIComponent(payload)));
+    const url = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}`;
+    const headers = { Authorization:`token ${token}`, 'Content-Type':'application/json' };
+    let sha;
+    const ex = await fetch(url, { headers });
+    if(ex.ok){ const d=await ex.json(); sha=d.sha; }
+    await fetch(url, { method:'PUT', headers, body: JSON.stringify({ message:'Import regain 2025', content, ...(sha?{sha}:{}) }) });
+    const iso = new Date().toISOString();
+    localStorage.setItem('prairies_gh_lastsave_iso', iso);
+    localStorage.setItem('prairies_gh_lastsave', new Date().toLocaleString('fr-FR'));
+  } catch(e){ /* silencieux */ }
 }
 </script>
 </body>
