@@ -1,0 +1,187 @@
+{
+  "2025": {
+    "ilots": [
+      {
+        "id": "il_2025_01", "num": "1", "nom": "sous chalet", "surface": 0.47,
+        "parcelles": ["tout l'îlot"], "amendements": [], "geometries": [], "ouvert": false,
+        "coupes": [
+          {"type":"foin","debut":"","fin":"","date":"2025-06-08","pressage":"","fanage":0,"typeBalle":"ronde","nBalles":8,"poidsBalle":230,"poidsTotal":1840,"rem":""},
+          {"type":"regain","debut":"","fin":"","date":"","pressage":"","fanage":0,"typeBalle":"ronde","nBalles":3,"poidsBalle":220,"poidsTotal":660,"rem":""},
+          null, null
+        ]
+      },
+      {
+        "id": "il_2025_02", "num": "2", "nom": "plan", "surface": 0.8,
+        "parcelles": ["tout l'îlot"], "amendements": [], "geometries": [], "ouvert": false,
+        "coupes": [
+          {"type":"foin","debut":"","fin":"","date":"2025-06-16","pressage":"","fanage":0,"typeBalle":"ronde","nBalles":17,"poidsBalle":230,"poidsTotal":3910,"rem":""},
+          {"type":"regain","debut":"","fin":"","date":"","pressage":"","fanage":0,"typeBalle":"ronde","nBalles":6,"poidsBalle":220,"poidsTotal":1320,"rem":""},
+          null, null
+        ]
+      },
+      {
+        "id": "il_2025_03", "num": "3", "nom": "sous bâtiment", "surface": 1.5,
+        "parcelles": ["tout l'îlot"], "amendements": [], "geometries": [], "ouvert": false,
+        "coupes": [
+          {"type":"foin","debut":"","fin":"","date":"2025-06-19","pressage":"","fanage":0,"typeBalle":"ronde","nBalles":0,"poidsBalle":230,"poidsTotal":0,"rem":""},
+          {"type":"regain","debut":"","fin":"","date":"","pressage":"","fanage":0,"typeBalle":"ronde","nBalles":14,"poidsBalle":220,"poidsTotal":3080,"rem":""},
+          null, null
+        ]
+      },
+      {
+        "id": "il_2025_05", "num": "5", "nom": "gardet / grangette", "surface": 2.28,
+        "parcelles": ["gardet", "grangette"], "amendements": [], "ouvert": false,
+        "coupes": [null, null, null, null],
+        "geometries": [
+          {
+            "nom": "gardet", "coords": [], "surface": 0.6, "amendements": [], "_ouvert": false,
+            "coupes": [
+              {"type":"foin","debut":"","fin":"","date":"2025-06-08","pressage":"","fanage":0,"typeBalle":"ronde","nBalles":3.5,"poidsBalle":230,"poidsTotal":805,"rem":""},
+              {"type":"regain","debut":"","fin":"","date":"","pressage":"","fanage":0,"typeBalle":"ronde","nBalles":1,"poidsBalle":220,"poidsTotal":220,"rem":""},
+              null, null
+            ]
+          },
+          {
+            "nom": "grangette", "coords": [], "surface": 1.68, "amendements": [], "_ouvert": false,
+            "coupes": [
+              {"type":"foin","debut":"","fin":"","date":"2025-06-16","pressage":"","fanage":0,"typeBalle":"ronde","nBalles":27,"poidsBalle":230,"poidsTotal":6210,"rem":""},
+              null, null, null
+            ]
+          }
+        ]
+      },
+      {
+        "id": "il_2025_07", "num": "7", "nom": "do", "surface": 0.93,
+        "parcelles": ["tout l'îlot"], "amendements": [], "geometries": [], "ouvert": false,
+        "coupes": [
+          {"type":"foin","debut":"","fin":"","date":"2025-06-08","pressage":"","fanage":0,"typeBalle":"ronde","nBalles":16,"poidsBalle":230,"poidsTotal":3680,"rem":""},
+          {"type":"regain","debut":"","fin":"","date":"","pressage":"","fanage":0,"typeBalle":"ronde","nBalles":3,"poidsBalle":220,"poidsTotal":660,"rem":""},
+          null, null
+        ]
+      },
+      {
+        "id": "il_2025_08", "num": "8", "nom": "tonton Louis Mouille", "surface": 0.16,
+        "parcelles": ["tout l'îlot"], "amendements": [], "geometries": [], "ouvert": false,
+        "coupes": [
+          {"type":"foin","debut":"","fin":"","date":"2025-06-08","pressage":"","fanage":0,"typeBalle":"ronde","nBalles":3,"poidsBalle":230,"poidsTotal":690,"rem":""},
+          {"type":"regain","debut":"","fin":"","date":"","pressage":"","fanage":0,"typeBalle":"ronde","nBalles":1,"poidsBalle":220,"poidsTotal":220,"rem":""},
+          null, null
+        ]
+      },
+      {
+        "id": "il_2025_10", "num": "10", "nom": "chardonnay", "surface": 1.37,
+        "parcelles": ["tout l'îlot"], "amendements": [], "geometries": [], "ouvert": false,
+        "coupes": [
+          {"type":"foin","debut":"","fin":"","date":"2025-06-17","pressage":"","fanage":0,"typeBalle":"ronde","nBalles":22,"poidsBalle":230,"poidsTotal":5060,"rem":""},
+          {"type":"regain","debut":"","fin":"","date":"","pressage":"","fanage":0,"typeBalle":"ronde","nBalles":10,"poidsBalle":220,"poidsTotal":2200,"rem":""},
+          null, null
+        ]
+      },
+      {
+        "id": "il_2025_15", "num": "15", "nom": "hervé", "surface": 0.45,
+        "parcelles": ["tout l'îlot"], "amendements": [], "geometries": [], "ouvert": false,
+        "coupes": [
+          {"type":"foin","debut":"","fin":"","date":"2025-06-10","pressage":"","fanage":0,"typeBalle":"ronde","nBalles":11,"poidsBalle":230,"poidsTotal":2530,"rem":""},
+          {"type":"regain","debut":"","fin":"","date":"","pressage":"","fanage":0,"typeBalle":"ronde","nBalles":3,"poidsBalle":220,"poidsTotal":660,"rem":""},
+          null, null
+        ]
+      },
+      {
+        "id": "il_2025_16", "num": "16", "nom": "alpage", "surface": 1.05,
+        "parcelles": ["tout l'îlot"], "amendements": [], "geometries": [], "ouvert": false,
+        "coupes": [
+          {"type":"foin","debut":"","fin":"","date":"2025-06-10","pressage":"","fanage":0,"typeBalle":"ronde","nBalles":19,"poidsBalle":230,"poidsTotal":4370,"rem":""},
+          {"type":"regain","debut":"","fin":"","date":"","pressage":"","fanage":0,"typeBalle":"ronde","nBalles":4,"poidsBalle":220,"poidsTotal":880,"rem":""},
+          null, null
+        ]
+      },
+      {
+        "id": "il_2025_22", "num": "22", "nom": "la sable", "surface": 0.28,
+        "parcelles": ["tout l'îlot"], "amendements": [], "geometries": [], "ouvert": false,
+        "coupes": [
+          {"type":"foin","debut":"","fin":"","date":"2025-06-08","pressage":"","fanage":0,"typeBalle":"ronde","nBalles":4.5,"poidsBalle":230,"poidsTotal":1035,"rem":""},
+          {"type":"regain","debut":"","fin":"","date":"","pressage":"","fanage":0,"typeBalle":"ronde","nBalles":1,"poidsBalle":220,"poidsTotal":220,"rem":""},
+          null, null
+        ]
+      },
+      {
+        "id": "il_2025_23", "num": "23", "nom": "granier", "surface": 0.15,
+        "parcelles": ["tout l'îlot"], "amendements": [], "geometries": [], "ouvert": false,
+        "coupes": [
+          {"type":"foin","debut":"","fin":"","date":"2025-06-17","pressage":"","fanage":0,"typeBalle":"ronde","nBalles":3,"poidsBalle":230,"poidsTotal":690,"rem":""},
+          null, null, null
+        ]
+      },
+      {
+        "id": "il_2025_24", "num": "24", "nom": "tovet", "surface": 0.39,
+        "parcelles": ["tout l'îlot"], "amendements": [], "geometries": [], "ouvert": false,
+        "coupes": [
+          {"type":"foin","debut":"","fin":"","date":"2025-06-09","pressage":"","fanage":0,"typeBalle":"ronde","nBalles":9,"poidsBalle":230,"poidsTotal":2070,"rem":""},
+          {"type":"regain","debut":"","fin":"","date":"","pressage":"","fanage":0,"typeBalle":"ronde","nBalles":3,"poidsBalle":220,"poidsTotal":660,"rem":""},
+          null, null
+        ]
+      },
+      {
+        "id": "il_2025_25", "num": "25", "nom": "verdette David", "surface": 0.1,
+        "parcelles": ["tout l'îlot"], "amendements": [], "geometries": [], "ouvert": false,
+        "coupes": [
+          {"type":"foin","debut":"","fin":"","date":"2025-06-15","pressage":"","fanage":0,"typeBalle":"ronde","nBalles":2,"poidsBalle":230,"poidsTotal":460,"rem":""},
+          null, null, null
+        ]
+      },
+      {
+        "id": "il_2025_26", "num": "26", "nom": "allard raccourci", "surface": 0.3,
+        "parcelles": ["tout l'îlot"], "amendements": [], "geometries": [], "ouvert": false,
+        "coupes": [
+          {"type":"foin","debut":"","fin":"","date":"2025-06-09","pressage":"","fanage":0,"typeBalle":"ronde","nBalles":6,"poidsBalle":230,"poidsTotal":1380,"rem":""},
+          {"type":"regain","debut":"","fin":"","date":"","pressage":"","fanage":0,"typeBalle":"ronde","nBalles":2,"poidsBalle":220,"poidsTotal":440,"rem":""},
+          null, null
+        ]
+      },
+      {
+        "id": "il_2025_27", "num": "27", "nom": "verdette Allard", "surface": 0.41,
+        "parcelles": ["tout l'îlot"], "amendements": [], "geometries": [], "ouvert": false,
+        "coupes": [
+          {"type":"foin","debut":"","fin":"","date":"2025-06-15","pressage":"","fanage":0,"typeBalle":"ronde","nBalles":10,"poidsBalle":230,"poidsTotal":2300,"rem":""},
+          {"type":"regain","debut":"","fin":"","date":"","pressage":"","fanage":0,"typeBalle":"ronde","nBalles":3,"poidsBalle":220,"poidsTotal":660,"rem":""},
+          null, null
+        ]
+      },
+      {
+        "id": "il_2025_28", "num": "28", "nom": "Derex Verdette en bas route", "surface": 0.26,
+        "parcelles": ["tout l'îlot"], "amendements": [], "geometries": [], "ouvert": false,
+        "coupes": [
+          {"type":"foin","debut":"","fin":"","date":"2025-06-10","pressage":"","fanage":0,"typeBalle":"ronde","nBalles":5,"poidsBalle":230,"poidsTotal":1150,"rem":""},
+          {"type":"regain","debut":"","fin":"","date":"","pressage":"","fanage":0,"typeBalle":"ronde","nBalles":2,"poidsBalle":220,"poidsTotal":440,"rem":""},
+          null, null
+        ]
+      },
+      {
+        "id": "il_2025_29", "num": "29", "nom": "joguet Biolle", "surface": 0.77,
+        "parcelles": ["tout l'îlot"], "amendements": [], "geometries": [], "ouvert": false,
+        "coupes": [
+          {"type":"foin","debut":"","fin":"","date":"2025-06-17","pressage":"","fanage":0,"typeBalle":"ronde","nBalles":13,"poidsBalle":230,"poidsTotal":2990,"rem":""},
+          null, null, null
+        ]
+      },
+      {
+        "id": "il_2025_30", "num": "30", "nom": "la balle", "surface": 0.48,
+        "parcelles": ["tout l'îlot"], "amendements": [], "geometries": [], "ouvert": false,
+        "coupes": [
+          {"type":"foin","debut":"","fin":"","date":"","pressage":"","fanage":0,"typeBalle":"ronde","nBalles":11,"poidsBalle":230,"poidsTotal":2530,"rem":""},
+          {"type":"regain","debut":"","fin":"","date":"","pressage":"","fanage":0,"typeBalle":"ronde","nBalles":3,"poidsBalle":220,"poidsTotal":660,"rem":""},
+          null, null
+        ]
+      },
+      {
+        "id": "il_2025_je", "num": "", "nom": "jardin enfant Mabboux", "surface": 0.18,
+        "parcelles": ["tout l'îlot"], "amendements": [], "geometries": [], "ouvert": false,
+        "coupes": [
+          {"type":"foin","debut":"","fin":"","date":"2025-06-15","pressage":"","fanage":0,"typeBalle":"ronde","nBalles":5,"poidsBalle":230,"poidsTotal":1150,"rem":""},
+          {"type":"regain","debut":"","fin":"","date":"","pressage":"","fanage":0,"typeBalle":"ronde","nBalles":1,"poidsBalle":220,"poidsTotal":220,"rem":""},
+          null, null
+        ]
+      }
+    ]
+  }
+}
