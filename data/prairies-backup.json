@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-06-18T15:54:19.520Z",
+  "savedAt": "2026-06-18T16:10:59.659Z",
   "donnees": {
     "2025": {
       "ilots": [
@@ -1586,7 +1586,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "Îlot 7",
@@ -1777,7 +1777,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "Îlot 10 chardonnay",
@@ -2075,7 +2075,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "Îlot 12 piste en haut",
@@ -2271,7 +2271,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "Îlot 13 piste en bas",
@@ -2430,7 +2430,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "hervé",
@@ -2538,7 +2538,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "alpages",
@@ -2819,7 +2819,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "foin bourjaillet",
@@ -3752,7 +3752,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "Îlot 25 verdette david",
@@ -3864,7 +3864,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "Îlot 26 raccourci allart",
@@ -3988,7 +3988,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "Îlot 27 biolle allart",
@@ -4080,7 +4080,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "derex verdette",
@@ -4154,8 +4154,8 @@
                   "fanage": 2,
                   "typeBalle": "ronde",
                   "nBalles": 3,
-                  "poidsBalle": 300,
-                  "poidsTotal": 900,
+                  "poidsBalle": 225,
+                  "poidsTotal": 675,
                   "rem": ""
                 },
                 null,
@@ -4408,7 +4408,7 @@
             null,
             null
           ],
-          "ouvert": false,
+          "ouvert": true,
           "geometries": [
             {
               "nom": "la balle",
