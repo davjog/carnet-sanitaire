@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-06-19T14:22:23.199Z",
+  "savedAt": "2026-06-19T14:22:58.597Z",
   "donnees": {
     "2025": {
       "ilots": [
@@ -4408,7 +4408,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "la balle",
