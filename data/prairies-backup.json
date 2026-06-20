@@ -1,10 +1,10 @@
 {
-  "savedAt": "2026-06-20T17:39:23.135Z",
+  "savedAt": "2026-06-20T17:40:28.689Z",
   "donnees": {
     "2025": {
       "ilots": [
         {
-          "id": "il_2025_01",
+          "id": "il_tujsz6iy",
           "num": "1",
           "nom": "sous chalet",
           "surface": 0.47,
@@ -12,8 +12,6 @@
             "tout l'îlot"
           ],
           "amendements": [],
-          "geometries": [],
-          "ouvert": false,
           "coupes": [
             {
               "type": "foin",
@@ -28,25 +26,15 @@
               "poidsTotal": 1840,
               "rem": ""
             },
-            {
-              "type": "regain",
-              "debut": "",
-              "fin": "",
-              "date": "",
-              "pressage": "",
-              "fanage": 0,
-              "typeBalle": "ronde",
-              "nBalles": 3,
-              "poidsBalle": 220,
-              "poidsTotal": 660,
-              "rem": ""
-            },
+            null,
             null,
             null
-          ]
+          ],
+          "geometries": [],
+          "ouvert": true
         },
         {
-          "id": "il_2025_02",
+          "id": "il_4atxpv9i",
           "num": "2",
           "nom": "plan",
           "surface": 0.8,
@@ -54,8 +42,6 @@
             "tout l'îlot"
           ],
           "amendements": [],
-          "geometries": [],
-          "ouvert": false,
           "coupes": [
             {
               "type": "foin",
@@ -70,25 +56,15 @@
               "poidsTotal": 3910,
               "rem": ""
             },
-            {
-              "type": "regain",
-              "debut": "",
-              "fin": "",
-              "date": "",
-              "pressage": "",
-              "fanage": 0,
-              "typeBalle": "ronde",
-              "nBalles": 6,
-              "poidsBalle": 220,
-              "poidsTotal": 1320,
-              "rem": ""
-            },
+            null,
             null,
             null
-          ]
+          ],
+          "geometries": [],
+          "ouvert": false
         },
         {
-          "id": "il_2025_03",
+          "id": "il_960t5xyq",
           "num": "3",
           "nom": "sous bâtiment",
           "surface": 1.5,
@@ -96,8 +72,6 @@
             "tout l'îlot"
           ],
           "amendements": [],
-          "geometries": [],
-          "ouvert": false,
           "coupes": [
             {
               "type": "foin",
@@ -112,25 +86,15 @@
               "poidsTotal": 0,
               "rem": ""
             },
-            {
-              "type": "regain",
-              "debut": "",
-              "fin": "",
-              "date": "",
-              "pressage": "",
-              "fanage": 0,
-              "typeBalle": "ronde",
-              "nBalles": 14,
-              "poidsBalle": 220,
-              "poidsTotal": 3080,
-              "rem": ""
-            },
+            null,
             null,
             null
-          ]
+          ],
+          "geometries": [],
+          "ouvert": false
         },
         {
-          "id": "il_2025_05",
+          "id": "il_ltnhpuo3",
           "num": "5",
           "nom": "gardet / grangette",
           "surface": 2.28,
@@ -139,7 +103,6 @@
             "grangette"
           ],
           "amendements": [],
-          "ouvert": false,
           "coupes": [
             null,
             null,
@@ -167,19 +130,7 @@
                   "poidsTotal": 805,
                   "rem": ""
                 },
-                {
-                  "type": "regain",
-                  "debut": "",
-                  "fin": "",
-                  "date": "",
-                  "pressage": "",
-                  "fanage": 0,
-                  "typeBalle": "ronde",
-                  "nBalles": 1,
-                  "poidsBalle": 220,
-                  "poidsTotal": 220,
-                  "rem": ""
-                },
+                null,
                 null,
                 null
               ]
@@ -209,10 +160,11 @@
                 null
               ]
             }
-          ]
+          ],
+          "ouvert": false
         },
         {
-          "id": "il_2025_07",
+          "id": "il_9k5j8i21",
           "num": "7",
           "nom": "do",
           "surface": 0.93,
@@ -220,8 +172,6 @@
             "tout l'îlot"
           ],
           "amendements": [],
-          "geometries": [],
-          "ouvert": true,
           "coupes": [
             {
               "type": "foin",
@@ -236,25 +186,15 @@
               "poidsTotal": 3680,
               "rem": ""
             },
-            {
-              "type": "regain",
-              "debut": "",
-              "fin": "",
-              "date": "",
-              "pressage": "",
-              "fanage": 0,
-              "typeBalle": "ronde",
-              "nBalles": 3,
-              "poidsBalle": 220,
-              "poidsTotal": 660,
-              "rem": ""
-            },
+            null,
             null,
             null
-          ]
+          ],
+          "geometries": [],
+          "ouvert": false
         },
         {
-          "id": "il_2025_08",
+          "id": "il_cq4kpun8",
           "num": "8",
           "nom": "tonton Louis Mouille",
           "surface": 0.16,
@@ -262,8 +202,6 @@
             "tout l'îlot"
           ],
           "amendements": [],
-          "geometries": [],
-          "ouvert": false,
           "coupes": [
             {
               "type": "foin",
@@ -278,25 +216,15 @@
               "poidsTotal": 690,
               "rem": ""
             },
-            {
-              "type": "regain",
-              "debut": "",
-              "fin": "",
-              "date": "",
-              "pressage": "",
-              "fanage": 0,
-              "typeBalle": "ronde",
-              "nBalles": 1,
-              "poidsBalle": 220,
-              "poidsTotal": 220,
-              "rem": ""
-            },
+            null,
             null,
             null
-          ]
+          ],
+          "geometries": [],
+          "ouvert": false
         },
         {
-          "id": "il_2025_10",
+          "id": "il_xerpnunt",
           "num": "10",
           "nom": "chardonnay",
           "surface": 1.37,
@@ -304,8 +232,6 @@
             "tout l'îlot"
           ],
           "amendements": [],
-          "geometries": [],
-          "ouvert": false,
           "coupes": [
             {
               "type": "foin",
@@ -320,25 +246,15 @@
               "poidsTotal": 5060,
               "rem": ""
             },
-            {
-              "type": "regain",
-              "debut": "",
-              "fin": "",
-              "date": "",
-              "pressage": "",
-              "fanage": 0,
-              "typeBalle": "ronde",
-              "nBalles": 10,
-              "poidsBalle": 220,
-              "poidsTotal": 2200,
-              "rem": ""
-            },
+            null,
             null,
             null
-          ]
+          ],
+          "geometries": [],
+          "ouvert": false
         },
         {
-          "id": "il_2025_15",
+          "id": "il_ont8rgaa",
           "num": "15",
           "nom": "hervé",
           "surface": 0.45,
@@ -346,8 +262,6 @@
             "tout l'îlot"
           ],
           "amendements": [],
-          "geometries": [],
-          "ouvert": true,
           "coupes": [
             {
               "type": "foin",
@@ -362,25 +276,15 @@
               "poidsTotal": 2530,
               "rem": ""
             },
-            {
-              "type": "regain",
-              "debut": "",
-              "fin": "",
-              "date": "",
-              "pressage": "",
-              "fanage": 0,
-              "typeBalle": "ronde",
-              "nBalles": 3,
-              "poidsBalle": 220,
-              "poidsTotal": 660,
-              "rem": ""
-            },
+            null,
             null,
             null
-          ]
+          ],
+          "geometries": [],
+          "ouvert": false
         },
         {
-          "id": "il_2025_16",
+          "id": "il_dxvvqvhs",
           "num": "16",
           "nom": "alpage",
           "surface": 1.05,
@@ -388,8 +292,6 @@
             "tout l'îlot"
           ],
           "amendements": [],
-          "geometries": [],
-          "ouvert": true,
           "coupes": [
             {
               "type": "foin",
@@ -404,25 +306,15 @@
               "poidsTotal": 4370,
               "rem": ""
             },
-            {
-              "type": "regain",
-              "debut": "",
-              "fin": "",
-              "date": "",
-              "pressage": "",
-              "fanage": 0,
-              "typeBalle": "ronde",
-              "nBalles": 4,
-              "poidsBalle": 220,
-              "poidsTotal": 880,
-              "rem": ""
-            },
+            null,
             null,
             null
-          ]
+          ],
+          "geometries": [],
+          "ouvert": false
         },
         {
-          "id": "il_2025_22",
+          "id": "il_0gjatasy",
           "num": "22",
           "nom": "la sable",
           "surface": 0.28,
@@ -430,8 +322,6 @@
             "tout l'îlot"
           ],
           "amendements": [],
-          "geometries": [],
-          "ouvert": false,
           "coupes": [
             {
               "type": "foin",
@@ -446,25 +336,15 @@
               "poidsTotal": 1035,
               "rem": ""
             },
-            {
-              "type": "regain",
-              "debut": "",
-              "fin": "",
-              "date": "",
-              "pressage": "",
-              "fanage": 0,
-              "typeBalle": "ronde",
-              "nBalles": 1,
-              "poidsBalle": 220,
-              "poidsTotal": 220,
-              "rem": ""
-            },
+            null,
             null,
             null
-          ]
+          ],
+          "geometries": [],
+          "ouvert": false
         },
         {
-          "id": "il_2025_23",
+          "id": "il_6h7szpgw",
           "num": "23",
           "nom": "granier",
           "surface": 0.15,
@@ -472,8 +352,6 @@
             "tout l'îlot"
           ],
           "amendements": [],
-          "geometries": [],
-          "ouvert": false,
           "coupes": [
             {
               "type": "foin",
@@ -491,10 +369,12 @@
             null,
             null,
             null
-          ]
+          ],
+          "geometries": [],
+          "ouvert": false
         },
         {
-          "id": "il_2025_24",
+          "id": "il_4m693cgl",
           "num": "24",
           "nom": "tovet",
           "surface": 0.39,
@@ -502,8 +382,6 @@
             "tout l'îlot"
           ],
           "amendements": [],
-          "geometries": [],
-          "ouvert": false,
           "coupes": [
             {
               "type": "foin",
@@ -518,25 +396,15 @@
               "poidsTotal": 2070,
               "rem": ""
             },
-            {
-              "type": "regain",
-              "debut": "",
-              "fin": "",
-              "date": "",
-              "pressage": "",
-              "fanage": 0,
-              "typeBalle": "ronde",
-              "nBalles": 3,
-              "poidsBalle": 220,
-              "poidsTotal": 660,
-              "rem": ""
-            },
+            null,
             null,
             null
-          ]
+          ],
+          "geometries": [],
+          "ouvert": false
         },
         {
-          "id": "il_2025_25",
+          "id": "il_gqixfc9a",
           "num": "25",
           "nom": "verdette David",
           "surface": 0.1,
@@ -544,8 +412,6 @@
             "tout l'îlot"
           ],
           "amendements": [],
-          "geometries": [],
-          "ouvert": false,
           "coupes": [
             {
               "type": "foin",
@@ -563,10 +429,12 @@
             null,
             null,
             null
-          ]
+          ],
+          "geometries": [],
+          "ouvert": false
         },
         {
-          "id": "il_2025_26",
+          "id": "il_zhnwa10b",
           "num": "26",
           "nom": "allard raccourci",
           "surface": 0.3,
@@ -574,8 +442,6 @@
             "tout l'îlot"
           ],
           "amendements": [],
-          "geometries": [],
-          "ouvert": false,
           "coupes": [
             {
               "type": "foin",
@@ -590,25 +456,15 @@
               "poidsTotal": 1380,
               "rem": ""
             },
-            {
-              "type": "regain",
-              "debut": "",
-              "fin": "",
-              "date": "",
-              "pressage": "",
-              "fanage": 0,
-              "typeBalle": "ronde",
-              "nBalles": 2,
-              "poidsBalle": 220,
-              "poidsTotal": 440,
-              "rem": ""
-            },
+            null,
             null,
             null
-          ]
+          ],
+          "geometries": [],
+          "ouvert": false
         },
         {
-          "id": "il_2025_27",
+          "id": "il_e1fgfhyg",
           "num": "27",
           "nom": "verdette Allard",
           "surface": 0.41,
@@ -616,8 +472,6 @@
             "tout l'îlot"
           ],
           "amendements": [],
-          "geometries": [],
-          "ouvert": false,
           "coupes": [
             {
               "type": "foin",
@@ -632,25 +486,15 @@
               "poidsTotal": 2300,
               "rem": ""
             },
-            {
-              "type": "regain",
-              "debut": "",
-              "fin": "",
-              "date": "",
-              "pressage": "",
-              "fanage": 0,
-              "typeBalle": "ronde",
-              "nBalles": 3,
-              "poidsBalle": 220,
-              "poidsTotal": 660,
-              "rem": ""
-            },
+            null,
             null,
             null
-          ]
+          ],
+          "geometries": [],
+          "ouvert": false
         },
         {
-          "id": "il_2025_28",
+          "id": "il_5ut1e9sy",
           "num": "28",
           "nom": "Derex Verdette en bas route",
           "surface": 0.26,
@@ -658,8 +502,6 @@
             "tout l'îlot"
           ],
           "amendements": [],
-          "geometries": [],
-          "ouvert": true,
           "coupes": [
             {
               "type": "foin",
@@ -674,25 +516,15 @@
               "poidsTotal": 1150,
               "rem": ""
             },
-            {
-              "type": "regain",
-              "debut": "",
-              "fin": "",
-              "date": "",
-              "pressage": "",
-              "fanage": 0,
-              "typeBalle": "ronde",
-              "nBalles": 2,
-              "poidsBalle": 220,
-              "poidsTotal": 440,
-              "rem": ""
-            },
+            null,
             null,
             null
-          ]
+          ],
+          "geometries": [],
+          "ouvert": false
         },
         {
-          "id": "il_2025_29",
+          "id": "il_4bi2zbh3",
           "num": "29",
           "nom": "joguet Biolle",
           "surface": 0.77,
@@ -700,8 +532,6 @@
             "tout l'îlot"
           ],
           "amendements": [],
-          "geometries": [],
-          "ouvert": true,
           "coupes": [
             {
               "type": "foin",
@@ -719,10 +549,12 @@
             null,
             null,
             null
-          ]
+          ],
+          "geometries": [],
+          "ouvert": false
         },
         {
-          "id": "il_2025_30",
+          "id": "il_ccur4sq7",
           "num": "30",
           "nom": "la balle",
           "surface": 0.48,
@@ -730,8 +562,6 @@
             "tout l'îlot"
           ],
           "amendements": [],
-          "geometries": [],
-          "ouvert": true,
           "coupes": [
             {
               "type": "foin",
@@ -746,25 +576,15 @@
               "poidsTotal": 2530,
               "rem": ""
             },
-            {
-              "type": "regain",
-              "debut": "",
-              "fin": "",
-              "date": "",
-              "pressage": "",
-              "fanage": 0,
-              "typeBalle": "ronde",
-              "nBalles": 3,
-              "poidsBalle": 220,
-              "poidsTotal": 660,
-              "rem": ""
-            },
+            null,
             null,
             null
-          ]
+          ],
+          "geometries": [],
+          "ouvert": false
         },
         {
-          "id": "il_2025_je",
+          "id": "il_ymfxegka",
           "num": "",
           "nom": "jardin enfant Mabboux",
           "surface": 0.18,
@@ -772,8 +592,6 @@
             "tout l'îlot"
           ],
           "amendements": [],
-          "geometries": [],
-          "ouvert": false,
           "coupes": [
             {
               "type": "foin",
@@ -788,22 +606,12 @@
               "poidsTotal": 1150,
               "rem": ""
             },
-            {
-              "type": "regain",
-              "debut": "",
-              "fin": "",
-              "date": "",
-              "pressage": "",
-              "fanage": 0,
-              "typeBalle": "ronde",
-              "nBalles": 1,
-              "poidsBalle": 220,
-              "poidsTotal": 220,
-              "rem": ""
-            },
+            null,
             null,
             null
-          ]
+          ],
+          "geometries": [],
+          "ouvert": false
         }
       ]
     },
@@ -839,7 +647,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "Îlot 2",
@@ -1096,19 +904,7 @@
               "surface": 0.84,
               "amendements": [],
               "coupes": [
-                {
-                  "type": "foin",
-                  "debut": "",
-                  "fin": "",
-                  "date": "2026-06-20",
-                  "pressage": "",
-                  "fanage": 0,
-                  "typeBalle": "",
-                  "nBalles": 0,
-                  "poidsBalle": 0,
-                  "poidsTotal": 0,
-                  "rem": ""
-                },
+                null,
                 null,
                 null,
                 null
@@ -1164,7 +960,7 @@
             null,
             null
           ],
-          "ouvert": false,
+          "ouvert": true,
           "geometries": [
             {
               "nom": "gardet",
@@ -1581,12 +1377,12 @@
             null,
             null
           ],
-          "ouvert": false
+          "ouvert": true
         },
         {
           "id": "mqctp4ew4qbvk",
           "num": "7",
-          "nom": "do",
+          "nom": "dodo",
           "surface": "0.93",
           "parcelles": [
             "Îlot 7"
@@ -1598,7 +1394,7 @@
             null,
             null
           ],
-          "ouvert": false,
+          "ouvert": true,
           "geometries": [
             {
               "nom": "Îlot 7",
@@ -1748,8 +1544,8 @@
                   "fanage": 2,
                   "typeBalle": "ronde",
                   "nBalles": 10,
-                  "poidsBalle": 225,
-                  "poidsTotal": 2250,
+                  "poidsBalle": 300,
+                  "poidsTotal": 3000,
                   "rem": ""
                 },
                 null,
@@ -1789,7 +1585,7 @@
             null,
             null
           ],
-          "ouvert": false,
+          "ouvert": true,
           "geometries": [
             {
               "nom": "Îlot 10 chardonnay",
@@ -2087,7 +1883,7 @@
             null,
             null
           ],
-          "ouvert": false,
+          "ouvert": true,
           "geometries": [
             {
               "nom": "Îlot 12 piste en haut",
@@ -2433,7 +2229,7 @@
           "nom": "hervé",
           "surface": "0.45",
           "parcelles": [
-            "hervé"
+            "Îlot 15 herver"
           ],
           "amendements": [],
           "coupes": [
@@ -2442,10 +2238,10 @@
             null,
             null
           ],
-          "ouvert": false,
+          "ouvert": true,
           "geometries": [
             {
-              "nom": "hervé",
+              "nom": "Îlot 15 herver",
               "coords": [
                 [
                   6.523088970399465,
@@ -2522,10 +2318,10 @@
                   "date": "2026-06-14",
                   "pressage": "2026-06-16",
                   "fanage": 2,
-                  "typeBalle": "",
+                  "typeBalle": "ronde",
                   "nBalles": 7,
-                  "poidsBalle": 0,
-                  "poidsTotal": 0,
+                  "poidsBalle": 225,
+                  "poidsTotal": 1575,
                   "rem": ""
                 },
                 null,
@@ -2541,7 +2337,7 @@
           "nom": "alpages",
           "surface": "1.05",
           "parcelles": [
-            "alpages"
+            "Îlot 16 alpage"
           ],
           "amendements": [],
           "coupes": [
@@ -2550,10 +2346,10 @@
             null,
             null
           ],
-          "ouvert": false,
+          "ouvert": true,
           "geometries": [
             {
-              "nom": "alpages",
+              "nom": "Îlot 16 alpage",
               "coords": [
                 [
                   6.519790803575449,
@@ -2672,143 +2468,6 @@
               "amendements": [],
               "coupes": [
                 null,
-                null,
-                null,
-                null
-              ]
-            },
-            {
-              "nom": "alpages",
-              "coords": [
-                [
-                  6.519790803575449,
-                  45.81248158166944
-                ],
-                [
-                  6.520296155431292,
-                  45.81291236892458
-                ],
-                [
-                  6.520697437567275,
-                  45.81263147183718
-                ],
-                [
-                  6.520697443942094,
-                  45.812631470736896
-                ],
-                [
-                  6.52070448733232,
-                  45.81263311144558
-                ],
-                [
-                  6.520704500139355,
-                  45.812633110144624
-                ],
-                [
-                  6.52087181245044,
-                  45.81252706348924
-                ],
-                [
-                  6.520871818825244,
-                  45.812527062388945
-                ],
-                [
-                  6.521546801012428,
-                  45.81278980250256
-                ],
-                [
-                  6.52154681387689,
-                  45.812789802101086
-                ],
-                [
-                  6.521597052933435,
-                  45.81276756365816
-                ],
-                [
-                  6.521597055448915,
-                  45.81276756267827
-                ],
-                [
-                  6.521778491899994,
-                  45.812665986412846
-                ],
-                [
-                  6.521908514840735,
-                  45.81259246750376
-                ],
-                [
-                  6.521998930456356,
-                  45.81264648611166
-                ],
-                [
-                  6.522657290607161,
-                  45.8130492598602
-                ],
-                [
-                  6.522749251868758,
-                  45.81299392109923
-                ],
-                [
-                  6.522817005601044,
-                  45.812900446714266
-                ],
-                [
-                  6.521883174631022,
-                  45.81237629270815
-                ],
-                [
-                  6.521862858384682,
-                  45.81242263792888
-                ],
-                [
-                  6.521825727717629,
-                  45.812452936823945
-                ],
-                [
-                  6.521358867225776,
-                  45.81224959178873
-                ],
-                [
-                  6.521189872912366,
-                  45.81216496458254
-                ],
-                [
-                  6.521189867364809,
-                  45.812164958445955
-                ],
-                [
-                  6.5205738480805095,
-                  45.81183728888271
-                ],
-                [
-                  6.5205738314143815,
-                  45.811837290304055
-                ],
-                [
-                  6.519790804115925,
-                  45.812481569934555
-                ],
-                [
-                  6.519790803575449,
-                  45.81248158166944
-                ]
-              ],
-              "surface": 1.11,
-              "amendements": [],
-              "coupes": [
-                {
-                  "type": "foin",
-                  "debut": "",
-                  "fin": "",
-                  "date": "2026-06-15",
-                  "pressage": "2026-06-17",
-                  "fanage": 0,
-                  "typeBalle": "ronde",
-                  "nBalles": 14,
-                  "poidsBalle": 225,
-                  "poidsTotal": 3150,
-                  "rem": ""
-                },
                 null,
                 null,
                 null
@@ -2821,9 +2480,7 @@
           "num": "17",
           "nom": "bourgaillet",
           "surface": "1.02",
-          "parcelles": [
-            "foin bourjaillet"
-          ],
+          "parcelles": [],
           "amendements": [],
           "coupes": [
             null,
@@ -2831,118 +2488,7 @@
             null,
             null
           ],
-          "ouvert": false,
-          "geometries": [
-            {
-              "nom": "foin bourjaillet",
-              "coords": [
-                [
-                  6.519970066112819,
-                  45.807481856255514
-                ],
-                [
-                  6.519947995614832,
-                  45.80731423212173
-                ],
-                [
-                  6.520288549732016,
-                  45.80725384632225
-                ],
-                [
-                  6.520121364055513,
-                  45.8072036480651
-                ],
-                [
-                  6.519909824191368,
-                  45.807231534976566
-                ],
-                [
-                  6.5197761183294265,
-                  45.80720379692928
-                ],
-                [
-                  6.519624393860078,
-                  45.806855531291006
-                ],
-                [
-                  6.519964414772945,
-                  45.80684987989626
-                ],
-                [
-                  6.520337490610487,
-                  45.8068292049925
-                ],
-                [
-                  6.520679004254052,
-                  45.806913240693014
-                ],
-                [
-                  6.520952707220263,
-                  45.80705342472702
-                ],
-                [
-                  6.521130660674036,
-                  45.80709127832848
-                ],
-                [
-                  6.521387411093681,
-                  45.807034088767224
-                ],
-                [
-                  6.521405087791786,
-                  45.807036014499396
-                ],
-                [
-                  6.521622174077733,
-                  45.807140798659276
-                ],
-                [
-                  6.521466502717812,
-                  45.807201334358766
-                ],
-                [
-                  6.521157402316457,
-                  45.80727361928975
-                ],
-                [
-                  6.520730802265092,
-                  45.807370073940376
-                ],
-                [
-                  6.5204888748482315,
-                  45.80743559129716
-                ],
-                [
-                  6.5204954841595315,
-                  45.80741038220666
-                ],
-                [
-                  6.519970066112819,
-                  45.807481856255514
-                ]
-              ],
-              "surface": 0.61,
-              "amendements": [],
-              "coupes": [
-                {
-                  "type": "foin",
-                  "debut": "",
-                  "fin": "",
-                  "date": "2026-06-15",
-                  "pressage": "2026-06-17",
-                  "fanage": 2,
-                  "typeBalle": "",
-                  "nBalles": 6,
-                  "poidsBalle": 0,
-                  "poidsTotal": 0,
-                  "rem": ""
-                },
-                null,
-                null,
-                null
-              ]
-            }
-          ]
+          "ouvert": false
         },
         {
           "id": "mqctp4ewyalu2",
@@ -3764,7 +3310,7 @@
             null,
             null
           ],
-          "ouvert": false,
+          "ouvert": true,
           "geometries": [
             {
               "nom": "Îlot 25 verdette david",
@@ -3974,8 +3520,8 @@
                   "fanage": 2,
                   "typeBalle": "ronde",
                   "nBalles": 5,
-                  "poidsBalle": 225,
-                  "poidsTotal": 1125,
+                  "poidsBalle": 300,
+                  "poidsTotal": 1500,
                   "rem": ""
                 },
                 null,
@@ -4000,7 +3546,7 @@
             null,
             null
           ],
-          "ouvert": false,
+          "ouvert": true,
           "geometries": [
             {
               "nom": "Îlot 27 biolle allart",
@@ -4157,19 +3703,7 @@
               "surface": 0.26,
               "amendements": [],
               "coupes": [
-                {
-                  "type": "foin",
-                  "debut": "",
-                  "fin": "",
-                  "date": "2026-06-15",
-                  "pressage": "2026-06-17",
-                  "fanage": 2,
-                  "typeBalle": "ronde",
-                  "nBalles": 3,
-                  "poidsBalle": 225,
-                  "poidsTotal": 675,
-                  "rem": ""
-                },
+                null,
                 null,
                 null,
                 null
@@ -4192,7 +3726,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "joguet biolle",
@@ -4420,7 +3954,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "la balle",
