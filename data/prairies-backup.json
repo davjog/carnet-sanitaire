@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-06-20T11:41:50.510Z",
+  "savedAt": "2026-06-20T17:39:23.135Z",
   "donnees": {
     "2025": {
       "ilots": [
@@ -839,7 +839,7 @@
             null,
             null
           ],
-          "ouvert": false,
+          "ouvert": true,
           "geometries": [
             {
               "nom": "Îlot 2",
@@ -1096,7 +1096,19 @@
               "surface": 0.84,
               "amendements": [],
               "coupes": [
-                null,
+                {
+                  "type": "foin",
+                  "debut": "",
+                  "fin": "",
+                  "date": "2026-06-20",
+                  "pressage": "",
+                  "fanage": 0,
+                  "typeBalle": "",
+                  "nBalles": 0,
+                  "poidsBalle": 0,
+                  "poidsTotal": 0,
+                  "rem": ""
+                },
                 null,
                 null,
                 null
@@ -4180,7 +4192,7 @@
             null,
             null
           ],
-          "ouvert": false,
+          "ouvert": true,
           "geometries": [
             {
               "nom": "joguet biolle",
@@ -4408,7 +4420,7 @@
             null,
             null
           ],
-          "ouvert": false,
+          "ouvert": true,
           "geometries": [
             {
               "nom": "la balle",
