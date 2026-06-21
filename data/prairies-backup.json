@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-06-21T03:29:10.299Z",
+  "savedAt": "2026-06-21T17:50:39.592Z",
   "donnees": {
     "2025": {
       "ilots": [
@@ -55,7 +55,7 @@
           ],
           "amendements": [],
           "geometries": [],
-          "ouvert": false,
+          "ouvert": true,
           "coupes": [
             {
               "type": "foin",
