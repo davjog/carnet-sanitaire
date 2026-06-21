@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-06-21T17:50:39.592Z",
+  "savedAt": "2026-06-21T18:45:41.102Z",
   "donnees": {
     "2025": {
       "ilots": [
@@ -1152,7 +1152,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "gardet",
@@ -1569,7 +1569,7 @@
             null,
             null
           ],
-          "ouvert": true
+          "ouvert": false
         },
         {
           "id": "mqctp4ew4qbvk",
