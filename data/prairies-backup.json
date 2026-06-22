@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-06-22T06:30:10.688Z",
+  "savedAt": "2026-06-22T17:58:22.468Z",
   "donnees": {
     "2025": {
       "ilots": [
@@ -4192,7 +4192,7 @@
             null,
             null
           ],
-          "ouvert": false,
+          "ouvert": true,
           "geometries": [
             {
               "nom": "joguet biolle",
