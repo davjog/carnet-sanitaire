@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-06-22T06:29:10.615Z",
+  "savedAt": "2026-06-22T06:29:32.346Z",
   "donnees": {
     "2025": {
       "ilots": [
@@ -139,7 +139,7 @@
             "grangette"
           ],
           "amendements": [],
-          "ouvert": false,
+          "ouvert": true,
           "coupes": [
             null,
             null,
