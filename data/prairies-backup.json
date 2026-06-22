@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-06-21T18:46:51.089Z",
+  "savedAt": "2026-06-22T06:29:10.615Z",
   "donnees": {
     "2025": {
       "ilots": [
@@ -139,7 +139,7 @@
             "grangette"
           ],
           "amendements": [],
-          "ouvert": true,
+          "ouvert": false,
           "coupes": [
             null,
             null,
@@ -221,7 +221,7 @@
           ],
           "amendements": [],
           "geometries": [],
-          "ouvert": true,
+          "ouvert": false,
           "coupes": [
             {
               "type": "foin",
@@ -1129,7 +1129,7 @@
             null,
             null
           ],
-          "ouvert": false
+          "ouvert": true
         },
         {
           "id": "mqctp4ew3fsu6",
