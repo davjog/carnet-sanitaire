@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-06-25T11:41:45.895Z",
+  "savedAt": "2026-06-25T11:42:31.415Z",
   "donnees": {
     "2025": {
       "ilots": [
@@ -1174,7 +1174,7 @@
             null,
             null
           ],
-          "ouvert": false,
+          "ouvert": true,
           "geometries": [
             {
               "nom": "gardet",
@@ -1249,7 +1249,17 @@
                 ]
               ],
               "surface": 0.54,
-              "amendements": [],
+              "amendements": [
+                {
+                  "type": "engrais",
+                  "date": "2026-06-25",
+                  "qte": "150kg/ha",
+                  "rem": "",
+                  "nTonneaux": 0,
+                  "volTotal": 0,
+                  "volM3": 0
+                }
+              ],
               "coupes": [
                 {
                   "type": "foin",
@@ -3499,7 +3509,17 @@
                 ]
               ],
               "surface": 0.27,
-              "amendements": [],
+              "amendements": [
+                {
+                  "type": "engrais",
+                  "date": "2026-06-25",
+                  "qte": "150kg/ha",
+                  "rem": "",
+                  "nTonneaux": 0,
+                  "volTotal": 0,
+                  "volM3": 0
+                }
+              ],
               "coupes": [
                 {
                   "type": "foin",
