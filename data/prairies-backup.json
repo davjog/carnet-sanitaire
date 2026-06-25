@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-06-25T10:52:57.937Z",
+  "savedAt": "2026-06-25T11:41:45.895Z",
   "donnees": {
     "2025": {
       "ilots": [
@@ -1174,7 +1174,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "gardet",
@@ -1620,7 +1620,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "Îlot 7",
@@ -2474,7 +2474,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "hervé",
@@ -2582,7 +2582,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "alpages",
@@ -3036,7 +3036,7 @@
             null,
             null
           ],
-          "ouvert": false,
+          "ouvert": true,
           "geometries": [
             {
               "nom": "Îlot 22 sable",
