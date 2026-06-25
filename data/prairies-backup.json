@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-06-25T10:39:16.173Z",
+  "savedAt": "2026-06-25T10:40:07.218Z",
   "donnees": {
     "2025": {
       "ilots": [
@@ -1749,7 +1749,17 @@
                 ]
               ],
               "surface": 0.93,
-              "amendements": [],
+              "amendements": [
+                {
+                  "type": "engrais",
+                  "date": "2026-06-25",
+                  "qte": "150kg/ha",
+                  "rem": "",
+                  "nTonneaux": 0,
+                  "volTotal": 0,
+                  "volM3": 0
+                }
+              ],
               "coupes": [
                 {
                   "type": "foin",
