@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-06-25T12:35:55.172Z",
+  "savedAt": "2026-06-25T14:15:43.422Z",
   "donnees": {
     "2025": {
       "ilots": [
@@ -4144,7 +4144,7 @@
             null,
             null
           ],
-          "ouvert": false,
+          "ouvert": true,
           "geometries": [
             {
               "nom": "derex verdette",
