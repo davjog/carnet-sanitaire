@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-07-03T19:21:43.718Z",
+  "savedAt": "2026-07-03T19:22:47.380Z",
   "donnees": {
     "2025": {
       "ilots": [
@@ -918,7 +918,19 @@
                   "poidsTotal": 0,
                   "rem": ""
                 },
-                null,
+                {
+                  "type": "herbe_dure",
+                  "debut": "",
+                  "fin": "",
+                  "date": "2026-07-01",
+                  "pressage": "2026-07-03",
+                  "fanage": 2,
+                  "typeBalle": "ronde",
+                  "nBalles": 0,
+                  "poidsBalle": 300,
+                  "poidsTotal": 0,
+                  "rem": ""
+                },
                 null,
                 null
               ]
