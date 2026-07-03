@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-07-03T19:28:27.334Z",
+  "savedAt": "2026-07-03T19:29:22.105Z",
   "donnees": {
     "2025": {
       "ilots": [
@@ -1513,8 +1513,32 @@
               "surface": 0.23,
               "amendements": [],
               "coupes": [
-                null,
-                null,
+                {
+                  "type": "paturage",
+                  "debut": "2026-04-15",
+                  "fin": "2026-04-20",
+                  "date": "",
+                  "pressage": "",
+                  "fanage": 0,
+                  "typeBalle": "",
+                  "nBalles": 0,
+                  "poidsBalle": 0,
+                  "poidsTotal": 0,
+                  "rem": ""
+                },
+                {
+                  "type": "herbe_dure",
+                  "debut": "",
+                  "fin": "",
+                  "date": "2026-07-03",
+                  "pressage": "2026-07-05",
+                  "fanage": 0,
+                  "typeBalle": "",
+                  "nBalles": 0,
+                  "poidsBalle": 0,
+                  "poidsTotal": 0,
+                  "rem": ""
+                },
                 null,
                 null
               ]
