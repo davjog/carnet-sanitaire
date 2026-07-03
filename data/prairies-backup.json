@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-07-03T19:20:50.376Z",
+  "savedAt": "2026-07-03T19:21:43.718Z",
   "donnees": {
     "2025": {
       "ilots": [
@@ -905,7 +905,19 @@
               "surface": 0.56,
               "amendements": [],
               "coupes": [
-                null,
+                {
+                  "type": "paturage",
+                  "debut": "2026-04-20",
+                  "fin": "2026-04-10",
+                  "date": "",
+                  "pressage": "",
+                  "fanage": 0,
+                  "typeBalle": "",
+                  "nBalles": 0,
+                  "poidsBalle": 0,
+                  "poidsTotal": 0,
+                  "rem": ""
+                },
                 null,
                 null,
                 null
