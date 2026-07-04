@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-07-04T16:34:38.058Z",
+  "savedAt": "2026-07-04T18:09:35.195Z",
   "donnees": {
     "2025": {
       "ilots": [
@@ -55,7 +55,7 @@
           ],
           "amendements": [],
           "geometries": [],
-          "ouvert": true,
+          "ouvert": false,
           "coupes": [
             {
               "type": "foin",
@@ -139,7 +139,7 @@
             "grangette"
           ],
           "amendements": [],
-          "ouvert": true,
+          "ouvert": false,
           "coupes": [
             null,
             null,
@@ -305,7 +305,7 @@
           ],
           "amendements": [],
           "geometries": [],
-          "ouvert": false,
+          "ouvert": true,
           "coupes": [
             {
               "type": "foin",
