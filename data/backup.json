@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "savedAt": "2026-07-07T05:20:20.738Z",
+  "savedAt": "2026-07-07T05:22:38.234Z",
   "records": [
     {
       "id": 1780476136768.2793,
@@ -755,6 +755,35 @@
           "momentFin": "matin"
         }
       ]
+    },
+    {
+      "nomVache": "JIVA",
+      "numeroVache": "FR 7302100820",
+      "travailVache": "0820",
+      "annee": "2026",
+      "raison": "",
+      "traitements": [
+        {
+          "id": 1783401607497.8896,
+          "medicament": "Gerapyx ",
+          "posologie": "",
+          "quantite": "",
+          "voieAdmin": "Pour-on",
+          "voieAdminAutre": "",
+          "joursAttenteL": "0",
+          "momentAttenteL": "matin",
+          "joursAttenteV": "0",
+          "momentAttenteV": "matin",
+          "numOrdonnance": "",
+          "intervenant": "",
+          "photoOrdonnance": "",
+          "dateDebut": "2026-07-07",
+          "momentDebut": "matin",
+          "dateFin": "2026-07-07",
+          "momentFin": "matin"
+        }
+      ],
+      "id": 1783401756219
     }
   ]
 }
