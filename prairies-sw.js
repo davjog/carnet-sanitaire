@@ -1,4 +1,4 @@
-const CACHE = 'prairies-v2';
+const CACHE = 'prairies-v3';
 const BASE  = self.registration.scope;
 const ASSETS = [
   BASE + 'prairies.html',
@@ -23,6 +23,16 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
+  const url = e.request.url;
+  // N'intercepter que les ressources prairies et leurs dépendances CDN (leaflet, proj4)
+  // Ne PAS intercepter index.html (carnet sanitaire) ni les CDN React/Babel
+  const isPrairiesResource =
+    url.includes('prairies') ||
+    url.includes('leaflet') ||
+    url.includes('proj4');
+
+  if (!isPrairiesResource) return; // laisser passer sans interférence
+
   e.respondWith(
     caches.match(e.request).then(r => r || fetch(e.request).catch(() => caches.match(BASE + 'prairies.html')))
   );
