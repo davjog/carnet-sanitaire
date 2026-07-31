@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-07-05T19:35:57.569Z",
+  "savedAt": "2026-07-31T17:11:46.795Z",
   "donnees": {
     "2025": {
       "ilots": [
@@ -1132,7 +1132,17 @@
           "nom": "sous batiment",
           "surface": "3.53",
           "parcelles": [],
-          "amendements": [],
+          "amendements": [
+            {
+              "type": "engrais",
+              "date": "2026-07-10",
+              "qte": "100 kg /ha",
+              "rem": "",
+              "nTonneaux": 0,
+              "volTotal": 0,
+              "volM3": 0
+            }
+          ],
           "coupes": [
             null,
             null,
@@ -1948,7 +1958,7 @@
             null,
             null
           ],
-          "ouvert": false,
+          "ouvert": true,
           "geometries": [
             {
               "nom": "petit plan en bas de la route",
