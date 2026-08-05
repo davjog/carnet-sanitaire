@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-08-05T03:27:57.976Z",
+  "savedAt": "2026-08-05T03:28:23.672Z",
   "donnees": {
     "2025": {
       "ilots": [
@@ -1184,7 +1184,7 @@
             null,
             null
           ],
-          "ouvert": false,
+          "ouvert": true,
           "geometries": [
             {
               "nom": "gardet",
@@ -1618,7 +1618,19 @@
           "parcelles": [],
           "amendements": [],
           "coupes": [
-            null,
+            {
+              "type": "paturage",
+              "debut": "2026-08-02",
+              "fin": "",
+              "date": "",
+              "pressage": "",
+              "fanage": 0,
+              "typeBalle": "",
+              "nBalles": 0,
+              "poidsBalle": 0,
+              "poidsTotal": 0,
+              "rem": ""
+            },
             null,
             null,
             null
