@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-08-18T03:56:07.265Z",
+  "savedAt": "2026-08-23T16:18:52.124Z",
   "donnees": {
     "2025": {
       "ilots": [
@@ -1119,7 +1119,19 @@
                   "poidsTotal": 2700,
                   "rem": ""
                 },
-                null,
+                {
+                  "type": "paturage",
+                  "debut": "2026-08-22",
+                  "fin": "",
+                  "date": "",
+                  "pressage": "",
+                  "fanage": 0,
+                  "typeBalle": "",
+                  "nBalles": 0,
+                  "poidsBalle": 0,
+                  "poidsTotal": 0,
+                  "rem": ""
+                },
                 null,
                 null
               ]
@@ -1657,7 +1669,7 @@
             {
               "type": "paturage",
               "debut": "2026-08-02",
-              "fin": "",
+              "fin": "2026-08-10",
               "date": "",
               "pressage": "",
               "fanage": 0,
