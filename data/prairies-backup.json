@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-09-04T13:38:03.406Z",
+  "savedAt": "2026-09-04T13:39:03.945Z",
   "donnees": {
     "2025": {
       "ilots": [
@@ -3151,12 +3151,24 @@
           "parcelles": [],
           "amendements": [],
           "coupes": [
-            null,
+            {
+              "type": "paturage",
+              "debut": "2026-09-03",
+              "fin": "",
+              "date": "",
+              "pressage": "",
+              "fanage": 0,
+              "typeBalle": "",
+              "nBalles": 0,
+              "poidsBalle": 0,
+              "poidsTotal": 0,
+              "rem": ""
+            },
             null,
             null,
             null
           ],
-          "ouvert": false
+          "ouvert": true
         },
         {
           "id": "mqctp4ew3jlaq",
@@ -4937,7 +4949,7 @@
             null,
             null
           ],
-          "ouvert": false,
+          "ouvert": true,
           "geometries": [
             {
               "nom": "Îlot 31 sous la vigne",
