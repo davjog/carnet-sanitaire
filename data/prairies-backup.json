@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-09-04T04:15:19.685Z",
+  "savedAt": "2026-09-04T13:38:03.406Z",
   "donnees": {
     "2025": {
       "ilots": [
@@ -834,7 +834,7 @@
             null,
             null
           ],
-          "ouvert": true
+          "ouvert": false
         },
         {
           "id": "mqctp4ewucn60",
@@ -851,7 +851,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "Îlot 2",
@@ -1185,7 +1185,7 @@
             null,
             null
           ],
-          "ouvert": true
+          "ouvert": false
         },
         {
           "id": "mqctp4ew3fsu6",
@@ -1220,7 +1220,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "gardet",
@@ -1707,7 +1707,7 @@
             null,
             null
           ],
-          "ouvert": true
+          "ouvert": false
         },
         {
           "id": "mqctp4ew4qbvk",
@@ -1925,7 +1925,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "Îlot 10 chardonnay",
@@ -2042,7 +2042,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "petit plan en bas de la route",
@@ -3124,12 +3124,24 @@
           "parcelles": [],
           "amendements": [],
           "coupes": [
-            null,
+            {
+              "type": "paturage",
+              "debut": "2026-09-03",
+              "fin": "",
+              "date": "",
+              "pressage": "",
+              "fanage": 0,
+              "typeBalle": "",
+              "nBalles": 0,
+              "poidsBalle": 0,
+              "poidsTotal": 0,
+              "rem": ""
+            },
             null,
             null,
             null
           ],
-          "ouvert": false
+          "ouvert": true
         },
         {
           "id": "mqctp4ewu2v0m",
