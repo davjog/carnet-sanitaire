@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-09-04T13:39:57.218Z",
+  "savedAt": "2026-09-13T17:01:08.896Z",
   "donnees": {
     "2025": {
       "ilots": [
@@ -2259,7 +2259,7 @@
             null,
             null
           ],
-          "ouvert": false,
+          "ouvert": true,
           "geometries": [
             {
               "nom": "Îlot 12 piste en haut",
@@ -2455,7 +2455,7 @@
             null,
             null
           ],
-          "ouvert": false,
+          "ouvert": true,
           "geometries": [
             {
               "nom": "Îlot 13 piste en bas",
@@ -2576,7 +2576,19 @@
               "surface": 2.58,
               "amendements": [],
               "coupes": [
-                null,
+                {
+                  "type": "paturage",
+                  "debut": "2026-09-13",
+                  "fin": "",
+                  "date": "",
+                  "pressage": "",
+                  "fanage": 0,
+                  "typeBalle": "",
+                  "nBalles": 0,
+                  "poidsBalle": 0,
+                  "poidsTotal": 0,
+                  "rem": ""
+                },
                 null,
                 null,
                 null
