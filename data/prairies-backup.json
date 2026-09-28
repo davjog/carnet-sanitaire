@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-09-28T05:01:42.738Z",
+  "savedAt": "2026-09-28T05:02:08.716Z",
   "donnees": {
     "2025": {
       "ilots": [
@@ -2042,7 +2042,7 @@
             null,
             null
           ],
-          "ouvert": false,
+          "ouvert": true,
           "geometries": [
             {
               "nom": "petit plan en bas de la route",
@@ -3178,7 +3178,7 @@
             {
               "type": "paturage",
               "debut": "2026-09-03",
-              "fin": "",
+              "fin": "2026-09-25",
               "date": "",
               "pressage": "",
               "fanage": 0,
