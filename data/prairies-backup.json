@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-09-28T05:03:43.125Z",
+  "savedAt": "2026-09-30T03:44:00.921Z",
   "donnees": {
     "2025": {
       "ilots": [
@@ -1703,11 +1703,23 @@
               "poidsTotal": 0,
               "rem": ""
             },
-            null,
+            {
+              "type": "paturage",
+              "debut": "2026-09-25",
+              "fin": "2026-09-25",
+              "date": "",
+              "pressage": "",
+              "fanage": 0,
+              "typeBalle": "",
+              "nBalles": 0,
+              "poidsBalle": 0,
+              "poidsTotal": 0,
+              "rem": "Génisses"
+            },
             null,
             null
           ],
-          "ouvert": true
+          "ouvert": false
         },
         {
           "id": "mqctp4ew4qbvk",
@@ -2042,7 +2054,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "petit plan en bas de la route",
@@ -2283,7 +2295,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "Îlot 12 piste en haut",
@@ -2491,7 +2503,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "Îlot 13 piste en bas",
@@ -2615,7 +2627,7 @@
                 {
                   "type": "paturage",
                   "debut": "2026-09-13",
-                  "fin": "",
+                  "fin": "2026-09-16",
                   "date": "",
                   "pressage": "",
                   "fanage": 0,
@@ -3189,7 +3201,7 @@
             null,
             null
           ],
-          "ouvert": true
+          "ouvert": false
         },
         {
           "id": "mqctp4ewu2v0m",
@@ -4456,7 +4468,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "joguet biolle",
@@ -4696,7 +4708,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "la balle",
@@ -5009,7 +5021,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "Îlot 31 sous la vigne",
