@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-09-30T03:44:00.921Z",
+  "savedAt": "2026-09-30T16:14:41.457Z",
   "donnees": {
     "2025": {
       "ilots": [
@@ -1937,7 +1937,7 @@
             null,
             null
           ],
-          "ouvert": false,
+          "ouvert": true,
           "geometries": [
             {
               "nom": "Îlot 10 chardonnay",
@@ -2031,7 +2031,19 @@
                   "poidsTotal": 5175,
                   "rem": ""
                 },
-                null,
+                {
+                  "type": "paturage",
+                  "debut": "2026-09-30",
+                  "fin": "2026-09-30",
+                  "date": "",
+                  "pressage": "",
+                  "fanage": 0,
+                  "typeBalle": "",
+                  "nBalles": 0,
+                  "poidsBalle": 0,
+                  "poidsTotal": 0,
+                  "rem": ""
+                },
                 null,
                 null
               ]
@@ -2054,7 +2066,7 @@
             null,
             null
           ],
-          "ouvert": false,
+          "ouvert": true,
           "geometries": [
             {
               "nom": "petit plan en bas de la route",
@@ -2167,7 +2179,7 @@
                 {
                   "type": "paturage",
                   "debut": "2026-09-25",
-                  "fin": "2026-09-28",
+                  "fin": "2026-09-30",
                   "date": "",
                   "pressage": "",
                   "fanage": 0,
