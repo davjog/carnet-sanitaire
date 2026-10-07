@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-10-07T12:28:52.626Z",
+  "savedAt": "2026-10-07T12:29:26.568Z",
   "donnees": {
     "2025": {
       "ilots": [
@@ -851,7 +851,7 @@
             null,
             null
           ],
-          "ouvert": false,
+          "ouvert": true,
           "geometries": [
             {
               "nom": "Îlot 2",
@@ -1937,7 +1937,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "Îlot 10 chardonnay",
@@ -2034,7 +2034,7 @@
                 {
                   "type": "paturage",
                   "debut": "2026-09-30",
-                  "fin": "2026-09-30",
+                  "fin": "2026-10-07",
                   "date": "",
                   "pressage": "",
                   "fanage": 0,
