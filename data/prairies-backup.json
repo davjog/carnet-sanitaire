@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-09-30T16:14:41.457Z",
+  "savedAt": "2026-10-07T12:28:52.626Z",
   "donnees": {
     "2025": {
       "ilots": [
@@ -2066,7 +2066,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "petit plan en bas de la route",
@@ -3240,7 +3240,7 @@
             null,
             null
           ],
-          "ouvert": true
+          "ouvert": false
         },
         {
           "id": "mqctp4ew3jlaq",
