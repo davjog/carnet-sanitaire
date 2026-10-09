@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-10-07T12:29:26.568Z",
+  "savedAt": "2026-10-09T16:43:40.768Z",
   "donnees": {
     "2025": {
       "ilots": [
@@ -851,7 +851,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "Îlot 2",
@@ -1144,7 +1144,19 @@
                   "poidsTotal": 0,
                   "rem": ""
                 },
-                null,
+                {
+                  "type": "paturage",
+                  "debut": "2026-10-07",
+                  "fin": "2026-10-07",
+                  "date": "",
+                  "pressage": "",
+                  "fanage": 0,
+                  "typeBalle": "",
+                  "nBalles": 0,
+                  "poidsBalle": 0,
+                  "poidsTotal": 0,
+                  "rem": ""
+                },
                 null
               ]
             }
@@ -1220,7 +1232,7 @@
             null,
             null
           ],
-          "ouvert": false,
+          "ouvert": true,
           "geometries": [
             {
               "nom": "gardet",
