@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-10-14T13:59:51.530Z",
+  "savedAt": "2026-10-14T14:00:16.096Z",
   "donnees": {
     "2025": {
       "ilots": [
@@ -3256,7 +3256,9 @@
           "num": "20 praise en haut de la route",
           "nom": "",
           "surface": "6.27",
-          "parcelles": [],
+          "parcelles": [
+            "La patou"
+          ],
           "amendements": [],
           "coupes": [
             {
