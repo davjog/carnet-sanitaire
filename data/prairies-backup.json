@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-10-21T03:44:03.714Z",
+  "savedAt": "2026-10-21T03:45:54.563Z",
   "donnees": {
     "2025": {
       "ilots": [
@@ -3938,7 +3938,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "Îlot 24 tovet",
@@ -4071,7 +4071,7 @@
                 {
                   "type": "paturage",
                   "debut": "2026-10-10",
-                  "fin": "2026-10-10",
+                  "fin": "2026-10-12",
                   "date": "",
                   "pressage": "",
                   "fanage": 0,
@@ -4540,7 +4540,7 @@
             null,
             null
           ],
-          "ouvert": true,
+          "ouvert": false,
           "geometries": [
             {
               "nom": "joguet biolle",
