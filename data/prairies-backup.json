@@ -1,5 +1,5 @@
 {
-  "savedAt": "2026-10-21T03:42:21.191Z",
+  "savedAt": "2026-10-21T03:42:53.851Z",
   "donnees": {
     "2025": {
       "ilots": [
@@ -4758,7 +4758,19 @@
                   "poidsTotal": 2475,
                   "rem": ""
                 },
-                null,
+                {
+                  "type": "paturage",
+                  "debut": "2026-10-18",
+                  "fin": "2026-10-21",
+                  "date": "",
+                  "pressage": "",
+                  "fanage": 0,
+                  "typeBalle": "",
+                  "nBalles": 0,
+                  "poidsBalle": 0,
+                  "poidsTotal": 0,
+                  "rem": "Trop gros passé"
+                },
                 null,
                 null
               ]
